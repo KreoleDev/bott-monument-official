@@ -1,26 +1,55 @@
+"use client";
+
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 export function Header() {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const syncHeaderState = () => {
+      setIsScrolled(window.scrollY > 80);
+    };
+
+    syncHeaderState();
+    window.addEventListener("scroll", syncHeaderState, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", syncHeaderState);
+    };
+  }, []);
+
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black/70 px-6 py-4 text-white backdrop-blur">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between">
-        <a className="flex items-center" href="#home" aria-label="Bott Monument home">
-          <Image
-            src="/bott-logo.png"
-            alt="Bott Monument"
-            width={637}
-            height={211}
-            priority
-            className="h-[max(55px,3.6vw)] w-auto brightness-125 contrast-105 max-md:h-12"
-          />
-        </a>
-        <div className="hidden items-center gap-8 text-sm uppercase tracking-[0.25em] text-white/70 md:flex">
-          <a href="#news">MASTERPIECES</a>
-          <a href="#gallery">GALLERY</a>
-          <a href="#contact">INQUIRE</a>
-          <a href="#about">ABOUT</a>
-        </div>
-      </nav>
-    </header>
+    <nav id="navbar" className={`site-nav${isScrolled ? " scrolled" : ""}`}>
+      <a className="nav-logo" href="#" aria-label="Bott Monument home">
+        <span className="sr-only">Bott Monument</span>
+        <Image
+          src="/bott-logo.png"
+          alt="Bott Monument"
+          width={637}
+          height={211}
+          priority
+          style={{
+            height: "max(55px, 3.6vw)",
+            width: "auto",
+            filter: "brightness(1.25) contrast(1.08)",
+          }}
+        />
+      </a>
+      <ul className="nav-links">
+        <li>
+          <a href="#work">Masterpieces</a>
+        </li>
+        <li>
+          <a href="#magazine">Gallery</a>
+        </li>
+        <li>
+          <a href="#contact">Inquire</a>
+        </li>
+        <li>
+          <a href="#showroom">About</a>
+        </li>
+      </ul>
+    </nav>
   );
 }

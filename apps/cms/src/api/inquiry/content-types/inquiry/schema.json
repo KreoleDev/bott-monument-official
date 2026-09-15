@@ -1,0 +1,41 @@
+{
+  "kind": "collectionType",
+  "collectionName": "inquiries",
+  "info": {
+    "singularName": "inquiry",
+    "pluralName": "inquiries",
+    "displayName": "Inquiries"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "maxLength": 150
+    },
+    "email": {
+      "type": "email",
+      "required": true
+    },
+    "inquiryType": {
+      "type": "string",
+      "required": true,
+      "maxLength": 150
+    },
+    "message": {
+      "type": "text",
+      "maxLength": 5000
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "new",
+        "reviewed",
+        "replied"
+      ],
+      "default": "new"
+    }
+  }
+}

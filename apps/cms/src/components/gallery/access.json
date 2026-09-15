@@ -1,0 +1,29 @@
+{
+  "collectionName": "components_gallery_access",
+  "info": {
+    "displayName": "Gallery Access Dialog"
+  },
+  "attributes": {
+    "eyebrow": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "emphasis": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "requestLabel": {
+      "type": "string"
+    },
+    "requestHref": {
+      "type": "string"
+    },
+    "dismissLabel": {
+      "type": "string"
+    }
+  }
+}

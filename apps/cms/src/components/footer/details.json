@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_footer_details",
+  "info": {
+    "displayName": "details"
+  },
+  "attributes": {
+    "brand": {
+      "type": "text"
+    },
+    "copyright": {
+      "type": "text"
+    },
+    "tagline": {
+      "type": "text"
+    },
+    "taglineEmphasis": {
+      "type": "text"
+    }
+  }
+}

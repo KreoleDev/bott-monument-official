@@ -1,0 +1,54 @@
+{
+  "collectionName": "components_contact_details",
+  "info": {
+    "displayName": "details"
+  },
+  "attributes": {
+    "titleEmphasis": {
+      "type": "string"
+    },
+    "counterText": {
+      "type": "string"
+    },
+    "inquiryLabel": {
+      "type": "string"
+    },
+    "inquiryTypes": {
+      "type": "text"
+    },
+    "namePlaceholder": {
+      "type": "string"
+    },
+    "emailPlaceholder": {
+      "type": "string"
+    },
+    "messagePlaceholder": {
+      "type": "text"
+    },
+    "note": {
+      "type": "text"
+    },
+    "successMessage": {
+      "type": "text"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "studio": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "totalCommissions": {
+      "type": "integer",
+      "min": 0,
+      "max": 100
+    },
+    "remainingCommissions": {
+      "type": "integer",
+      "min": 0,
+      "max": 100
+    }
+  }
+}

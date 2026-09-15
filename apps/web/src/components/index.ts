@@ -1,8 +1,10 @@
-export { About } from "./about";
+export { Showroom } from "./showroom";
 export { Contact } from "./contact";
 export { Footer } from "./footer";
 export { Gallery } from "./gallery";
 export { Header } from "./header";
 export { Hero } from "./hero";
-export { Philosophy } from "./philosophy";
+export { MarqueeStrip } from "./marquee-strip";
+export { Founder } from "./founder";
+export { News } from "./news";
 export { Testimonials } from "./testimonials";

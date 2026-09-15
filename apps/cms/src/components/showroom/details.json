@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_showroom_details",
+  "info": {
+    "displayName": "Showroom Details"
+  },
+  "attributes": {
+    "visitTitle": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "appointment": {
+      "type": "string"
+    },
+    "hours": {
+      "type": "text"
+    },
+    "statistics": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.stat"
+    }
+  }
+}

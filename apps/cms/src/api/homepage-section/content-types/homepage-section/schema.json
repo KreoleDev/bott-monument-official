@@ -49,6 +49,38 @@
         }
       }
     },
+    "quote": {
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "signature": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "personName": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "personRole": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
     "backgroundColor": {
       "type": "string",
       "pluginOptions": {
@@ -112,6 +144,26 @@
           "localized": true
         }
       }
+    },
+    "galleryAccess": {
+      "type": "component",
+      "repeatable": false,
+      "component": "gallery.access"
+    },
+    "showroom": {
+      "type": "component",
+      "repeatable": false,
+      "component": "showroom.details"
+    },
+    "contact": {
+      "type": "component",
+      "repeatable": false,
+      "component": "contact.details"
+    },
+    "footer": {
+      "type": "component",
+      "repeatable": false,
+      "component": "footer.details"
     }
   }
 }

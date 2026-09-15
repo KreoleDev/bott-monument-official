@@ -1,8 +1,32 @@
+export type ContactDetails = {
+ titleEmphasis: string; counterText: string; totalCommissions: number; remainingCommissions: number;
+ inquiryLabel: string; inquiryTypes: string; namePlaceholder: string; emailPlaceholder: string; messagePlaceholder: string;
+ note: string; successMessage: string; phone: string; studio: string; email: string;
+};
+export type FooterDetails = { brand: string; copyright: string; tagline: string; taglineEmphasis: string };
+
+export type GalleryAccess = {
+  eyebrow: string | null; title: string | null; emphasis: string | null; description: string | null; requestLabel: string | null; requestHref: string | null; dismissLabel: string | null;
+};
+
+export type ShowroomDetails = {
+  visitTitle: string | null; location: string | null; appointment: string | null; hours: string | null;
+  statistics: { id: string; value: string; label: string }[];
+};
+
 export type HomepageSection = {
+  contact: ContactDetails | null;
+  footer: FooterDetails | null;
+  showroom: ShowroomDetails | null;
+  galleryAccess: GalleryAccess | null;
   sectionKey: string;
   eyebrow: string | null;
   title: string | null;
   description: string | null;
+  quote: string | null;
+  signature: string | null;
+  personName: string | null;
+  personRole: string | null;
   backgroundColor: string | null;
   textColor: string | null;
   buttonLabel: string | null;
@@ -26,9 +50,17 @@ const HOMEPAGE_SECTION_QUERY = `
   query HomepageSection($sectionKey: String!) {
     homepageSections(filters: { sectionKey: { eq: $sectionKey } }) {
       sectionKey
+      contact { titleEmphasis counterText totalCommissions remainingCommissions inquiryLabel inquiryTypes namePlaceholder emailPlaceholder messagePlaceholder note successMessage phone studio email }
+      footer { brand copyright tagline taglineEmphasis }
+      showroom { visitTitle location appointment hours statistics { id value label } }
+      galleryAccess { eyebrow title emphasis description requestLabel requestHref dismissLabel }
       eyebrow
       title
       description
+      quote
+      signature
+      personName
+      personRole
       backgroundColor
       textColor
       buttonLabel
@@ -87,7 +119,9 @@ export async function getHomepageSection(sectionKey: string) {
         query: HOMEPAGE_SECTION_QUERY,
         variables: { sectionKey },
       }),
-      next: { revalidate: 60 },
+      ...(process.env.NODE_ENV === "development"
+        ? { cache: "no-store" as const }
+        : { next: { revalidate: 60 } }),
     });
 
     if (!response.ok) {
