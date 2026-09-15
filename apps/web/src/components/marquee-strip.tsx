@@ -33,8 +33,8 @@ export function MarqueeStrip({ section }: MarqueeStripProps) {
       id="marqueeStrip"
       aria-hidden="true"
       style={{
-        background: section?.backgroundColor ?? undefined,
-        color: section?.textColor ?? undefined,
+        background: `var(--palette-marquee-background, ${section?.backgroundColor || "var(--primary-header-gradient)"})`,
+        color: `var(--palette-marquee-text-color, ${section?.textColor || "var(--bone)"})`,
       }}
     >
       <div className="marquee-track">

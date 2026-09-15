@@ -1,6 +1,16 @@
 import type { Core } from '@strapi/strapi';
 
 const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Admin => ({
+  preview: {
+    enabled: Boolean(env('PREVIEW_SECRET')),
+    config: {
+      allowedOrigins: [env('WEB_URL', 'http://localhost:3000')],
+      async handler(uid: string) {
+        const path = uid === 'api::press-item.press-item' ? '/news' : '/';
+        return `${env('WEB_URL', 'http://localhost:3000')}/api/preview?${new URLSearchParams({ secret: env('PREVIEW_SECRET', ''), path })}`;
+      },
+    },
+  },
   auth: {
     secret: env('ADMIN_JWT_SECRET')!,
   },

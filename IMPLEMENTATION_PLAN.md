@@ -40,29 +40,33 @@ bott-monument-official/
 - Next Strapi client: `apps/web/src/lib/strapi.ts`
 - Working conventions: `README.md`
 
-Do not ship design-only controls from the HTML (Primary/Secondary mode, headline switchers, gallery layout pickers). Those are mockup tools, not product.
+Do not ship the HTML demo toolbar, headline switchers or gallery layout pickers. Primary/Secondary colors are now real CMS settings: Color Palettes + Site Settings.activePalette. This selection changes colors globally while preserving the current layouts and interactions; it does not port the demo layout modes.
 
 ## Design To Product Map
 
-Use these `sectionKey` values and DOM ids. Do not invent parallel names.
+The implemented section names, `sectionKey` values and DOM ids below are authoritative. Keep these names when matching the local design.
 
-| Design block | HTML id | `sectionKey` | Next component today |
-| --- | --- | --- | --- |
-| Nav | `#navbar` | — (Site Settings logo) | `Header` (partial, wrong anchors) |
-| Hero | `#hero` | `hero` | `Hero` (Strapi, incomplete) |
-| Marquee | `#marqueeStrip` | `marquee` | missing |
-| Founder intro (Drew) | `.page2-wrap` | `founder-intro` | `Philosophy` (placeholder, rename) |
-| Masterpieces / work | `#work` | `work` | missing |
-| Press | `#press-clippings` | `press` | missing |
-| Gallery | `#magazine` | `gallery` | `Gallery` (placeholder) |
-| Showroom / about | `#founder` | `founder` | `About` (placeholder, id `#about`) |
-| Testimonials | `#testimonials` | `testimonials` | `Testimonials` (placeholder) |
-| Contact | `#contact` | `contact` | `Contact` (placeholder, no form) |
-| Footer | `footer` | `footer` | `Footer` (placeholder) |
+| Section | Implemented DOM id | `sectionKey` | Next component | Item collection in Strapi |
+| --- | --- | --- | --- | --- |
+| Navigation | `#navbar` | — | `Header` | — |
+| Hero | `#hero` | `hero` | `Hero` | — |
+| Marquee | `#marqueeStrip` | `marquee` | `MarqueeStrip` | — |
+| Founder intro (Drew) | `#founder` | `founder` | `Founder` | — |
+| News / Featured Stories | `#work` | `news` | `News` | `Press Item` |
+| As Featured In | `#press-clippings` | `featured-in` | `FeaturedIn` | `Features` |
+| Gallery | `#magazine` | `gallery` | `Gallery` | `Gallery` |
+| Showroom / About | `#showroom` | `showroom` | `Showroom` | — |
+| Testimonials | `#testimonials` | `testimonials` | `Testimonials` | `Comments` |
+| Contact | `#contact` | `contact` | `Contact` | `Inquiries` (submissions) |
+| Footer | `#footer` | `footer` | `Footer` | — |
+
+`Homepage Section` holds section-level content. `Press Item`, `Features`, `Gallery` and `Comments` hold their individual items. `Inquiries` holds contact form submissions.
+
+The navigation labels map to these anchors: **Masterpieces → `#work`**, **Gallery → `#magazine`**, **Inquire → `#contact`**, **About → `#showroom`**. `#work` is the News section; it does not require a separate `work` entry. `/news` lists press stories.
+
+The original design uses `#founder` for the showroom. The implemented site uses `#founder` for Drew's introduction and `#showroom` for the showroom; retain the implemented mapping.
 
 Process (`ART PROCESS FEATURE`) is commented out in the design. Keep it out of MVP.
-
-Nav anchors must match the HTML: `#work`, `#magazine`, `#contact`, `#founder`.
 
 ## Done
 
@@ -82,71 +86,88 @@ Nav anchors must match the HTML: `#work`, `#magazine`, `#contact`, `#founder`.
 
 ## MVP
 
-Ship a site that matches the published design and is editable in Strapi. Do not start preview, Postgres, or hosting until this list is done.
+Ship a site that matches the local design and is editable in Strapi. The requested follow-up work now includes preview and production preparation; live migration waits for destination details.
 
 ### 1. Finish Backend Content Model
 
-- [ ] Stop localizing `sectionKey`. Identifiers must stay stable across locales.
-- [ ] Add `Gallery Item` collection type.
-  Fields: `title`, `category`, `image`, `description`, `sortOrder`, `featured`.
-- [ ] Add `Testimonial` collection type.
-  Fields: `name`, `quote`, `location`, `image`, `sortOrder`.
-- [ ] Add `Press Item` collection type.
-  Fields: `title`, `source`, `date`, `image`, `url`, `sortOrder`.
-- [ ] Add `Inquiry` collection type for the contact form.
-  Fields: `name`, `email`, `intent`, `message`, `status`.
-- [ ] Add `Site Settings` single type.
-  Fields: `logo`, `phone`, `email`, `address`, `facebookUrl`, `instagramUrl`, `seoTitle`, `seoDescription`, `commissionsRemaining`, `commissionsTotal`.
+- [x] Stop localizing `sectionKey`. Identifiers must stay stable across locales.
+- [x] Add `Gallery` collection type (`gallery-item`).
+  Fields: `title`, `subtitle`, `image`, `imagePosition`, `sortOrder`.
+- [x] Add `Comments` collection type (`comment`).
+  Fields: `personName`, `quote`, `location`, `sortOrder`.
+- [x] Add `Press Item` collection type.
+  Fields: `title`, `source`, `date`, `category`, `image`, `url`, `sortOrder`, `featured`.
+- [x] Add `Features` collection type (`feature`).
+  Fields: `title`, `publication`, `detail`, `image`, `featured`, `sortOrder`.
+- [x] Add `Inquiries` collection type (`inquiry`) for the contact form.
+  Fields: `name`, `email`, `inquiryType`, `message`, `status`.
+- [x] Add `Site Settings` single type and publish the original logo/SEO defaults locally.
+  Fields: `siteName`, `siteUrl`, `logo`, `socialImage`, `facebookUrl`, `instagramUrl`, `seoTitle`, `seoDescription`.
+  Contact details and commission availability remain in the existing Contact component to avoid duplicate editorial sources.
 
 ### 2. Add Homepage Section Entries
 
 Create and publish these entries in Strapi. Copy text, colors, images, and videos from the design file.
 
 - [x] `hero`
-- [ ] `marquee`
-- [ ] `founder-intro`
-- [ ] `work`
-- [ ] `press`
-- [ ] `gallery`
-- [ ] `founder`
-- [ ] `testimonials`
-- [ ] `contact`
-- [ ] `footer`
+- [x] `marquee`
+- [x] `founder`
+- [x] `news`
+- [x] `featured-in`
+- [x] `gallery`
+- [x] `showroom`
+- [x] `testimonials`
+- [x] `contact`
+- [x] `footer`
 
 ### 3. Frontend Foundation
 
 - [x] Add local setup instructions to `README.md`.
-- [ ] Add shared color constants from the design.
-- [ ] Load design fonts with `next/font`: Cormorant Garamond, Montserrat, Alex Brush.
-- [ ] Add fallback content for every section.
-- [ ] Update `next.config.ts` `images.remotePatterns` for Strapi media URLs.
-- [ ] Query all homepage sections ordered by `sortOrder`.
-- [ ] Drive `layout.tsx` metadata from Site Settings.
-- [ ] Replace temporary section placeholders with real layouts.
-- [ ] Rename `Philosophy` → founder intro and `About` → founder/showroom.
-- [ ] Fix header anchors to `#work`, `#magazine`, `#contact`, `#founder`.
-- [ ] Add mobile navigation.
+- [x] Add shared color constants from the design.
+- [x] Load design fonts with `next/font`: Cormorant Garamond, Montserrat, Alex Brush.
+- [x] Cache successful public reads and retain them during outages; valid empty results replace old content.
+- [x] Configure `images.remotePatterns` and optimize CMS images with Next Image.
+- [x] Render homepage body sections in CMS `sortOrder`; keep header/footer in semantic positions.
+- [x] Drive metadata and header logo from Site Settings.
+- [x] Replace temporary section placeholders with real layouts.
+- [x] Use `Founder` for Drew's introduction and `Showroom` for the About destination.
+- [x] Set header anchors to `#work`, `#magazine`, `#contact`, `#showroom`.
+- [x] Add mobile navigation.
 
 ### 4. Build The Sections
 
-Header and Hero exist but are not the finished design. Rebuild against the HTML.
+All main sections are implemented. Track further design refinements separately.
 
-- [ ] Header/navigation (desktop + mobile)
-- [ ] Hero
-- [ ] Marquee
-- [ ] Founder intro (Drew / page 2)
-- [ ] Masterpieces/work (`#work`)
-- [ ] Press (`#press-clippings`)
-- [ ] Gallery (`#magazine`), including lightbox
-- [ ] Gallery access modal ("Want to see the full gallery?")
-- [ ] About/founder showroom (`#founder`, stats, visit CTA)
-- [ ] Testimonials
-- [ ] Contact copy + commission counter
-- [ ] Contact form (intent pills, name, email, message) → Strapi `Inquiry`
-- [ ] Footer
-- [ ] Scroll reveal / motion from the original design
+- [x] Header/navigation, including mobile disclosure menu
+- [x] Hero and Marquee
+- [x] Founder intro (`#founder`)
+- [x] News / Featured Stories (`#work`, key `news`) and `/news`
+- [x] As Featured In (`#press-clippings`, key `featured-in`)
+- [x] Circular Gallery (`#magazine`), drag, hover, keyboard and access-request dialog
+- [x] Showroom / About (`#showroom`), statistics and visit CTA
+- [x] Testimonials with `Comments` collection and scrolling cards
+- [x] Contact form → private Strapi `Inquiries`, validation and confirmation
+- [x] Footer
+- [x] Add image lightbox as an additional gallery control, preserving rotation and access dialog.
+- [ ] Complete cross-device visual and accessibility review
+- [x] Add scroll reveals without hiding no-JS content; respect reduced motion.
 
-## Later — Not MVP
+### 5. Preserve Existing Work And Close Gaps
+
+- [x] Track all ten existing published homepage sections and collections accurately.
+- [x] Add frontend `.env.example` and document the separate create-only inquiry token.
+- [x] Document content/media export and import; keep seeds disconnected from normal startup.
+- [x] Handle missing CMS settings without an uncaught error and bound fetch duration.
+- [x] Load all published pages for Gallery, Features, Press Item and Comments.
+- [x] Configure Strapi `PUBLIC_URL` and keep section keys non-localized.
+- [x] Retain last successful public reads during CMS outages; tested deletion and draft isolation.
+- [ ] Replace sample phone, availability, copyright and testimonial text with approved content.
+- [x] Implement opt-in SMTP notifications after inquiry persistence; delivery failure does not lose the entry.
+- [ ] Configure approved SMTP sender/recipient and verify real delivery (credentials required).
+- [x] Verify Next.js and Strapi production builds locally.
+- [ ] Verify the real deployment environment after hosting is selected.
+
+## Remaining External Work And Deferred Scope
 
 ### Process
 
@@ -159,10 +180,10 @@ The process block is commented out in `bott-monument-design/index.html`. Add onl
 
 ### API And Preview
 
-- [ ] Add Next.js draft preview route.
-- [ ] Configure Strapi preview URL.
-- [ ] Add webhook from Strapi to Next.js for revalidation.
-- [ ] Decide which pages use static generation and which use dynamic rendering.
+- [x] Add protected preview entry and POST exit routes, uncached draft reads and banner.
+- [x] Configure Strapi preview URL and matching local secrets.
+- [x] Add authenticated revalidation endpoint and configure local publication webhook.
+- [x] Use cached public homepage/news (60s) and dynamic uncached draft preview/API routes.
 
 ### Team Collaboration And Hosting
 
@@ -170,8 +191,10 @@ Local SQLite is okay for proof of concept, but not for real team content work.
 
 Before serious content entry:
 
-- [ ] Move Strapi database to hosted PostgreSQL.
-- [ ] Move Strapi media to shared storage.
+- [x] Install PostgreSQL driver and prepare environment-driven connection settings.
+- [ ] Provision a destination and migrate/verify content with a backup (hosting credentials required).
+- [x] Add optional S3-compatible upload provider and public media/CSP configuration.
+- [ ] Migrate existing media to selected shared storage and verify delivery (storage account required).
 - [ ] Decide hosting provider for Strapi.
 - [ ] Decide hosting provider for Next.js.
 
@@ -183,6 +206,19 @@ Strapi:    Railway
 Database:  Railway Postgres, Neon, or Supabase Postgres
 Media:     Cloudinary or S3-compatible storage
 ```
+
+## Verification And Remaining Inputs
+
+- All 14 code tests pass: gallery motion, full pagination, CMS outage fallback, editorial deletion, draft isolation and disabled/failed/escaped inquiry notifications. Frontend lint, both TypeScript checks and both production builds pass.
+- Live checks: all 10 sections render, optimized media responds 200, preview banner/exit work, invalid secrets/external redirects and unsigned refresh are rejected. Authenticated refresh verified locally.
+- All 10 original sections and 13 gallery / 7 features / 2 press / 9 comments remain published locally.
+- Site Settings and the original logo are additionally published; bootstrap is restored and does not reseed editor content.
+- Public cache uses Next Data Cache in production and a process-local last-success fallback. A cold process without cache cannot recover old content; media still requires its host.
+- SMTP delivery and S3/Postgres migration are prepared, not activated or represented as tested services.
+- Cross-device visual review remains open; browser interaction during this run was interrupted by concurrent user activity.
+- Required user inputs: hosting/domain/storage accounts, email sender/recipient, real phone/availability, approved testimonials/copyright.
+- Process remains intentionally excluded because its design block is commented out. It has not been added to the visible site.
+- Deployment runbook: `docs/DEPLOYMENT.md`; CI checks: `.github/workflows/checks.yml`.
 
 ## Section Notes
 
@@ -215,7 +251,7 @@ Gold:             #C9A050
 Dim gold:         #8A6B2E
 Bone:             #F0EDE8
 Stone:            #A89880
-Work background:  #181A1B
+News background:  #2C3A46
 Contact blue:     #2C3A46
 Press cream:      #F7F3ED
 White:            #FFFFFF
@@ -259,6 +295,21 @@ cd apps/web
 npm run lint
 npx next build --webpack
 ```
+
+## Color Palettes — Implemented
+
+- [x] `Color Palettes` collection with draft/publish and optional structured `theme.section-colors` groups for all eleven areas (header plus ten homepage sections).
+- [x] `Site Settings.activePalette` relation selects the site-wide palette; server-rendered CSS variables also apply to `/news` and draft preview.
+- [x] Primary and Secondary seeded and published locally; Primary is the initial default; subsequent editor selections are preserved. Additional palettes can be created/duplicated and selected without code changes.
+- [x] Palette colors override legacy Homepage Section color fields. Empty values retain exact original CSS fallbacks; no content, media, geometry or interactions are replaced.
+- [x] Background gradients, text/accent/surface colors, controls, testimonial fade masks and showroom photo shading use palette variables. Hex validation prevents arbitrary CSS values.
+- [x] Tests cover custom palette names, all sections, gradient serialization, invalid values, published/draft API reads and legacy-color precedence.
+- [x] README includes the editing/publishing workflow. The seed is explicit and idempotent; the normal CMS bootstrap does not overwrite palettes.
+- [x] Validation: 19 frontend/unit tests pass, lint and TypeScript checks pass, and both production builds pass. Switching the actual published Strapi selection to Secondary changed the rendered founder/news colors; Primary was restored afterward. An isolated browser verified custom backgrounds/headings/cards/buttons at 1440px and no horizontal overflow at 390px. This validates the palette work; the broader full-site accessibility/content review remains separate.
+
+Secondary colors are extracted from the local HTML. Its alternate press and showroom **layouts** remain outside this colors-only feature. Blank fields deliberately retain the current design details. After publishing palette edits or changing `activePalette`, the open page synchronizes colors on focus/visibility/pageshow and every 30 visible seconds (5 in preview). `/api/color-palette` bypasses the page cache and respects draft cookies. Updating colors preserves DOM state, form inputs and gallery interactions; failed requests retain the current palette.
+
+Palette follow-up: compared both modes by rendering the local HTML, found and corrected the missed Secondary gallery background (`#0A0A0A`) in the seed and local published entry. Featured In, testimonials, contact and footer have the same colors in both original modes. Existing Secondary selection was retained. Added regression tests for fresh production reads, stale variable removal and the gallery seed. Follow-up verification: 22 tests, lint and production build pass. An isolated browser confirmed switching an open tab on focus without losing form input, and retaining colors during a CMS error.
 
 ## Local SQLite Data Migration — Implemented
 

@@ -14,7 +14,7 @@ export function Showroom({ section }: { section: HomepageSection | null }) {
   const details = section.showroom;
   const href = section.buttonHref && /^(#[\w-]+|\/(?!\/)|https?:\/\/)/.test(section.buttonHref) ? section.buttonHref : '#contact';
   return <section id="showroom" aria-labelledby="showroom-title">
-    <Image className="showroom-bg" src={image} alt={section.image?.alternativeText || 'Bott Monument showroom interior'} width={4031} height={2249} unoptimized />
+    <Image className="showroom-bg" src={image} alt={section.image?.alternativeText || 'Bott Monument showroom interior'} width={4031} height={2249} />
     <div className="showroom-content">
       <div className="showroom-panel">
         <div className="showroom-kicker"><p>{section.eyebrow}</p></div>

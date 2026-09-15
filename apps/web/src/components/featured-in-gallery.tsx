@@ -19,12 +19,12 @@ export function FeaturedInGallery({ section, covers }: { section: HomepageSectio
       style={{ "--rot": `${[-4, -3, -2, -3, -4, -5][index % 6]}deg` } as CSSProperties}
       aria-label={`View ${cover.title}`} aria-pressed={selected.documentId === cover.documentId}
       onClick={() => setSelectedId(cover.documentId)}>
-      <Image src={cover.src} alt={cover.image?.alternativeText || cover.title} width={165} height={220} unoptimized />
+      <Image src={cover.src} alt={cover.image?.alternativeText || cover.title} width={165} height={220} />
     </button>
   );
 
   return <section id="press-clippings" aria-labelledby="featured-in-title"
-    style={{ "--press-background": section.backgroundColor || undefined, "--press-text": section.textColor || undefined } as CSSProperties}>
+    style={{ "--section-press-background": section.backgroundColor || undefined, "--section-press-text": section.textColor || undefined } as CSSProperties}>
     <div className="press-clippings-inner">
       <div className="press-clippings-header">
         <p className="press-clippings-eyebrow">{section.eyebrow}</p>
@@ -34,7 +34,7 @@ export function FeaturedInGallery({ section, covers }: { section: HomepageSectio
       <div className="ptw-wrap">
         <div className="ptw-side ptw-left">{sides.slice(0, middle).map(thumbnail)}</div>
         <a className="ptw-center-frame" href={selected.src} target="_blank" rel="noopener noreferrer" aria-label={`Open full image: ${selected.title}`}>
-          <Image key={selected.documentId} src={selected.src} alt={selected.image?.alternativeText || selected.title} width={600} height={800} unoptimized />
+          <Image key={selected.documentId} src={selected.src} alt={selected.image?.alternativeText || selected.title} width={600} height={800} />
         </a>
         <div className="ptw-caption" aria-live="polite" aria-atomic="true">
           <p className="ptw-kicker">{section.eyebrow}</p>

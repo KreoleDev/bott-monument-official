@@ -13,8 +13,8 @@ export function Hero({ section }: HeroProps) {
     <section
       id="hero"
       style={{
-        backgroundColor: section?.backgroundColor ?? "#0A0A0A",
-        color: section?.textColor ?? "#F0EDE8",
+        background: `var(--palette-hero-background, ${section?.backgroundColor || "#0A0A0A"})`,
+        color: `var(--palette-hero-text-color, ${section?.textColor || "#F0EDE8"})`,
       }}
     >
       <div className="hero-bg" />

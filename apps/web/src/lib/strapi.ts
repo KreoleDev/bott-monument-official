@@ -1,3 +1,4 @@
+import { cmsRead, cmsQuery } from "./cms-cache";
 export type ContactDetails = {
  titleEmphasis: string; counterText: string; totalCommissions: number; remainingCommissions: number;
  inquiryLabel: string; inquiryTypes: string; namePlaceholder: string; emailPlaceholder: string; messagePlaceholder: string;
@@ -41,15 +42,7 @@ export type StrapiMedia = {
   alternativeText: string | null;
 };
 
-type GraphQLResponse<T> = {
-  data?: T;
-  errors?: { message: string }[];
-};
-
-const HOMEPAGE_SECTION_QUERY = `
-  query HomepageSection($sectionKey: String!) {
-    homepageSections(filters: { sectionKey: { eq: $sectionKey } }) {
-      sectionKey
+export const HOMEPAGE_FIELDS = `      sectionKey
       contact { titleEmphasis counterText totalCommissions remainingCommissions inquiryLabel inquiryTypes namePlaceholder emailPlaceholder messagePlaceholder note successMessage phone studio email }
       footer { brand copyright tagline taglineEmphasis }
       showroom { visitTitle location appointment hours statistics { id value label } }
@@ -73,72 +66,25 @@ const HOMEPAGE_SECTION_QUERY = `
       video {
         url
         alternativeText
-      }
-    }
-  }
-`;
-
-function getStrapiConfig() {
-  const url = process.env.STRAPI_URL;
-  const token = process.env.STRAPI_API_TOKEN;
-
-  if (!url || !token) {
-    throw new Error("Missing STRAPI_URL or STRAPI_API_TOKEN");
-  }
-
-  return {
-    token,
-    url: url.replace(/\/$/, ""),
-  };
-}
+      }`;
 
 export function getStrapiMediaUrl(media?: StrapiMedia | null) {
-  if (!media?.url) {
-    return null;
-  }
-
-  if (media.url.startsWith("http")) {
-    return media.url;
-  }
-
-  const { url } = getStrapiConfig();
+  if (!media?.url) return null;
+  if (/^https?:\/\//i.test(media.url)) return media.url;
+  const url=process.env.STRAPI_URL?.replace(/\/$/,'');
+  if (!url || !media.url.startsWith('/') || media.url.startsWith('//')) return null;
   return `${url}${media.url}`;
 }
 
-export async function getHomepageSection(sectionKey: string) {
-  const { token, url } = getStrapiConfig();
-
-  try {
-    const response = await fetch(`${url}/graphql`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        query: HOMEPAGE_SECTION_QUERY,
-        variables: { sectionKey },
-      }),
-      ...(process.env.NODE_ENV === "development"
-        ? { cache: "no-store" as const }
-        : { next: { revalidate: 60 } }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Strapi request failed: ${response.status}`);
-    }
-
-    const result = (await response.json()) as GraphQLResponse<{
-      homepageSections: HomepageSection[];
-    }>;
-
-    if (result.errors?.length) {
-      throw new Error(result.errors.map((error) => error.message).join(", "));
-    }
-
-    return result.data?.homepageSections[0] ?? null;
-  } catch (error) {
-    console.warn(`Could not fetch ${sectionKey} from Strapi`, error);
-    return null;
-  }
+export async function getHomepageSections(preview=false): Promise<HomepageSection[]> {
+  return cmsRead('homepage-sections',async()=>{
+    const data=await cmsQuery<{homepageSections:HomepageSection[]}>(`query HomepageSections {
+      homepageSections(status: ${preview?'DRAFT':'PUBLISHED'}, sort: ["sortOrder:asc", "sectionKey:asc"], pagination: {limit:100}) { ${HOMEPAGE_FIELDS} }
+    }`,{},preview);
+    if(!Array.isArray(data.homepageSections)) throw new Error("Invalid homepage sections");
+    return data.homepageSections;
+  },[],preview);
+}
+export async function getHomepageSection(sectionKey: string, preview=false) {
+  return (await getHomepageSections(preview)).find(section=>section.sectionKey===sectionKey) ?? null;
 }

@@ -1,13 +1,15 @@
 "use client";
 
 import Image from 'next/image';
-import { useEffect, useRef, type CSSProperties } from 'react';
+import {ImageLightbox} from './image-lightbox';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { HomepageSection } from '@/lib/strapi';
 import type { GalleryItem } from '@/lib/gallery';
 import { startGalleryMotion } from './gallery-motion';
 import './gallery.css';
 
 export function GalleryCarousel({ section, items }: { section: HomepageSection; items: (GalleryItem & { src: string })[] }) {
+  const [lightbox,setLightbox]=useState<number|null>(null);
   const viewport = useRef<HTMLDivElement>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   const savedOverflow = useRef<string | null>(null);
@@ -53,13 +55,15 @@ export function GalleryCarousel({ section, items }: { section: HomepageSection; 
           {items.map((item, index) => <div key={item.documentId} className="cg-item" role="group" aria-roledescription="slide" aria-label={`${index + 1} of ${items.length}: ${item.title}`}
             style={{ transform: `rotateY(${index * 360 / items.length}deg) translateZ(560px)` }}>
             <div className="cg-card">
-              <Image src={item.src} alt={item.image?.alternativeText || item.title} width={560} height={720} unoptimized draggable={false} style={{ objectPosition: item.imagePosition || 'center center' }} />
+              <button type="button" className="cg-view-image" aria-label={`View ${item.title}`} onPointerDown={event=>event.stopPropagation()} onClick={()=>setLightbox(index)}>↗</button>
+              <Image src={item.src} alt={item.image?.alternativeText || item.title} width={560} height={720} draggable={false} style={{ objectPosition: item.imagePosition || 'center center' }} />
               <div className="cg-caption"><h3>{item.title}</h3>{item.subtitle && <em>{item.subtitle}</em>}</div>
             </div>
           </div>)}
         </div>
       </div>
     </div>
+    {lightbox!==null && <ImageLightbox images={items.map(item=>({src:item.src,title:item.title,alt:item.image?.alternativeText || item.title}))} index={lightbox} onChange={setLightbox} onClose={()=>setLightbox(null)}/> }
     {access && <dialog ref={dialog} id="magAccessModal" className="mag-access-modal" aria-labelledby="magAccessTitle" aria-describedby="magAccessCopy" onClose={restoreScroll} onClick={e => { if (e.target === e.currentTarget) closeAccess(); }}>
       <div className="mag-access-card">
         <button className="mag-access-close" type="button" aria-label="Close" onClick={closeAccess}>✕</button>

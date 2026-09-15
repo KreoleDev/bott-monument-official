@@ -30,8 +30,8 @@ export function Founder({ section }: FounderProps) {
         <div
           className="press-page press-page-gold-bg"
           style={{
-            "--founder-background": section?.backgroundColor || undefined,
-            "--founder-text": section?.textColor || undefined,
+            "--section-founder-background": section?.backgroundColor || undefined,
+            "--section-founder-text": section?.textColor || undefined,
           } as CSSProperties}
         >
           <div className="press-page-inner">
@@ -45,7 +45,7 @@ export function Founder({ section }: FounderProps) {
                     width={1024}
                     height={1024}
                     priority
-                    unoptimized={imageUrl.startsWith("http://") || imageUrl.startsWith("https://")}
+                   ={imageUrl.startsWith("http://") || imageUrl.startsWith("https://")}
                   />
                 </div>
               </div>

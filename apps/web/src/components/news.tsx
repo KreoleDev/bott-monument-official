@@ -19,7 +19,7 @@ export function News({ items, section, all = false }: NewsProps) {
 
   return (
     <section id="work" className="creations-section" aria-labelledby="news-title"
-      style={{ "--news-background": section?.backgroundColor || undefined, "--news-text": section?.textColor || undefined } as CSSProperties}>
+      style={{ "--section-news-background": section?.backgroundColor || undefined, "--section-news-text": section?.textColor || undefined } as CSSProperties}>
       <div className="creations-header"><div /></div>
       <div className="luxury-creations-layout">
         <div className="creations-left gallery-left">
@@ -50,7 +50,7 @@ export function News({ items, section, all = false }: NewsProps) {
             const image = pressImageUrl(story);
             const date = pressDate(story.date);
             const content = <>
-              {image && <div className="wpp-thumb"><Image src={image} alt={story.image?.alternativeText || story.source} width={120} height={120} unoptimized={image.startsWith("http")} /></div>}
+              {image && <div className="wpp-thumb"><Image src={image} alt={story.image?.alternativeText || story.source} width={120} height={120} /></div>}
               <div className="wpp-text">
                 <p className="wpp-pub">{story.source}</p>
                 <h4 className="wpp-headline">{story.title}</h4>

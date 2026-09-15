@@ -1,55 +1,34 @@
-import {
-  Showroom,
-  Contact,
-  Footer,
-  Gallery,
-  Header,
-  Hero,
-  MarqueeStrip,
-  Founder,
-  News,
-  Testimonials,
-} from "@/components";
-import { getHomepageSection } from "@/lib/strapi";
-import { getComments } from "@/lib/comments";
-import { getGalleryItems } from "@/lib/gallery";
-import { getFeatures } from "@/lib/features";
-import { getPressItems } from "@/lib/news";
-import { FeaturedIn } from "@/components/featured-in";
+import {draftMode} from 'next/headers';
+import {Header,Hero,MarqueeStrip,Founder,News,Gallery,Showroom,Testimonials,Contact,Footer} from '@/components';
+import {FeaturedIn} from '@/components/featured-in';
+import {getHomepageSections,getStrapiMediaUrl} from '@/lib/strapi';
+import {getComments} from '@/lib/comments';
+import {getGalleryItems} from '@/lib/gallery';
+import {getFeatures} from '@/lib/features';
+import {getPressItems} from '@/lib/news';
+import {getSiteSettings} from '@/lib/site-settings';
+import {ScrollReveal} from '@/components/scroll-reveal';
+import {PreviewBanner} from '@/components/preview-banner';
 
 export default async function Home() {
-  const [hero, marquee, founder, news, pressItems, featuredIn, features, gallery, galleryItems, showroom, testimonials, comments, contact, footer] = await Promise.all([
-    getHomepageSection("hero"),
-    getHomepageSection("marquee"),
-    getHomepageSection("founder"),
-    getHomepageSection("news"),
-    getPressItems(),
-    getHomepageSection("featured-in"),
-    getFeatures(),
-    getHomepageSection("gallery"),
-    getGalleryItems(),
-    getHomepageSection("showroom"),
-    getHomepageSection("testimonials"),
-    getComments(),
-    getHomepageSection("contact"),
-    getHomepageSection("footer"),
-  ]);
-
-  return (
-    <>
-      <Header />
-      <main>
-        <Hero section={hero} />
-        <MarqueeStrip section={marquee} />
-        <Founder section={founder} />
-        <News section={news} items={pressItems} />
-        <FeaturedIn section={featuredIn} features={features} />
-        <Gallery section={gallery} items={galleryItems} />
-        <Showroom section={showroom} />
-        <Testimonials section={testimonials} comments={comments} />
-        <Contact section={contact} />
-      </main>
-      <Footer section={footer} />
-    </>
-  );
+ const preview=(await draftMode()).isEnabled;
+ const [sections,comments,items,features,press,settings]=await Promise.all([getHomepageSections(preview),getComments(preview),getGalleryItems(preview),getFeatures(preview),getPressItems(preview),getSiteSettings(preview)]);
+ const footer=sections.find(s=>s.sectionKey==='footer') || null;
+ return <><Header logo={getStrapiMediaUrl(settings?.logo)} siteName={settings?.siteName || undefined}/><main id="main-content">
+ {sections.map(section=>{
+  switch(section.sectionKey) {
+   case 'hero':return <Hero key="hero" section={section}/>;
+   case 'marquee':return <MarqueeStrip key="marquee" section={section}/>;
+   case 'founder':return <Founder key="founder" section={section}/>;
+   case 'news':return <News key="news" section={section} items={press}/>;
+   case 'featured-in':return <FeaturedIn key="featured-in" section={section} features={features}/>;
+   case 'gallery':return <Gallery key="gallery" section={section} items={items}/>;
+   case 'showroom':return <Showroom key="showroom" section={section}/>;
+   case 'testimonials':return <Testimonials key="testimonials" section={section} comments={comments}/>;
+   case 'contact':return <Contact key="contact" section={section}/>;
+   default:return null;
+  }
+ })}
+ {!sections.length && <section className="cms-unavailable"><h1>Bott Monument</h1><p>Our site is temporarily unavailable. Please try again shortly.</p></section>}
+ </main><Footer section={footer} settings={settings}/><ScrollReveal/>{preview && <PreviewBanner/>}</>;
 }
