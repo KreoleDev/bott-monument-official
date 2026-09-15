@@ -1,0 +1,78 @@
+{
+  "kind": "collectionType",
+  "collectionName": "color_palettes",
+  "info": {
+    "singularName": "color-palette",
+    "pluralName": "color-palettes",
+    "displayName": "Color Palettes",
+    "description": "Publish a palette, then select it in Site Settings. Duplicate Primary to create another palette. Empty colors preserve the original design."
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "header": {
+      "type": "component",
+      "repeatable": false,
+      "component": "theme.section-colors"
+    },
+    "hero": {
+      "type": "component",
+      "repeatable": false,
+      "component": "theme.section-colors"
+    },
+    "marquee": {
+      "type": "component",
+      "repeatable": false,
+      "component": "theme.section-colors"
+    },
+    "founder": {
+      "type": "component",
+      "repeatable": false,
+      "component": "theme.section-colors"
+    },
+    "news": {
+      "type": "component",
+      "repeatable": false,
+      "component": "theme.section-colors"
+    },
+    "featuredIn": {
+      "type": "component",
+      "repeatable": false,
+      "component": "theme.section-colors"
+    },
+    "gallery": {
+      "type": "component",
+      "repeatable": false,
+      "component": "theme.section-colors"
+    },
+    "showroom": {
+      "type": "component",
+      "repeatable": false,
+      "component": "theme.section-colors"
+    },
+    "testimonials": {
+      "type": "component",
+      "repeatable": false,
+      "component": "theme.section-colors"
+    },
+    "contact": {
+      "type": "component",
+      "repeatable": false,
+      "component": "theme.section-colors"
+    },
+    "footer": {
+      "type": "component",
+      "repeatable": false,
+      "component": "theme.section-colors"
+    }
+  }
+}

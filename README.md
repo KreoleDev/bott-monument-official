@@ -1,5 +1,29 @@
 # Bott Monument
 
+## Primeiro, depois do pull: migrar os dados para o SQLite local
+
+O export e a chave estão em `handoff/` neste repositório. Depois de fazer pull
+do `dev`, para o Strapi e executa a partir da raiz do projeto:
+
+```bash
+cd apps/cms
+npm ci
+# Backup local: escolhe e guarda uma chave própria quando o CLI pedir.
+npm run strapi -- export --file ./exports/before-data-migration
+# Importar o conteúdo e as imagens recebidos pelo Git.
+npm run strapi -- import --file ../../handoff/bott-content.tar.gz.enc --key "$(cat ../../handoff/bott-content-key.txt)" --only content,files --exclude-content-types api::inquiry.inquiry
+npm run develop
+```
+
+**Confirma a importação apenas depois do backup: substitui o conteúdo e os uploads
+locais, não faz merge.** Mantém as inquiries existentes, `.env`, admins, tokens
+e configuração locais. Não é necessário recriar o projeto nem trocar de SQLite.
+
+O snapshot não inclui inquiries. O repositório é público: o export e a chave
+podem ser lidos por qualquer pessoa. [Detalhes da migração](docs/LOCAL_SQLITE_HANDOFF.md).
+
+---
+
 Site oficial da Bott Monument: memoriais em pedra, feitos à medida.
 
 O design visual já existe. Este repositório reconstrói esse design como produto

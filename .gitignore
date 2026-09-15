@@ -18,6 +18,9 @@ out/
 build/
 dist/
 exports/
+handoff/*
+!handoff/bott-content.tar.gz.enc
+!handoff/bott-content-key.txt
 public/uploads/*
 !public/uploads/.gitkeep
 

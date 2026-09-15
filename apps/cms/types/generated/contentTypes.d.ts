@@ -443,6 +443,50 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiColorPaletteColorPalette
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'color_palettes';
+  info: {
+    description: 'Publish a palette, then select it in Site Settings. Duplicate Primary to create another palette. Empty colors preserve the original design.';
+    displayName: 'Color Palettes';
+    pluralName: 'color-palettes';
+    singularName: 'color-palette';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    contact: Schema.Attribute.Component<'theme.section-colors', false>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.Text;
+    featuredIn: Schema.Attribute.Component<'theme.section-colors', false>;
+    footer: Schema.Attribute.Component<'theme.section-colors', false>;
+    founder: Schema.Attribute.Component<'theme.section-colors', false>;
+    gallery: Schema.Attribute.Component<'theme.section-colors', false>;
+    header: Schema.Attribute.Component<'theme.section-colors', false>;
+    hero: Schema.Attribute.Component<'theme.section-colors', false>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::color-palette.color-palette'
+    > &
+      Schema.Attribute.Private;
+    marquee: Schema.Attribute.Component<'theme.section-colors', false>;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    news: Schema.Attribute.Component<'theme.section-colors', false>;
+    publishedAt: Schema.Attribute.DateTime;
+    showroom: Schema.Attribute.Component<'theme.section-colors', false>;
+    testimonials: Schema.Attribute.Component<'theme.section-colors', false>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiCommentComment extends Struct.CollectionTypeSchema {
   collectionName: 'comments';
   info: {
@@ -628,7 +672,7 @@ export interface ApiHomepageSectionHomepageSection
       Schema.Attribute.Unique &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
-          localized: true;
+          localized: false;
         };
       }>;
     showroom: Schema.Attribute.Component<'showroom.details', false>;
@@ -744,6 +788,45 @@ export interface ApiPressItemPressItem extends Struct.CollectionTypeSchema {
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     url: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface ApiSiteSettingSiteSetting extends Struct.SingleTypeSchema {
+  collectionName: 'site_settings';
+  info: {
+    displayName: 'Site Settings';
+    pluralName: 'site-settings';
+    singularName: 'site-setting';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    activePalette: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::color-palette.color-palette'
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    facebookUrl: Schema.Attribute.String;
+    instagramUrl: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::site-setting.site-setting'
+    > &
+      Schema.Attribute.Private;
+    logo: Schema.Attribute.Media<'images'>;
+    publishedAt: Schema.Attribute.DateTime;
+    seoDescription: Schema.Attribute.Text;
+    seoTitle: Schema.Attribute.String;
+    siteName: Schema.Attribute.String;
+    siteUrl: Schema.Attribute.String;
+    socialImage: Schema.Attribute.Media<'images'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
   };
 }
 
@@ -1258,12 +1341,14 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::color-palette.color-palette': ApiColorPaletteColorPalette;
       'api::comment.comment': ApiCommentComment;
       'api::feature.feature': ApiFeatureFeature;
       'api::gallery-item.gallery-item': ApiGalleryItemGalleryItem;
       'api::homepage-section.homepage-section': ApiHomepageSectionHomepageSection;
       'api::inquiry.inquiry': ApiInquiryInquiry;
       'api::press-item.press-item': ApiPressItemPressItem;
+      'api::site-setting.site-setting': ApiSiteSettingSiteSetting;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

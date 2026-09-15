@@ -260,6 +260,21 @@ npm run lint
 npx next build --webpack
 ```
 
+## Local SQLite Data Migration — Implemented
+
+The team receives the content/media export and its key through Git, then imports
+into existing SQLite using Strapi's built-in CLI. The README starts with the
+commands. Back up the destination first: import replaces content/media rather
+than merging records, while preserving local inquiries and environment/admin/API
+configuration. The repository is public, so inquiries are excluded from the snapshot.
+
+- [x] Prepared the data-only export and key in `handoff/`, with Git ignore exceptions for exactly those two files.
+- [x] Exported from an isolated SQLite snapshot without stopping the user's CMS.
+- [x] Verified the public snapshot restores 130 entities, 197 links and 120 media files using the CMS schemas included in this commit; publication states, document IDs, components, selected palette and all media hashes match.
+- [x] Tested import into an existing SQLite copy: its inquiry, admin accounts, API tokens/permissions and webhook configuration were preserved. The user's running CMS was unchanged.
+- [x] Source admin credentials, API tokens and webhooks are excluded.
+- [x] [SQLite migration guide](docs/LOCAL_SQLITE_HANDOFF.md) includes backup/import commands for the existing checkout.
+
 ## Rules For The Team
 
 - Do not commit `.env` files.

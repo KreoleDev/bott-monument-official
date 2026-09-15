@@ -91,6 +91,38 @@ export interface ShowroomDetails extends Struct.ComponentSchema {
   };
 }
 
+export interface ThemeSectionColors extends Struct.ComponentSchema {
+  collectionName: 'components_theme_section_colors';
+  info: {
+    description: 'Optional #RRGGBB colors. Empty fields retain the original design. End/middle colors create a gradient; overlay is the showroom photo shade. Surface colors control cards and dialogs; button colors control actions.';
+    displayName: 'Section Colors';
+  };
+  attributes: {
+    accentColor: Schema.Attribute.String;
+    avatarColor: Schema.Attribute.String;
+    backgroundColor: Schema.Attribute.String;
+    backgroundEndColor: Schema.Attribute.String;
+    backgroundMiddleColor: Schema.Attribute.String;
+    borderColor: Schema.Attribute.String;
+    buttonColor: Schema.Attribute.String;
+    buttonTextColor: Schema.Attribute.String;
+    gradientAngle: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 360;
+          min: 0;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<120>;
+    mutedTextColor: Schema.Attribute.String;
+    overlayColor: Schema.Attribute.String;
+    surfaceColor: Schema.Attribute.String;
+    surfaceTextColor: Schema.Attribute.String;
+    textColor: Schema.Attribute.String;
+  };
+}
+
 declare module '@strapi/strapi' {
   export namespace Public {
     export interface ComponentSchemas {
@@ -99,6 +131,7 @@ declare module '@strapi/strapi' {
       'gallery.access': GalleryAccess;
       'shared.stat': SharedStat;
       'showroom.details': ShowroomDetails;
+      'theme.section-colors': ThemeSectionColors;
     }
   }
 }
