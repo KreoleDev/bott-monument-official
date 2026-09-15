@@ -38,6 +38,31 @@ bott-monument-official/
 - Main Strapi content type: `Homepage Section`
 - Strapi schema file: `apps/cms/src/api/homepage-section/content-types/homepage-section/schema.json`
 - Next Strapi client: `apps/web/src/lib/strapi.ts`
+- Working conventions: `README.md`
+
+Do not ship design-only controls from the HTML (Primary/Secondary mode, headline switchers, gallery layout pickers). Those are mockup tools, not product.
+
+## Design To Product Map
+
+Use these `sectionKey` values and DOM ids. Do not invent parallel names.
+
+| Design block | HTML id | `sectionKey` | Next component today |
+| --- | --- | --- | --- |
+| Nav | `#navbar` | — (Site Settings logo) | `Header` (partial, wrong anchors) |
+| Hero | `#hero` | `hero` | `Hero` (Strapi, incomplete) |
+| Marquee | `#marqueeStrip` | `marquee` | missing |
+| Founder intro (Drew) | `.page2-wrap` | `founder-intro` | `Philosophy` (placeholder, rename) |
+| Masterpieces / work | `#work` | `work` | missing |
+| Press | `#press-clippings` | `press` | missing |
+| Gallery | `#magazine` | `gallery` | `Gallery` (placeholder) |
+| Showroom / about | `#founder` | `founder` | `About` (placeholder, id `#about`) |
+| Testimonials | `#testimonials` | `testimonials` | `Testimonials` (placeholder) |
+| Contact | `#contact` | `contact` | `Contact` (placeholder, no form) |
+| Footer | `footer` | `footer` | `Footer` (placeholder) |
+
+Process (`ART PROCESS FEATURE`) is commented out in the design. Keep it out of MVP.
+
+Nav anchors must match the HTML: `#work`, `#magazine`, `#contact`, `#founder`.
 
 ## Done
 
@@ -52,61 +77,112 @@ bott-monument-official/
 - [x] Added one frontend component per section.
 - [x] Connected the frontend hero to Strapi data.
 - [x] Added Strapi API configuration for CORS and GraphQL limits.
+- [x] Added local setup instructions and Strapi/Next conventions to `README.md`.
+- [x] Keep GraphQL token server-side only (`STRAPI_URL` / `STRAPI_API_TOKEN`, no `NEXT_PUBLIC_`).
 
-## Next
+## MVP
+
+Ship a site that matches the published design and is editable in Strapi. Do not start preview, Postgres, or hosting until this list is done.
 
 ### 1. Finish Backend Content Model
 
+- [ ] Stop localizing `sectionKey`. Identifiers must stay stable across locales.
 - [ ] Add `Gallery Item` collection type.
   Fields: `title`, `category`, `image`, `description`, `sortOrder`, `featured`.
-
-- [ ] Add `Process Step` collection type.
-  Fields: `stepNumber`, `title`, `description`, `sortOrder`.
-
 - [ ] Add `Testimonial` collection type.
   Fields: `name`, `quote`, `location`, `image`, `sortOrder`.
-
 - [ ] Add `Press Item` collection type.
   Fields: `title`, `source`, `date`, `image`, `url`, `sortOrder`.
-
+- [ ] Add `Inquiry` collection type for the contact form.
+  Fields: `name`, `email`, `intent`, `message`, `status`.
 - [ ] Add `Site Settings` single type.
-  Fields: `logo`, `phone`, `email`, `address`, `facebookUrl`, `instagramUrl`, `seoTitle`, `seoDescription`.
+  Fields: `logo`, `phone`, `email`, `address`, `facebookUrl`, `instagramUrl`, `seoTitle`, `seoDescription`, `commissionsRemaining`, `commissionsTotal`.
 
 ### 2. Add Homepage Section Entries
 
-Create and publish these entries in Strapi:
+Create and publish these entries in Strapi. Copy text, colors, images, and videos from the design file.
 
-- [ ] `philosophy`
-- [ ] `process`
+- [x] `hero`
+- [ ] `marquee`
+- [ ] `founder-intro`
+- [ ] `work`
+- [ ] `press`
 - [ ] `gallery`
-- [ ] `about`
+- [ ] `founder`
 - [ ] `testimonials`
 - [ ] `contact`
 - [ ] `footer`
 
-Use the original design file for text, colors, images, and videos.
-
 ### 3. Frontend Foundation
 
+- [x] Add local setup instructions to `README.md`.
 - [ ] Add shared color constants from the design.
+- [ ] Load design fonts with `next/font`: Cormorant Garamond, Montserrat, Alex Brush.
 - [ ] Add fallback content for every section.
-- [ ] Update `next.config.ts` for Strapi media URLs.
+- [ ] Update `next.config.ts` `images.remotePatterns` for Strapi media URLs.
 - [ ] Query all homepage sections ordered by `sortOrder`.
+- [ ] Drive `layout.tsx` metadata from Site Settings.
 - [ ] Replace temporary section placeholders with real layouts.
-- [ ] Add local setup instructions to `README.md`.
+- [ ] Rename `Philosophy` → founder intro and `About` → founder/showroom.
+- [ ] Fix header anchors to `#work`, `#magazine`, `#contact`, `#founder`.
+- [ ] Add mobile navigation.
 
 ### 4. Build The Sections
 
-- [ ] Header/navigation
+Header and Hero exist but are not the finished design. Rebuild against the HTML.
+
+- [ ] Header/navigation (desktop + mobile)
 - [ ] Hero
-- [ ] Masterpieces/work
-- [ ] Gallery
-- [ ] About/founder
-- [ ] Process
+- [ ] Marquee
+- [ ] Founder intro (Drew / page 2)
+- [ ] Masterpieces/work (`#work`)
+- [ ] Press (`#press-clippings`)
+- [ ] Gallery (`#magazine`), including lightbox
+- [ ] Gallery access modal ("Want to see the full gallery?")
+- [ ] About/founder showroom (`#founder`, stats, visit CTA)
 - [ ] Testimonials
-- [ ] Press
-- [ ] Contact
+- [ ] Contact copy + commission counter
+- [ ] Contact form (intent pills, name, email, message) → Strapi `Inquiry`
 - [ ] Footer
+- [ ] Scroll reveal / motion from the original design
+
+## Later — Not MVP
+
+### Process
+
+The process block is commented out in `bott-monument-design/index.html`. Add only if the client asks for it.
+
+- [ ] Add `Process Step` collection type.
+  Fields: `stepNumber`, `title`, `description`, `sortOrder`.
+- [ ] Add `process` homepage section entry.
+- [ ] Build Process section.
+
+### API And Preview
+
+- [ ] Add Next.js draft preview route.
+- [ ] Configure Strapi preview URL.
+- [ ] Add webhook from Strapi to Next.js for revalidation.
+- [ ] Decide which pages use static generation and which use dynamic rendering.
+
+### Team Collaboration And Hosting
+
+Local SQLite is okay for proof of concept, but not for real team content work.
+
+Before serious content entry:
+
+- [ ] Move Strapi database to hosted PostgreSQL.
+- [ ] Move Strapi media to shared storage.
+- [ ] Decide hosting provider for Strapi.
+- [ ] Decide hosting provider for Next.js.
+
+Likely production shape:
+
+```text
+Next.js:   Vercel or similar
+Strapi:    Railway
+Database:  Railway Postgres, Neon, or Supabase Postgres
+Media:     Cloudinary or S3-compatible storage
+```
 
 ## Section Notes
 
@@ -145,32 +221,12 @@ Press cream:      #F7F3ED
 White:            #FFFFFF
 ```
 
-## API And Preview Later
-
-- [ ] Add Next.js draft preview route.
-- [ ] Configure Strapi preview URL.
-- [ ] Add webhook from Strapi to Next.js for revalidation.
-- [ ] Decide which pages use static generation and which use dynamic rendering.
-- [ ] Keep GraphQL token server-side only.
-
-## Team Collaboration Later
-
-Local SQLite is okay for proof of concept, but not for real team content work.
-
-Before serious content entry:
-
-- [ ] Move Strapi database to hosted PostgreSQL.
-- [ ] Move Strapi media to shared storage.
-- [ ] Decide hosting provider for Strapi.
-- [ ] Decide hosting provider for Next.js.
-
-Likely production shape:
+### Typography From Design
 
 ```text
-Next.js:   Vercel or similar
-Strapi:    Railway
-Database:  Railway Postgres, Neon, or Supabase Postgres
-Media:     Cloudinary or S3-compatible storage
+Display:  Cormorant Garamond
+Utility:  Montserrat
+Script:   Alex Brush
 ```
 
 ## Useful Commands
@@ -213,3 +269,5 @@ npx next build --webpack
 - Update this file when a task is finished.
 - Keep editable content in Strapi.
 - Keep layout, animation, and design behavior in Next.js.
+- Match `sectionKey` and anchor ids to the design map above.
+- Do not port design-only switchers into the Next app.
