@@ -26,8 +26,9 @@ bott-monument-official/
 - Strapi CMS for editable content and media.
 - GraphQL API from Strapi.
 - Next.js frontend for layout, design, animations, and rendering.
-- Local SQLite for now.
+- Local SQLite for now (this machine may use Postgres; team handoff is still the SQLite snapshot).
 - Railway likely later for Strapi hosting.
+- Public site language is English only. A second locale is not shipping yet; keep the content model ready for it.
 
 ## Source Of Truth
 
@@ -185,6 +186,51 @@ The process block is commented out in `bott-monument-design/index.html`. Add onl
 - [x] Add authenticated revalidation endpoint and configure local publication webhook.
 - [x] Use cached public homepage/news (60s) and dynamic uncached draft preview/API routes.
 
+### Language
+
+Ship **English only** (`lang="en"`). Do not add a language switcher, `/pt` routes or a second Strapi locale until the client asks. Keep the model ready so adding one language later is content work, not a rebuild.
+
+Already in place:
+
+- Next root layout uses `lang="en"`.
+- Strapi i18n plugin is available. `Homepage Section` is localized; `sectionKey` is not.
+- Visible copy belongs in Strapi. Identifiers, URLs, `sectionKey` and DOM ids stay language-neutral.
+
+When a second language is requested:
+
+- [ ] Confirm the extra locale (likely `pt`) and whether the URL is prefix (`/pt`) or domain.
+- [ ] Add that locale in Strapi **Settings → Internationalization**. Keep `en` as default. Do not duplicate `sectionKey`.
+- [ ] Turn i18n on for remaining editorial types: Gallery, Comments, Press Item, Features, Site Settings. Leave Inquiries, Color Palettes and media unlocalized unless a field is actually language-specific.
+- [ ] Next: locale segment or middleware, `html lang` per locale, GraphQL `locale` / `locale: "en"` default, localized metadata, and a simple language control only if design asks for it.
+- [ ] Translate UI chrome that is still hardcoded in components (nav labels, form buttons, gallery access copy) via Strapi or a small message file — not scattered string edits.
+- [ ] Cache, preview and revalidate must be locale-aware (separate cache keys per locale).
+- [ ] Fallback: missing translation shows English, never an empty section.
+
+Until then the public site stays a single-language English document.
+
+### Plugin review
+
+Review which Strapi plugins and providers are actually needed before production. Remove or leave unused ones disabled so the admin and attack surface stay small.
+
+| Plugin / provider | Why it is here | Needed now? |
+| --- | --- | --- |
+| GraphQL (`@strapi/plugin-graphql`) | Next reads content through GraphQL | **Keep** |
+| Upload (core) | Media library; local disk, optional S3 | **Keep** |
+| i18n (core `@strapi/i18n`) | Homepage Section already localized; second language later | **Keep** — do not strip it |
+| Users & Permissions | Strapi default; public API roles | **Review** — API tokens may be enough; confirm no visitor login |
+| Email + Nodemailer | Inquiry notifications | **Keep code**; enable only with SMTP credentials |
+| S3 upload provider | Production media | **Keep dependency**; unused until `S3_BUCKET` is set |
+| Cloud (`@strapi/plugin-cloud`) | Strapi Cloud deploy/link | **Review** — drop if hosting is Railway/other, not Strapi Cloud |
+| Content Releases (core) | Scheduled publish batches | **Review** — keep only if editors will use releases |
+| Review Workflows (core) | Multi-step editorial approval | **Review** — likely unused for this team size |
+
+- [ ] Decide keep vs remove for Cloud, Content Releases, Review Workflows and Users & Permissions.
+- [ ] If removing: uninstall, drop related env, confirm GraphQL, upload, i18n, preview and inquiry create still work.
+- [ ] Document the final plugin list in `README.md` / `docs/DEPLOYMENT.md`.
+- [ ] Do not add SEO, redirects, or extra i18n plugins unless a gap remains after this review.
+
+Next.js stays lean: App Router, `next/font`, `next/image`. Biome formats; ESLint still lints `apps/web`. No extra Next plugins unless a hosting or i18n task requires one.
+
 ### Team Collaboration And Hosting
 
 Local SQLite is okay for proof of concept, but not for real team content work.
@@ -217,6 +263,8 @@ Media:     Cloudinary or S3-compatible storage
 - SMTP delivery and S3/Postgres migration are prepared, not activated or represented as tested services.
 - Cross-device visual review remains open; browser interaction during this run was interrupted by concurrent user activity.
 - Required user inputs: hosting/domain/storage accounts, email sender/recipient, real phone/availability, approved testimonials/copyright.
+- Public language is English only. A second locale is planned, not implemented.
+- Plugin keep-vs-remove review is open (Cloud, Releases, Review Workflows, Users & Permissions).
 - Process remains intentionally excluded because its design block is commented out. It has not been added to the visible site.
 - Deployment runbook: `docs/DEPLOYMENT.md`; CI checks: `.github/workflows/checks.yml`.
 
@@ -337,3 +385,5 @@ configuration. The repository is public, so inquiries are excluded from the snap
 - Keep layout, animation, and design behavior in Next.js.
 - Match `sectionKey` and anchor ids to the design map above.
 - Do not port design-only switchers into the Next app.
+- English is the only public language until a second locale is explicitly requested.
+- Keep `sectionKey`, slugs and ids non-localized. Localize visible copy only.
