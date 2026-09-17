@@ -1,5 +1,5 @@
 import {draftMode} from 'next/headers';
-import {paletteStyle} from '@/lib/color-palette';
+import {paletteStyle, headerScrollRule} from '@/lib/color-palette';
 import {PaletteSync} from '@/components/palette-sync';
 import type { Metadata } from 'next';
 import { Cormorant_Garamond, Montserrat, Alex_Brush } from 'next/font/google';
@@ -21,5 +21,5 @@ export async function generateMetadata():Promise<Metadata> {
 export default async function RootLayout({children}:LayoutProps<'/'>) {
  const preview = (await draftMode()).isEnabled;
  const settings = await getSiteSettings(preview);
- return <html lang="en" className={`h-full antialiased ${display.variable} ${utility.variable} ${script.variable}`}><body className="min-h-full flex flex-col" data-site-mode="primary" data-color-palette={settings?.activePalette?.name || 'Primary'} style={paletteStyle(settings?.activePalette)}>{children}<PaletteSync preview={preview}/></body></html>;
+ return <html lang="en" className={`h-full antialiased ${display.variable} ${utility.variable} ${script.variable}`}><body className="min-h-full flex flex-col" data-site-mode="primary" data-header-scroll={JSON.stringify(headerScrollRule(settings?.activePalette?.headerScroll))} data-color-palette={settings?.activePalette?.name || 'Primary'} style={paletteStyle(settings?.activePalette)}>{children}<PaletteSync preview={preview}/></body></html>;
 }

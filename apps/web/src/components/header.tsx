@@ -1,5 +1,7 @@
 "use client";
 
+import { headerScrollRule } from '@/lib/color-palette';
+import type { CSSProperties } from 'react';
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
@@ -8,16 +10,44 @@ export function Header({ logo, siteName = "Bott Monument" }: { logo?: string | n
   const menuButton = useRef<HTMLButtonElement>(null);
   const nav = useRef<HTMLElement>(null);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [scrollColors, setScrollColors] = useState<CSSProperties>();
 
   useEffect(() => {
+    let rule = headerScrollRule();
+    let section: HTMLElement | null = null;
+    let lastColors = '';
     const syncHeaderState = () => {
       setIsScrolled(window.scrollY > 80);
+      const rect = section?.getBoundingClientRect();
+      // Geometry is local; scrolling never requests CMS data.
+      const targetLine = window.innerHeight * 0.35;
+      const active = rule.enabled && window.scrollY > 80 && rect && rect.top <= targetLine && rect.bottom >= targetLine;
+      const colorsKey = active ? `${rule.backgroundColor}/${rule.textColor}` : '';
+      if (colorsKey === lastColors) return;
+      lastColors = colorsKey;
+      setScrollColors(active ? {
+        '--palette-header-background': rule.backgroundColor,
+        '--palette-header-text-color': rule.textColor,
+      } as CSSProperties : undefined);
     };
 
-    syncHeaderState();
+    const syncRule = () => {
+      try { rule = headerScrollRule(JSON.parse(document.body.dataset.headerScroll || 'null')); }
+      catch { rule = headerScrollRule(); }
+      section = document.getElementById(rule.section);
+      syncHeaderState();
+    };
+    syncRule();
+    const observer = new MutationObserver(syncRule);
+    observer.observe(document.body, { attributes: true, attributeFilter: ['data-header-scroll'] });
     window.addEventListener("scroll", syncHeaderState, { passive: true });
+    window.addEventListener("resize", syncHeaderState);
 
-    return () => window.removeEventListener("scroll", syncHeaderState);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", syncHeaderState);
+      window.removeEventListener("resize", syncHeaderState);
+    };
   }, []);
 
   useEffect(() => {
@@ -41,7 +71,7 @@ export function Header({ logo, siteName = "Bott Monument" }: { logo?: string | n
 
 
   return (
-    <><a className="skip-link" href="#main-content">Skip to content</a><nav ref={nav} aria-label="Main navigation" id="navbar" className={`site-nav${isScrolled ? " scrolled" : ""}`}>
+    <><a className="skip-link" href="#main-content">Skip to content</a><nav ref={nav} aria-label="Main navigation" id="navbar" style={scrollColors} className={`site-nav${isScrolled ? " scrolled" : ""}`}>
       <a className="nav-logo" href="#" aria-label="Bott Monument home">
         <span className="sr-only">Bott Monument</span>
         <Image

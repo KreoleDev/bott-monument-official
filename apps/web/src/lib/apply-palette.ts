@@ -1,3 +1,4 @@
+import { headerScrollRule } from './color-palette';
 import type { PaletteSnapshot } from './active-palette';
 
 /** Update colors without remounting the page, clearing a form or moving the gallery. */
@@ -7,4 +8,5 @@ export function applyPalette(body: Pick<HTMLElement, 'style' | 'dataset'>, snaps
   }
   for (const [key, value] of Object.entries(snapshot.style)) body.style.setProperty(key, value);
   body.dataset.colorPalette = snapshot.name;
+  body.dataset.headerScroll = JSON.stringify(headerScrollRule(snapshot.headerScroll));
 }

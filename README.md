@@ -1,5 +1,34 @@
 # Bott Monument
 
+## Alterações na branch `feat/dagraca-site-updates`
+
+Esta branch inclui o controlo `headerScroll` das paletas e um snapshot atualizado
+do conteúdo e media do Strapi. Fazer pull recebe os ficheiros; a base de dados
+local só recebe os dados depois da importação.
+
+1. Faz `git fetch origin` e muda para `feat/dagraca-site-updates`.
+2. Para o Strapi e executa os comandos abaixo, a partir da raiz do repositório.
+3. Guarda a chave do backup quando for pedida. Confirma a importação apenas
+   depois de o backup terminar: substitui conteúdo e media locais.
+
+```powershell
+cd apps/cms
+npm ci
+npm run strapi -- export --file ./exports/before-branch-import
+$handoffKey = (Get-Content -Raw ../../handoff/bott-content-key.txt).Trim()
+npm run strapi -- import --file ../../handoff/bott-content.tar.gz.enc --key $handoffKey --only content,files --exclude-content-types api::inquiry.inquiry,plugin::users-permissions.user
+npm run develop
+```
+
+Mantém os teus `.env`, admins e tokens. Inquiries e utilizadores do plugin
+Users & Permissions ficam excluídos da transferência. Reinicia também o Next.js.
+Em **Color Palettes → Primary → headerScroll**, a configuração guardada neste
+snapshot tem `enabled = false`, secção `work`, fundo `#0A0A0A` e texto `#F5F5F0`.
+Para ativar o efeito, escolhe **TRUE** e publica a paleta.
+
+O snapshot e a chave são públicos neste repositório. Não contém a base SQLite
+bruta nem os segredos locais. Mais detalhes no [guia de transferência](docs/LOCAL_SQLITE_HANDOFF.md).
+
 ## Primeiro, depois do pull: migrar os dados para o SQLite local
 
 O export e a chave estão em `handoff/` neste repositório. Depois de fazer pull

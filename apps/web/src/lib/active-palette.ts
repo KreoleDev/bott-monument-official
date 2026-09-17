@@ -1,7 +1,7 @@
 import { cmsQuery } from './cms-cache';
-import { PALETTE_FIELDS, paletteStyle, type ColorPalette } from './color-palette';
+import { PALETTE_FIELDS, paletteStyle, headerScrollRule, type ColorPalette } from './color-palette';
 
-export type PaletteSnapshot = { name: string; style: Record<string, string> };
+export type PaletteSnapshot = { name: string; style: Record<string, string>; headerScroll: ReturnType<typeof headerScrollRule> };
 
 // This small read deliberately bypasses the page cache. A tab may retain its root
 // layout after navigation even when the CMS webhook has invalidated server data.
@@ -11,5 +11,5 @@ export async function getFreshPalette(preview = false): Promise<PaletteSnapshot>
     {}, preview,
   );
   const palette = data.siteSetting?.activePalette;
-  return { name: palette?.name || 'Primary', style: paletteStyle(palette) as Record<string, string> };
+  return { headerScroll: headerScrollRule(palette?.headerScroll), name: palette?.name || 'Primary', style: paletteStyle(palette) as Record<string, string> };
 }
