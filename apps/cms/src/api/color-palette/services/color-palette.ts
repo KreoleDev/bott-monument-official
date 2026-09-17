@@ -1,2 +1,2 @@
-import { factories } from '@strapi/strapi';
-export default factories.createCoreService('api::color-palette.color-palette');
+import { factories } from "@strapi/strapi";
+export default factories.createCoreService("api::color-palette.color-palette");

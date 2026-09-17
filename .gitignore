@@ -35,7 +35,9 @@ yarn-error.log*
 .DS_Store
 ._*
 .idea/
-.vscode/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
 
 # TypeScript and tooling caches
 *.tsbuildinfo

@@ -29,10 +29,12 @@ export function Founder({ section }: FounderProps) {
       <div className="page2-variant" id="page2Classic">
         <div
           className="press-page press-page-gold-bg"
-          style={{
-            "--section-founder-background": section?.backgroundColor || undefined,
-            "--section-founder-text": section?.textColor || undefined,
-          } as CSSProperties}
+          style={
+            {
+              "--section-founder-background": section?.backgroundColor || undefined,
+              "--section-founder-text": section?.textColor || undefined,
+            } as CSSProperties
+          }
         >
           <div className="press-page-inner">
             <div className="press-founder">
@@ -41,11 +43,12 @@ export function Founder({ section }: FounderProps) {
                 <div className="press-founder-img">
                   <Image
                     src={imageUrl}
-                    alt={section?.image?.alternativeText ?? "Drew Bott, Founder and Master Craftsman"}
+                    alt={
+                      section?.image?.alternativeText ?? "Drew Bott, Founder and Master Craftsman"
+                    }
                     width={1024}
                     height={1024}
-                    priority
-                   ={imageUrl.startsWith("http://") || imageUrl.startsWith("https://")}
+                    priority={imageUrl.startsWith("http://") || imageUrl.startsWith("https://")}
                   />
                 </div>
               </div>
@@ -64,7 +67,8 @@ export function Founder({ section }: FounderProps) {
                 {secondLine ? (
                   <>
                     <br />
-                    {prefix}<em>{secondLine}</em>
+                    {prefix}
+                    <em>{secondLine}</em>
                   </>
                 ) : null}
               </h2>
@@ -77,9 +81,7 @@ export function Founder({ section }: FounderProps) {
                 {section?.quote ??
                   '"Every monument should feel as personal as the life it honors."'}
               </p>
-              <p className="press-page-signature">
-                {section?.signature ?? "Your signature"}
-              </p>
+              <p className="press-page-signature">{section?.signature ?? "Your signature"}</p>
             </div>
           </div>
         </div>

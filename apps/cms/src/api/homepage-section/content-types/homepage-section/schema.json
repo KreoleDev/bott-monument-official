@@ -105,9 +105,7 @@
         }
       },
       "multiple": false,
-      "allowedTypes": [
-        "images"
-      ]
+      "allowedTypes": ["images"]
     },
     "video": {
       "type": "media",
@@ -117,9 +115,7 @@
         }
       },
       "multiple": false,
-      "allowedTypes": [
-        "videos"
-      ]
+      "allowedTypes": ["videos"]
     },
     "buttonLabel": {
       "type": "string",

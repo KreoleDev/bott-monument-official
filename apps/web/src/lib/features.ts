@@ -11,6 +11,11 @@ export type Feature = {
   image: StrapiMedia | null;
 };
 
-export async function getFeatures(preview=false): Promise<Feature[]> {
-  return getCollection<Feature>("features_connection", "documentId title publication detail featured sortOrder image { url alternativeText }", ["sortOrder:asc", "documentId:asc"], preview);
+export async function getFeatures(preview = false): Promise<Feature[]> {
+  return getCollection<Feature>(
+    "features_connection",
+    "documentId title publication detail featured sortOrder image { url alternativeText }",
+    ["sortOrder:asc", "documentId:asc"],
+    preview,
+  );
 }

@@ -32,11 +32,7 @@ export function Hero({ section }: HeroProps) {
       ) : null}
 
       <div className="hero-content">
-        {section?.eyebrow ? (
-          <p className="hero-eyebrow">
-            {section.eyebrow}
-          </p>
-        ) : null}
+        {section?.eyebrow ? <p className="hero-eyebrow">{section.eyebrow}</p> : null}
         <h1 className="hero-title">
           {isDefaultTitle ? (
             <>
@@ -45,15 +41,11 @@ export function Hero({ section }: HeroProps) {
               stand <em>forever.</em>
             </>
           ) : (
-            <>
-              {title}
-            </>
+            <>{title}</>
           )}
         </h1>
         {section?.description ? (
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-white/70">
-            {section.description}
-          </p>
+          <p className="mt-6 max-w-2xl text-lg leading-8 text-white/70">{section.description}</p>
         ) : null}
         {section?.buttonLabel && section.buttonHref ? (
           <a
