@@ -253,8 +253,8 @@ layout, ou “JSON de design”. Cores entram só quando o editor as muda
 
 ### Onde corre o fetch
 
-O acesso de conteúdo ao Strapi corre em Server Components, `page.tsx`, ou
-funções em `src/lib`; as submissões passam por `/api/inquiries`. O browser não leva o token.
+O acesso de conteúdo ao Strapi corre em Server Components, `usePage` no
+page-builder, ou funções em `src/lib`; as submissões passam por `/api/inquiries`. O browser não leva o token.
 
 ```ts
 process.env.STRAPI_URL        // ok — só servidor
@@ -331,13 +331,21 @@ Press cream      #F7F3ED
 
 ## Como adicionar uma secção
 
+A homepage usa o page-builder em `apps/web/src/page-builder/` (registry +
+mapper + `usePage` + `RenderPage`). Não adicionar `switch` em `page.tsx`.
+O plano (incluindo o que falta no Strapi / Dynamic Zones) está em
+[docs/PAGE_BUILDER_PLAN.md](docs/PAGE_BUILDER_PLAN.md).
+
 1. Cria e publica a entry no Strapi (`sectionKey` estável, ex. `gallery`).
 2. Se forem itens de lista, usa um collection type próprio, não um campo
    JSON dentro de Homepage Section.
-3. No Next, pede os dados em `page.tsx` (ou num loader em `src/lib`).
-4. Renderiza num componente dedicado e define o comportamento quando não existe conteúdo.
+3. No Next, adiciona um mapper em `page-builder/mappers.ts` e o componente
+   em `page-builder/registry.ts`.
+4. Define o comportamento quando não existe conteúdo no componente.
 5. Copia layout, spacing e motion de `bott-monument-design/index.html`.
 6. Marca a tarefa em `IMPLEMENTATION_PLAN.md`.
+   O que ainda não der para modelar no Strapi fica no plano do page-builder
+   para o Esmael ajustar a estrutura depois.
 
 ## Preservar conteúdo e media entre instalações
 
