@@ -39,6 +39,8 @@ bott-monument-official/
 - Main Strapi content type: `Homepage Section`
 - Strapi schema file: `apps/cms/src/api/homepage-section/content-types/homepage-section/schema.json`
 - Next Strapi client: `apps/web/src/lib/strapi.ts`
+- Homepage motor: `apps/web/src/page-builder/`
+- Page-builder plan (now + Strapi Dynamic Zones later): `docs/PAGE_BUILDER_PLAN.md`
 - Working conventions: `README.md`
 
 Do not ship the HTML demo toolbar, headline switchers or gallery layout pickers. Primary/Secondary colors are now real CMS settings: Color Palettes + Site Settings.activePalette. This selection changes colors globally while preserving the current layouts and interactions; it does not port the demo layout modes.
@@ -374,6 +376,14 @@ configuration. The repository is public, so inquiries are excluded from the snap
 - [x] Source admin credentials, API tokens and webhooks are excluded.
 - [x] [SQLite migration guide](docs/LOCAL_SQLITE_HANDOFF.md) includes backup/import commands for the existing checkout.
 
+## Page Builder Motor
+
+Homepage rendering no longer uses a `switch` in `page.tsx`. Sections go through
+`getPage` → mappers → `RenderPage`. Strapi is unchanged in this phase.
+
+- [x] Frontend motor (registry, mappers, `getPage`, `RenderPage`) on the current `Homepage Section` schema.
+- [ ] Esmael: Strapi Dynamic Zone `Page.content` and the follow-up items in [PAGE_BUILDER_PLAN.md](docs/PAGE_BUILDER_PLAN.md). Do not block the motor on that CMS work.
+
 ## Rules For The Team
 
 - Do not commit `.env` files.
@@ -387,3 +397,12 @@ configuration. The repository is public, so inquiries are excluded from the snap
 - Do not port design-only switchers into the Next app.
 - English is the only public language until a second locale is explicitly requested.
 - Keep `sectionKey`, slugs and ids non-localized. Localize visible copy only.
+- Add homepage sections via `apps/web/src/page-builder/` (mapper + registry). CMS Dynamic Zone work is tracked in `docs/PAGE_BUILDER_PLAN.md` for Esmael.
+
+
+## Branch integration — 2026-09-17
+
+- Merged `feat/dagraca-site-updates` first: editable header scroll colors and updated content handoff. Retained Biome formatting and changed handoff instructions to `dev`.
+- Merged `feat/page-builder` second: registry/mappers render the existing sections in CMS order. Renamed the server data loader to `getPage` to satisfy React hook lint rules; unknown keys use an own-property check.
+- Validation: first merge passed 24 tests, lint and both production builds. Combined code passed 26 tests, lint and the frontend production build against an isolated copy of the local SQLite CMS. The CMS build passed after the header schema change.
+- Fixed an existing whitespace-sensitive CSS assertion exposed by formatting. Local CMS content is preserved; importing the updated handoff snapshot is optional and replaces content/media.
