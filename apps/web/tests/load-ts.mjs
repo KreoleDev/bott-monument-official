@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import { fileURLToPath } from "node:url";
 import path from "node:path";
 import vm from "node:vm";
 import { createRequire } from "node:module";
@@ -40,5 +41,5 @@ export function loadTs(
     fn(localRequire, loadedModule, loadedModule.exports);
     return loadedModule.exports;
   }
-  return load(new URL(file, import.meta.url).pathname);
+  return load(fileURLToPath(new URL(file, import.meta.url)));
 }

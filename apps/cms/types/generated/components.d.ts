@@ -91,6 +91,34 @@ export interface ShowroomDetails extends Struct.ComponentSchema {
   };
 }
 
+export interface ThemeHeaderScroll extends Struct.ComponentSchema {
+  collectionName: 'components_theme_header_scroll';
+  info: {
+    description: 'Override header colors while the selected section crosses 35% of the viewport. Disable to keep normal palette colors.';
+    displayName: 'Header Scroll';
+  };
+  attributes: {
+    backgroundColor: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'#0A0A0A'>;
+    enabled: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    section: Schema.Attribute.Enumeration<
+      [
+        'work',
+        'hero',
+        'founder',
+        'press-clippings',
+        'magazine',
+        'showroom',
+        'testimonials',
+        'contact',
+      ]
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'work'>;
+    textColor: Schema.Attribute.String & Schema.Attribute.DefaultTo<'#F5F5F0'>;
+  };
+}
+
 export interface ThemeSectionColors extends Struct.ComponentSchema {
   collectionName: 'components_theme_section_colors';
   info: {
@@ -131,6 +159,7 @@ declare module '@strapi/strapi' {
       'gallery.access': GalleryAccess;
       'shared.stat': SharedStat;
       'showroom.details': ShowroomDetails;
+      'theme.header-scroll': ThemeHeaderScroll;
       'theme.section-colors': ThemeSectionColors;
     }
   }

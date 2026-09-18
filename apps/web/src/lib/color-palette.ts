@@ -32,10 +32,12 @@ type ColorField = (typeof COLOR_FIELDS)[number];
 export type SectionColors = Partial<Record<ColorField, string | null>> & {
   gradientAngle?: number | null;
 };
-export type ColorPalette = { documentId: string; name: string } & Partial<
-  Record<(typeof PALETTE_SECTIONS)[number], SectionColors | null>
->;
-export const PALETTE_FIELDS = `documentId name ${PALETTE_SECTIONS.map((section) => `${section} { ${COLOR_FIELDS.join(" ")} gradientAngle }`).join(" ")}`;
+export type ColorPalette = {
+  documentId: string;
+  name: string;
+  headerScroll?: HeaderScroll | null;
+} & Partial<Record<(typeof PALETTE_SECTIONS)[number], SectionColors | null>>;
+export const PALETTE_FIELDS = `documentId name headerScroll { enabled section backgroundColor textColor } ${PALETTE_SECTIONS.map((section) => `${section} { ${COLOR_FIELDS.join(" ")} gradientAngle }`).join(" ")}`;
 const validColor = (value: unknown): value is string =>
   typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value);
 const cssName = (name: string) => name.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
@@ -75,4 +77,35 @@ export function paletteStyle(palette: ColorPalette | null | undefined): CSSPrope
     }
   }
   return style as CSSProperties;
+}
+
+export type HeaderScroll = {
+  enabled?: boolean | null;
+  section?: string | null;
+  backgroundColor?: string | null;
+  textColor?: string | null;
+};
+export const HEADER_SCROLL_SECTIONS = [
+  "work",
+  "hero",
+  "founder",
+  "press-clippings",
+  "magazine",
+  "showroom",
+  "testimonials",
+  "contact",
+] as const;
+
+// Legacy palettes without this component retain the original scroll behavior.
+export function headerScrollRule(rule?: HeaderScroll | null) {
+  return {
+    enabled: rule?.enabled !== false,
+    section: HEADER_SCROLL_SECTIONS.includes(
+      rule?.section as (typeof HEADER_SCROLL_SECTIONS)[number],
+    )
+      ? rule!.section!
+      : "work",
+    backgroundColor: validColor(rule?.backgroundColor) ? rule.backgroundColor : "#0A0A0A",
+    textColor: validColor(rule?.textColor) ? rule.textColor : "#F5F5F0",
+  };
 }

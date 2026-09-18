@@ -67,12 +67,12 @@ test("published and draft Site Settings load palette colors through the API", as
 });
 test("palette background overrides old section colors; testimonial fade follows the palette", () => {
   const global = readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
-  assert.match(global, /var\(--palette-founder-background, var\(--section-founder-background,/);
+  assert.match(global, /var\(\s*--palette-founder-background,\s*var\(\s*--section-founder-background,/);
   const tests = readFileSync(
     new URL("../src/components/testimonials.css", import.meta.url),
     "utf8",
   );
-  assert.match(tests, /rgba\(var\(--palette-testimonials-background-color-rgb,/);
+  assert.match(tests, /rgba\(\s*var\(\s*--palette-testimonials-background-color-rgb,/);
 });
 
 test("fresh palette reads see consecutive selections even in production", async () => {

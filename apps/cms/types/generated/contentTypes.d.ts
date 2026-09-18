@@ -466,6 +466,7 @@ export interface ApiColorPaletteColorPalette
     founder: Schema.Attribute.Component<'theme.section-colors', false>;
     gallery: Schema.Attribute.Component<'theme.section-colors', false>;
     header: Schema.Attribute.Component<'theme.section-colors', false>;
+    headerScroll: Schema.Attribute.Component<'theme.header-scroll', false>;
     hero: Schema.Attribute.Component<'theme.section-colors', false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<

@@ -62,6 +62,7 @@ body[data-site-mode="primary"] .site-nav.scrolled {
   background: var(--palette-header-background, var(--primary-header-gradient));
 }
 
+
 .nav-logo {
   font-family: var(--font-display);
   font-weight: 300;

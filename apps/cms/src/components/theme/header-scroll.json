@@ -1,0 +1,38 @@
+{
+  "collectionName": "components_theme_header_scroll",
+  "info": {
+    "displayName": "Header Scroll",
+    "description": "Override header colors while the selected section crosses 35% of the viewport. Disable to keep normal palette colors."
+  },
+  "attributes": {
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "section": {
+      "type": "enumeration",
+      "enum": [
+        "work",
+        "hero",
+        "founder",
+        "press-clippings",
+        "magazine",
+        "showroom",
+        "testimonials",
+        "contact"
+      ],
+      "default": "work",
+      "required": true
+    },
+    "backgroundColor": {
+      "type": "string",
+      "regex": "^#[0-9a-fA-F]{6}$",
+      "default": "#0A0A0A"
+    },
+    "textColor": {
+      "type": "string",
+      "regex": "^#[0-9a-fA-F]{6}$",
+      "default": "#F5F5F0"
+    }
+  }
+}

@@ -1,5 +1,5 @@
 import { draftMode } from "next/headers";
-import { paletteStyle } from "@/lib/color-palette";
+import { paletteStyle, headerScrollRule } from "@/lib/color-palette";
 import { PaletteSync } from "@/components/palette-sync";
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Montserrat, Alex_Brush } from "next/font/google";
@@ -56,6 +56,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       <body
         className="min-h-full flex flex-col"
         data-site-mode="primary"
+        data-header-scroll={JSON.stringify(headerScrollRule(settings?.activePalette?.headerScroll))}
         data-color-palette={settings?.activePalette?.name || "Primary"}
         style={paletteStyle(settings?.activePalette)}
       >

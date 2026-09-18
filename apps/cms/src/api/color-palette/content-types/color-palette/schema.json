@@ -73,6 +73,11 @@
       "type": "component",
       "repeatable": false,
       "component": "theme.section-colors"
+    },
+    "headerScroll": {
+      "type": "component",
+      "repeatable": false,
+      "component": "theme.header-scroll"
     }
   }
 }
