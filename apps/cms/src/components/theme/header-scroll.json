@@ -1,8 +1,8 @@
 {
   "collectionName": "components_theme_header_scroll",
   "info": {
-    "displayName": "Header Scroll",
-    "description": "Override header colors while the selected section crosses 35% of the viewport. Disable to keep normal palette colors."
+    "displayName": "Header Color Rule",
+    "description": "Add a rule per section. The first enabled matching rule wins; other sections use the normal header colors."
   },
   "attributes": {
     "enabled": {
@@ -12,14 +12,16 @@
     "section": {
       "type": "enumeration",
       "enum": [
-        "work",
         "hero",
+        "marqueeStrip",
         "founder",
+        "work",
         "press-clippings",
-        "magazine",
+        "gallery",
         "showroom",
         "testimonials",
-        "contact"
+        "contact",
+        "footer"
       ],
       "default": "work",
       "required": true

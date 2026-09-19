@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import type { HomepageSection } from "@/lib/strapi";
+import type { SectionContent } from "@/lib/strapi";
 
 const marqueeItems = [
   "Bespoke Monuments",
@@ -11,10 +11,10 @@ const marqueeItems = [
 ];
 
 type MarqueeStripProps = {
-  section: HomepageSection | null;
+  section: SectionContent | null;
 };
 
-function getMarqueeItems(section: HomepageSection | null) {
+function getMarqueeItems(section: SectionContent | null) {
   const items = section?.title
     ?.split("|")
     .map((item) => item.trim())

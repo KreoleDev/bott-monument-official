@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState, type CSSProperties } from "react";
-import type { HomepageSection } from "@/lib/strapi";
+import type { SectionContent } from "@/lib/strapi";
 import type { Feature } from "@/lib/features";
 import "./featured-in.css";
 
@@ -12,7 +12,7 @@ export function FeaturedInGallery({
   section,
   covers,
 }: {
-  section: HomepageSection;
+  section: SectionContent;
   covers: Cover[];
 }) {
   const initial = covers.find((cover) => cover.featured) ?? covers[0];

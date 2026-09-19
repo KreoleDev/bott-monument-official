@@ -1,10 +1,15 @@
 import { cmsQuery } from "./cms-cache";
-import { PALETTE_FIELDS, paletteStyle, headerScrollRule, type ColorPalette } from "./color-palette";
+import {
+  PALETTE_FIELDS,
+  paletteStyle,
+  headerScrollRules,
+  type ColorPalette,
+} from "./color-palette";
 
 export type PaletteSnapshot = {
   name: string;
   style: Record<string, string>;
-  headerScroll: ReturnType<typeof headerScrollRule>;
+  headerScroll: ReturnType<typeof headerScrollRules>;
 };
 
 // This small read deliberately bypasses the page cache. A tab may retain its root
@@ -17,7 +22,7 @@ export async function getFreshPalette(preview = false): Promise<PaletteSnapshot>
   );
   const palette = data.siteSetting?.activePalette;
   return {
-    headerScroll: headerScrollRule(palette?.headerScroll),
+    headerScroll: headerScrollRules(palette?.headerScroll),
     name: palette?.name || "Primary",
     style: paletteStyle(palette) as Record<string, string>,
   };

@@ -3,7 +3,7 @@ import type { Feature } from "@/lib/features";
 import type { GalleryItem } from "@/lib/gallery";
 import type { PressItem } from "@/lib/news";
 import type { SiteSettings } from "@/lib/site-settings";
-import type { HomepageSection } from "@/lib/strapi";
+import type { SectionContent } from "@/lib/strapi";
 
 export type PageExtras = {
   comments: Comment[];
@@ -26,8 +26,9 @@ export type FragmentName =
   | "footer";
 
 export type MappedFragment<P = Record<string, unknown>> = {
+  key?: string;
   fragmentName: FragmentName;
   payload: P;
 };
 
-export type SectionMapper<P> = (section: HomepageSection, extras: PageExtras) => P;
+export type SectionMapper<P> = (section: SectionContent, extras: PageExtras) => P;

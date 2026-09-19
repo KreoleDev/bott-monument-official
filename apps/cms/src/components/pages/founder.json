@@ -1,0 +1,40 @@
+{
+  "collectionName": "components_pages_founder",
+  "info": {
+    "displayName": "Founder"
+  },
+  "attributes": {
+    "eyebrow": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "quote": {
+      "type": "text"
+    },
+    "signature": {
+      "type": "string"
+    },
+    "personName": {
+      "type": "string"
+    },
+    "personRole": {
+      "type": "string"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "backgroundColor": {
+      "type": "string"
+    },
+    "textColor": {
+      "type": "string"
+    }
+  }
+}

@@ -2,12 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { Fragment, type CSSProperties } from "react";
 import { pressDate, pressImageUrl, type PressItem } from "@/lib/news";
-import type { HomepageSection } from "@/lib/strapi";
+import type { SectionContent } from "@/lib/strapi";
 import "./news.css";
 
 type NewsProps = {
   items: PressItem[];
-  section?: HomepageSection | null;
+  section?: SectionContent | null;
   all?: boolean;
 };
 

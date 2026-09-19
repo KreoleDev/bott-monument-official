@@ -12,7 +12,9 @@
     "start": "strapi start",
     "strapi": "strapi",
     "upgrade": "npx @strapi/upgrade latest",
-    "upgrade:dry": "npx @strapi/upgrade latest --dry"
+    "upgrade:dry": "npx @strapi/upgrade latest --dry",
+    "test": "node --test tests/*.test.mjs",
+    "migrate:header-rules": "node scripts/migrate-header-rules.mjs"
   },
   "dependencies": {
     "@strapi/database": "5.53.0",

@@ -1,11 +1,11 @@
 import type { SiteSettings } from "@/lib/site-settings";
-import type { HomepageSection } from "@/lib/strapi";
+import type { SectionContent } from "@/lib/strapi";
 import "./contact.css";
 export function Footer({
   section,
   settings,
 }: {
-  section: HomepageSection | null;
+  section: SectionContent | null;
   settings?: SiteSettings | null;
 }) {
   const details = section?.footer;

@@ -1,7 +1,7 @@
-import { getStrapiMediaUrl, type HomepageSection } from "@/lib/strapi";
+import { getStrapiMediaUrl, type SectionContent } from "@/lib/strapi";
 
 type HeroProps = {
-  section: HomepageSection | null;
+  section: SectionContent | null;
 };
 
 export function Hero({ section }: HeroProps) {

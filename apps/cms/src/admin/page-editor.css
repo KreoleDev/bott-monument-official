@@ -1,0 +1,4 @@
+.bott-fixed-page-field { width: 100%; border: 1px solid #666687; border-radius: 6px; }
+.bott-fixed-page-field > summary { cursor: pointer; padding: 20px; font-weight: 600; font-size: 14px; }
+.bott-fixed-page-field > summary span { float: right; font-size: 12px; font-weight: 400; opacity: .7; }
+.bott-fixed-page-field-content { padding: 16px; }

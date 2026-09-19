@@ -35,7 +35,7 @@ export type SectionColors = Partial<Record<ColorField, string | null>> & {
 export type ColorPalette = {
   documentId: string;
   name: string;
-  headerScroll?: HeaderScroll | null;
+  headerScroll?: HeaderScroll[] | HeaderScroll | null;
 } & Partial<Record<(typeof PALETTE_SECTIONS)[number], SectionColors | null>>;
 export const PALETTE_FIELDS = `documentId name headerScroll { enabled section backgroundColor textColor } ${PALETTE_SECTIONS.map((section) => `${section} { ${COLOR_FIELDS.join(" ")} gradientAngle }`).join(" ")}`;
 const validColor = (value: unknown): value is string =>
@@ -90,7 +90,9 @@ export const HEADER_SCROLL_SECTIONS = [
   "hero",
   "founder",
   "press-clippings",
-  "magazine",
+  "gallery",
+  "marqueeStrip",
+  "footer",
   "showroom",
   "testimonials",
   "contact",
@@ -98,6 +100,7 @@ export const HEADER_SCROLL_SECTIONS = [
 
 // Legacy palettes without this component retain the original scroll behavior.
 export function headerScrollRule(rule?: HeaderScroll | null) {
+  if (rule?.section === "magazine") rule = { ...rule, section: "gallery" };
   return {
     enabled: rule?.enabled !== false,
     section: HEADER_SCROLL_SECTIONS.includes(
@@ -108,4 +111,10 @@ export function headerScrollRule(rule?: HeaderScroll | null) {
     backgroundColor: validColor(rule?.backgroundColor) ? rule.backgroundColor : "#0A0A0A",
     textColor: validColor(rule?.textColor) ? rule.textColor : "#F5F5F0",
   };
+}
+
+/** Missing legacy settings keep the original rule; an empty list intentionally disables overrides. */
+export function headerScrollRules(value?: HeaderScroll[] | HeaderScroll | null) {
+  if (value == null) return [headerScrollRule()];
+  return (Array.isArray(value) ? value : [value]).map(headerScrollRule);
 }

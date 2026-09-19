@@ -1,4 +1,4 @@
-import { getHomepageSection } from "@/lib/strapi";
+import { getHomePage } from "@/lib/pages";
 
 export async function POST(request: Request) {
   const origin = request.headers.get("origin");
@@ -29,8 +29,12 @@ export async function POST(request: Request) {
       message.length > 5000
     )
       return Response.json({ error: "Invalid form" }, { status: 400 });
-    const section = await getHomepageSection("contact");
-    const options = (section?.contact?.inquiryTypes || "").split("\n").map((s) => s.trim());
+    const page = await getHomePage();
+    const options = (page?.content || [])
+      .filter((block) => block.__typename === "ComponentPagesContact")
+      .flatMap((block) => (block.contact?.inquiryTypes || "").split("\n"))
+      .map((option) => option.trim())
+      .filter(Boolean);
     if (!options.includes(inquiryType))
       return Response.json({ error: "Invalid inquiry type" }, { status: 400 });
     const url = process.env.STRAPI_URL?.replace(/\/$/, "");

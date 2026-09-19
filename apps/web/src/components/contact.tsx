@@ -1,8 +1,8 @@
-import type { HomepageSection } from "@/lib/strapi";
+import type { SectionContent } from "@/lib/strapi";
 import { ContactForm } from "./contact-form";
 import "./contact.css";
 
-export function Contact({ section }: { section: HomepageSection | null }) {
+export function Contact({ section }: { section: SectionContent | null }) {
   const details = section?.contact;
   if (!section || !details) return null;
   const total = Math.min(100, Math.max(0, details.totalCommissions || 0));

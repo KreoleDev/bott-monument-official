@@ -37,29 +37,5 @@ export async function seedGallery(strapi: Core.Strapi) {
       },
     });
   }
-  const sections = strapi.documents("api::homepage-section.homepage-section");
-  if (!(await sections.findFirst({ filters: { sectionKey: "gallery" } }))) {
-    await sections.create({
-      status: "published",
-      data: {
-        sectionKey: "gallery",
-        title: "A Gallery of Lasting Tributes",
-        backgroundColor: "#2C3A46",
-        textColor: "#F0EDE8",
-        buttonLabel: "Our Private Gallery",
-        sortOrder: 6,
-        galleryAccess: {
-          eyebrow: "Access Required",
-          title: "Want to see the",
-          emphasis: "full gallery?",
-          description:
-            "Our extended memorial collection is available by request so we can share it thoughtfully. Reach out and we will guide you to more gallery images.",
-          requestLabel: "Request Access",
-          requestHref: "#contact",
-          dismissLabel: "Maybe Later",
-        },
-      },
-    });
-  }
-  strapi.log.info("Published Gallery section and 13 gallery images.");
+  strapi.log.info("Gallery items published.");
 }

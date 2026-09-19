@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { ImageLightbox } from "./image-lightbox";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import type { HomepageSection } from "@/lib/strapi";
+import type { SectionContent } from "@/lib/strapi";
 import type { GalleryItem } from "@/lib/gallery";
 import { startGalleryMotion } from "./gallery-motion";
 import "./gallery.css";
@@ -12,7 +12,7 @@ export function GalleryCarousel({
   section,
   items,
 }: {
-  section: HomepageSection;
+  section: SectionContent;
   items: (GalleryItem & { src: string })[];
 }) {
   const [lightbox, setLightbox] = useState<number | null>(null);
@@ -56,7 +56,7 @@ export function GalleryCarousel({
 
   return (
     <section
-      id="magazine"
+      id="gallery"
       aria-labelledby="gallery-title"
       style={
         {

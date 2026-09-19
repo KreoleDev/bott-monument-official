@@ -1,0 +1,37 @@
+{
+  "collectionName": "components_pages_news",
+  "info": {
+    "displayName": "News"
+  },
+  "attributes": {
+    "eyebrow": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "quote": {
+      "type": "text"
+    },
+    "buttonLabel": {
+      "type": "string"
+    },
+    "buttonHref": {
+      "type": "string"
+    },
+    "backgroundColor": {
+      "type": "string"
+    },
+    "textColor": {
+      "type": "string"
+    },
+    "pressItems": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::press-item.press-item"
+    }
+  }
+}

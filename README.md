@@ -1,55 +1,19 @@
 # Bott Monument
 
-## Cores do cabeçalho ao fazer scroll
+## Depois do pull: conteúdo da homepage
 
-O `dev` inclui o controlo `headerScroll` das paletas e um snapshot atualizado
-do conteúdo e media do Strapi. Fazer pull recebe os ficheiros; a base de dados
-local só recebe os dados depois da importação.
+A homepage usa **Page → Home**: Header e Hero fixos, oito secções intermédias
+reordenáveis e Footer fixo. Os cartões começam fechados. **Homepage Section foi
+removido do CMS e da base local**, depois de verificar as versões draft/publicada.
 
-1. Faz pull do `dev`. Importa apenas se quiseres substituir o conteúdo local pelo snapshot da equipa.
-2. Para o Strapi e executa os comandos abaixo, a partir da raiz do repositório.
-3. Guarda a chave do backup quando for pedida. Confirma a importação apenas
-   depois de o backup terminar: substitui conteúdo e media locais.
+Os antigos comandos `migrate:home-page` e `migrate:fixed-page-fields` foram
+retirados: a migração local está concluída. Não execute instruções antigas de cópia
+nesta versão. Se outro ambiente ainda depende de Homepage Section, guarde um backup e prepare
+um caminho de migração/handoff validado antes de iniciar este código.
 
-```powershell
-cd apps/cms
-npm ci
-npm run strapi -- export --file ./exports/before-branch-import
-$handoffKey = (Get-Content -Raw ../../handoff/bott-content-key.txt).Trim()
-npm run strapi -- import --file ../../handoff/bott-content.tar.gz.enc --key $handoffKey --only content,files --exclude-content-types api::inquiry.inquiry,plugin::users-permissions.user
-npm run develop
-```
-
-Mantém os teus `.env`, admins e tokens. Inquiries e utilizadores do plugin
-Users & Permissions ficam excluídos da transferência. Reinicia também o Next.js.
-Em **Color Palettes → Primary → headerScroll**, a configuração guardada neste
-snapshot tem `enabled = false`, secção `work`, fundo `#0A0A0A` e texto `#F5F5F0`.
-Para ativar o efeito, escolhe **TRUE** e publica a paleta.
-
-O snapshot e a chave são públicos neste repositório. Não contém a base SQLite
-bruta nem os segredos locais. Mais detalhes no [guia de transferência](docs/LOCAL_SQLITE_HANDOFF.md).
-
-## Primeiro, depois do pull: migrar os dados para o SQLite local
-
-O export e a chave estão em `handoff/` neste repositório. Depois de fazer pull
-do `dev`, para o Strapi e executa a partir da raiz do projeto:
-
-```bash
-cd apps/cms
-npm ci
-# Backup local: escolhe e guarda uma chave própria quando o CLI pedir.
-npm run strapi -- export --file ./exports/before-data-migration
-# Importar o conteúdo e as imagens recebidos pelo Git.
-npm run strapi -- import --file ../../handoff/bott-content.tar.gz.enc --key "$(cat ../../handoff/bott-content-key.txt)" --only content,files --exclude-content-types api::inquiry.inquiry,plugin::users-permissions.user
-npm run develop
-```
-
-**Confirma a importação apenas depois do backup: substitui o conteúdo e os uploads
-locais, não faz merge.** Mantém as inquiries existentes, `.env`, admins, tokens
-e configuração locais. Não é necessário recriar o projeto nem trocar de SQLite.
-
-O snapshot não inclui inquiries. O repositório é público: o export e a chave
-podem ser lidos por qualquer pessoa. [Detalhes da migração](docs/LOCAL_SQLITE_HANDOFF.md).
+**O arquivo em `handoff/` ainda é anterior a Pages. Não o importe com o schema
+atual.** O próximo handoff requer um export atualizado e teste de importação numa
+cópia SQLite. Veja [o estado do handoff](docs/LOCAL_SQLITE_HANDOFF.md).
 
 ---
 
@@ -75,7 +39,7 @@ apps/web          Next.js 16  ·  React 19  ·  Tailwind 4
 apps/cms          Strapi 5  ·  GraphQL  ·  SQLite (local)
     │
     ▼
-conteúdo          Homepage Section, media, drafts
+conteúdo          Page.content, coleções, media, drafts
 ```
 
 ```text
@@ -103,14 +67,14 @@ Se um editor não precisa de mudar isso no dia a dia, não é campo no Strapi.
 
 ## Arranque local
 
-Requisitos: Node 20+, npm.
+Requisitos: Node 22 (como no CI), npm.
 
 ### 1. Strapi
 
 ```bash
 cd apps/cms
 cp .env.example .env
-npm install
+npm ci
 npm run develop
 ```
 
@@ -132,11 +96,15 @@ Na primeira corrida, cria o utilizador admin. Depois:
 cd apps/web
 cp .env.example .env.local
 # cola o token em STRAPI_API_TOKEN
-npm install
+npm ci
 npm run dev
 ```
 
 Site: http://localhost:3000
+
+Numa instalação vazia, crie e publique Page com `slug: home`, os seus campos e
+coleções, ou use um futuro snapshot validado com o mesmo schema. Os seeds não
+correm automaticamente e o arquivo antigo não serve para esta instalação.
 
 As duas apps têm de estar a correr ao mesmo tempo. O Next consulta o Strapi
 no servidor; os tokens nunca chegam ao browser. Imagens e vídeos podem ser carregados
@@ -173,14 +141,27 @@ nunca levam esse prefixo.
 
 ### Modelo de conteúdo
 
-- **Collection type** para listas: galeria, depoimentos, imprensa, passos do processo.
-- **Site Settings** é um single type implementado para nome, logo, URL pública, SEO, imagem social, links sociais e paleta ativa.
-  Contactos e disponibilidade continuam em `Homepage Section → contact`, sem campos duplicados.
-- **Homepage Section** para blocos da homepage identificados por `sectionKey`
-  (`hero`, `marquee`, `founder`, `news`, `featured-in`, `gallery`,
-  `showroom`, `testimonials`, `contact`, `footer`).
+- **Collection types** implementados para galeria, depoimentos e imprensa. Art Process é opcional e ainda não existe.
+- **Site Settings** é um single type para URL pública, links sociais e paleta ativa. Nome e logo ficam em **Page → Home → Header**; título, descrição e imagem social em **Page → Home → SEO**.
+  Contactos e disponibilidade ficam em `Page → Home → Contact`, sem campos duplicados.
+- **Page** tem `header`, `hero` e `footer` fixos e oito tipos de bloco em `content` (Dynamic Zone); `home` identifica a homepage.
+- **Homepage Section** foi retirado; todo o conteúdo da homepage está em Page e nas coleções de itens.
 
 ### Paletas de cores
+
+**Header por secção:** cada paleta tem uma lista `headerScroll`. Adiciona uma entrada
+por secção, escolhe `section` (por exemplo `gallery` ou `contact`) e define o fundo
+ e texto do header em `#RRGGBB`. O editor mostra as cores/gradientes da secção nessa
+paleta, incluindo alterações ainda não guardadas; campos herdados são identificados.
+A primeira regra ativa para a secção tem prioridade. Sem regra correspondente, o
+header usa as suas cores normais. Uma lista vazia desativa todos os overrides.
+As regras ativam quando a secção cruza 35% da altura do ecrã após 80px de scroll.
+Publica a paleta depois de editar.
+
+Ao atualizar uma SQLite existente: para o Strapi, executa
+`npm --prefix apps/cms run migrate:header-rules` e volta a iniciar o CMS.
+O comando faz backup, preserva as regras existentes e renomeia `magazine` para
+`gallery` nas regras e nos links do menu.
 
 1. Em **Content Manager → Color Palettes**, edita **Primary** ou **Secondary**, ou duplica uma delas para criar mais paletas.
 2. Expande os grupos das secções e preenche cores em `#RRGGBB`. Campos vazios mantêm as cores originais do design. Publica a paleta.
@@ -200,8 +181,8 @@ animações e ações atuais. A seleção é global no CMS; não existe seletor 
 para visitantes. Novas paletas não exigem código nem novas secções.
 
 As cores preenchidas na paleta têm prioridade sobre `backgroundColor` e `textColor`
-de Homepage Section. Estes campos antigos permanecem como fallback; conteúdo,
-imagens e ordenação continuam nas coleções atuais. Paletas e seleção suportam
+dos blocos de Page. Esses campos são fallback;
+a ordem do corpo vem de `Page.content`. Paletas e seleção suportam
 publicação e preview de drafts. Ao mudar a seleção, publica a paleta e Site Settings.
 O endpoint `/api/color-palette` lê a seleção atual sem cache e respeita o cookie de
 preview: visitantes recebem a versão publicada e preview recebe drafts. Se o CMS
@@ -215,7 +196,7 @@ bootstrap normal. Noutro ambiente, importa os dados ou cria/publica as paletas n
 
 Os nomes implementados são a referência. Mantém estes valores no CMS e no código.
 
-| Secção | `sectionKey` | ID no site | Componente | Coleção de itens no Strapi |
+| Secção | Chave do mapper / chave antiga | ID no site | Componente | Coleção de itens no Strapi |
 | --- | --- | --- | --- | --- |
 | Navegação | — | `#navbar` | `Header` | — |
 | Hero | `hero` | `#hero` | `Hero` | — |
@@ -223,16 +204,17 @@ Os nomes implementados são a referência. Mantém estes valores no CMS e no có
 | Fundador (Drew) | `founder` | `#founder` | `Founder` | — |
 | News / Featured Stories | `news` | `#work` | `News` | `Press Item` |
 | As Featured In | `featured-in` | `#press-clippings` | `FeaturedIn` | `Features` |
-| Galeria | `gallery` | `#magazine` | `Gallery` | `Gallery` |
+| Galeria | `gallery` | `#gallery` | `Gallery` | `Gallery` |
 | Showroom / About | `showroom` | `#showroom` | `Showroom` | — |
 | Depoimentos | `testimonials` | `#testimonials` | `Testimonials` | `Comments` |
 | Contacto | `contact` | `#contact` | `Contact` | `Inquiries` (submissões) |
 | Rodapé | `footer` | `#footer` | `Footer` | — |
 
-`Homepage Section` guarda o conteúdo da secção. As coleções da última coluna
-guardam os itens individuais; `Inquiries` guarda as mensagens do formulário.
+`Page.content` guarda o conteúdo do corpo em componentes `pages.*` com as chaves
+acima. Hero e Footer são campos fixos da Page. As coleções da última coluna guardam
+os itens individuais; `Inquiries` guarda as mensagens do formulário.
 
-Navegação: **Masterpieces → `#work`**, **Gallery → `#magazine`**,
+Navegação: **Masterpieces → `#work`**, **Gallery → `#gallery`**,
 **Inquire → `#contact`**, **About → `#showroom`**. A secção `#work` usa a chave
 `news`; não existe uma secção adicional com a chave `work`. `/news` lista as notícias.
 
@@ -241,17 +223,17 @@ No HTML original, `#founder` identifica o showroom. Na implementação,
 Mantém os nomes da implementação. O mapa correspondente está em
 `IMPLEMENTATION_PLAN.md` → Design To Product Map.
 
-Campos estáveis (`sectionKey`, slugs, IDs) não devem ser localizados. Textos
+Campos estáveis (slugs, UIDs de componentes, IDs) não devem ser localizados. Textos
 visíveis sim. Identificador localizado parte queries e duplica chaves.
 
-Liga media com `alternativeText` obrigatório em imagens. O Next usa esse
-texto no `alt`.
+Preencha `alternativeText` nas imagens para acessibilidade. O Next usa esse
+texto no `alt`; a revisão editorial ainda está pendente.
 
 ### Draft & Publish
 
-Mantém draft and publish ligado. O frontend só pede conteúdo publicado.
-Preview de draft é um passo posterior (`IMPLEMENTATION_PLAN.md`), não um
-atalho de agora.
+Mantém draft and publish ligado. Visitantes recebem conteúdo publicado; o
+preview autenticado já implementado lê drafts sem cache pública e mostra um banner
+com saída por POST. Configure os segredos conforme o guia de deployment.
 
 ### API
 
@@ -291,9 +273,9 @@ process.env.STRAPI_API_TOKEN  // ok — só servidor
 process.env.NEXT_PUBLIC_*     // não uses para o CMS
 ```
 
-Clientes Strapi: `src/lib/strapi.ts`, `strapi-collection.ts` e `cms-cache.ts` em `apps/web`.
+Clientes Strapi: `src/lib/pages.ts` + `page-query.ts` para Pages, `strapi.ts` para tipos de apresentação/media, `strapi-collection.ts` para listas e `cms-cache.ts` para cache.
 
-- Queries GraphQL com nome (`query HomepageSection`).
+- Queries GraphQL com nome (`query HomePage`).
 - Tipagem alinhada com o schema do CMS.
 - Data Cache com revalidação de 60 segundos em produção; leituras diretas em desenvolvimento e preview.
 - Configuração ausente ou erro do CMS devolve `null`/`[]`; os pedidos têm timeout.
@@ -305,8 +287,8 @@ Cada secção da homepage é um componente em `apps/web/src/components`.
 A página pede dados e passa-os para o componente:
 
 ```tsx
-const hero = await getHomepageSection("hero");
-<Hero section={hero} />
+const page = await getPage({ preview });
+<RenderPage content={page.content} />
 ```
 
 O componente define o layout. O CMS define o texto, a media e as cores.
@@ -358,16 +340,29 @@ Press cream      #F7F3ED
 
 ---
 
+## Page Builder
+
+Edite **Page → Home** (`slug: home`). Header, Hero e Footer são campos fixos;
+os oito blocos intermédios em `content` podem ser reordenados. As listas de
+News, Features, Gallery e Testimonials continuam nas suas coleções; uma seleção
+vazia mostra todos os itens publicados, uma seleção preenchida limita os itens.
+Preview mostra o rascunho; visitantes recebem a versão publicada. O SEO fica em Page → Home → SEO e fornece os valores padrão para o site. Paletas e cores de scroll continuam em Site Settings.
+
+A antiga coleção Homepage Section e os comandos que a copiavam foram removidos.
+Progresso: [Page Builder Plan](docs/PAGE_BUILDER_PLAN.md).
+
 ## Como adicionar uma secção
 
 A homepage usa o page-builder em `apps/web/src/page-builder/` (registry +
 mapper + `getPage` + `RenderPage`). Não adicionar `switch` em `page.tsx`.
-O plano (incluindo o que falta no Strapi / Dynamic Zones) está em
+O estado implementado e as tarefas restantes estão em
 [docs/PAGE_BUILDER_PLAN.md](docs/PAGE_BUILDER_PLAN.md).
 
-1. Cria e publica a entry no Strapi (`sectionKey` estável, ex. `gallery`).
+1. Para um tipo já existente, adicione o bloco em **Page → Home → content**,
+   ajuste a ordem e publique. Para um novo tipo, crie primeiro o componente
+   `pages.*` no Strapi e adicione-o à Dynamic Zone e aos fragmentos GraphQL.
 2. Se forem itens de lista, usa um collection type próprio, não um campo
-   JSON dentro de Homepage Section.
+   JSON dentro de um bloco.
 3. No Next, adiciona um mapper em `page-builder/mappers.ts` e o componente
    em `page-builder/registry.ts`.
 4. Define o comportamento quando não existe conteúdo no componente.
@@ -381,38 +376,50 @@ O plano (incluindo o que falta no Strapi / Dynamic Zones) está em
 A equipa recebe código, schemas e o snapshot de **dados e media** pelo Git.
 Os dois ficheiros em `handoff/` são a exceção explícita à regra de ignorar exports;
 a base SQLite, os uploads de trabalho e os backups locais continuam ignorados.
-Os comandos de importação estão no início deste README e no
-[guia SQLite](docs/LOCAL_SQLITE_HANDOFF.md).
+O snapshot atual ainda é antigo e não deve ser importado com este schema.
+O estado e o próximo procedimento estão no [guia SQLite](docs/LOCAL_SQLITE_HANDOFF.md).
 
 Para atualizar o snapshot público, com Strapi parado, exporta a partir de `apps/cms`:
 
 ```bash
-npm run strapi -- export --only content,files --exclude-content-types api::inquiry.inquiry --file ../../handoff/bott-content --key "$(cat ../../handoff/bott-content-key.txt)"
+npm run strapi -- export --only content,files --exclude-content-types api::inquiry.inquiry,plugin::users-permissions.user --file ../../handoff/bott-content --key "$(cat ../../handoff/bott-content-key.txt)"
 ```
 
 Confirma que o snapshot contém apenas conteúdo que pode ser público antes de
 commitar a atualização. A chave versionada serve para importar o ficheiro;
 não torna privados os dados publicados neste repositório.
 
-A ordem do corpo da homepage vem do `sortOrder` de Homepage Section. Cabeçalho
+A ordem do corpo da homepage vem da posição dos blocos em `Page.content`. Cabeçalho
 e rodapé mantêm as posições semânticas. O `sortOrder` dos itens ordena as coleções;
 Gallery, Features, Press Item e Comments carregam todas as páginas publicadas.
 
-## Comandos
+## Comandos (a partir da raiz)
 
 ```bash
-# CMS
-cd apps/cms
-npm run develop          # admin + API com reload
-npm run build            # verifica o Strapi
-npm run start            # produção local, sem reload
+npm --prefix apps/cms run develop
+npm --prefix apps/web run dev
 
-# Frontend
-cd apps/web
-npm run dev
-npm run lint
-npx next build --webpack
+npm --prefix apps/cms test
+npm --prefix apps/cms run build
+npm --prefix apps/web test
+npm --prefix apps/web run lint
+npm --prefix apps/web run typecheck
+npm --prefix apps/web run build
 ```
+
+Use terminais separados para os dois servidores. Mais detalhes nos READMEs de
+[CMS](apps/cms/README.md) e [frontend](apps/web/README.md).
+
+## Estado da verificação e trabalho restante
+
+Em 2026-09-18: 29 testes frontend e 3 testes CMS passaram; ambos os builds e o
+lint de código-fonte passaram. O editor ordenado/fechado e a homepage foram
+verificados localmente. Não equivale a auditoria completa de acessibilidade ou produção.
+
+Falta atualizar/testar o snapshot, concluir revisão visual/acessibilidade,
+substituir conteúdo de exemplo, rever plugins e configurar/verificar hosting,
+media e SMTP. Process, idiomas adicionais e novas rotas CMS são opcionais.
+A checklist atual está em [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
 
 ## Segurança
 
@@ -425,7 +432,7 @@ npx next build --webpack
 ## Funcionalidades adicionais implementadas
 
 - Fontes Cormorant Garamond, Montserrat e Alex Brush com `next/font` (servidas pelo Next).
-- `Site Settings` publicado localmente; logo original importado sem alterar o asset de origem.
+- `Site Settings` publicado localmente; logo original preservado em Page → Home → Header.
 - SEO, imagem social e links sociais do rodapé provenientes do CMS; URL pública fica por preencher quando existir domínio.
 - Ordenação de secções pelo CMS, menu mobile, link para saltar ao conteúdo e reveals com reduced motion.
 - Galeria circular preservada, com botão adicional para lightbox, navegação anterior/seguinte e Escape.
@@ -449,3 +456,11 @@ sem email, o formulário continua a guardar a mensagem em Strapi.
 
 Até lá, SQLite local chega para desenvolvimento. Não uses a base local
 como fonte de verdade da equipa.
+
+### Editor de Page
+
+A extensão em `apps/cms/src/admin/app.tsx` organiza os campos na ordem do site e
+fecha inicialmente os cartões fixos e SEO. A lista intermédia usa os controlos
+nativos do Strapi. A configuração Vite reutiliza dois renderizadores internos
+do Strapi 5.53; ao atualizar Strapi, verifique o build e a abertura/edição dos
+cartões, permissões, media e relações. Não há alterações em `node_modules`.

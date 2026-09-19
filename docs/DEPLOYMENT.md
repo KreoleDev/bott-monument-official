@@ -1,5 +1,7 @@
 # Deployment and content operations
 
+Current status: **2026-09-18**. Preparation is implemented; production launch remains pending.
+
 **For developer-to-developer SQLite copies, use [LOCAL_SQLITE_HANDOFF.md](LOCAL_SQLITE_HANDOFF.md).**
 The production infrastructure below is optional and is not required for that workflow.
 
@@ -17,8 +19,12 @@ has been selected or changed. Local SQLite and uploads remain authoritative for 
    data, so back up any existing destination before proceeding.
 5. Use Strapi's import command on the destination. Do not import into the current local
    database just to update code. Verify upload provider compatibility during migration.
-6. Verify all 10 homepage sections, Gallery, Features, Comments, Press Item and Site
-   Settings after migration. Recreate admin accounts and tokens as needed.
+6. Verify Page `home` with fixed Header/Hero/Footer, all eight middle blocks,
+   selected item relations, Gallery, Features, Comments, Press Item, palettes and
+   Site Settings. Verify independent drafts/publication, media and local accounts/tokens.
+
+The committed pre-Page handoff archive is not compatible with the current schema.
+Do not import it here. Refresh and restore-test the archive first; see the handoff guide.
 
 ## CMS service
 
@@ -47,7 +53,8 @@ has been selected or changed. Local SQLite and uploads remain authoritative for 
   Local/private IP optimization is allowed only in development by the app's configuration.
 - `PREVIEW_SECRET`, `REVALIDATION_SECRET`: match the CMS configuration.
 - Optional `STRAPI_PREVIEW_TOKEN`: separate read token for draft requests.
-- Set the real public site URL, logo and SEO in **Site Settings**.
+- Set the public site URL in **Site Settings**. Set the site name/logo in **Page → Home → Header** and metadata/social image in **Home → SEO**.
+- Set homepage logo/name/menu in **Page → Home → Header** and page SEO in its SEO card.
 
 ## Preview and publication refresh
 
@@ -59,8 +66,8 @@ has been selected or changed. Local SQLite and uploads remain authoritative for 
 - A webhook already exists for the local installation. Update its URL for the deployed site.
   Secrets are held in local env/database, not source code.
 - Public pages use Next.js caching with 60-second revalidation; webhook marks data stale.
-  Draft requests use no-store. The homepage body follows section `sortOrder`; navigation
-  and footer remain in their semantic positions.
+  Draft requests use no-store. The eight middle sections follow `Page.content` order;
+  Header, Hero and Footer occupy fixed positions. Item collections use their own sort order.
 - Successful complete reads, including an intentional empty result, replace cached content.
   Failed reads preserve the last successful public result in the running process. Production
   also uses Next's persistent Data Cache. A cold process without a cached result shows the
@@ -81,10 +88,19 @@ Submissions are saved even when email is disabled or delivery fails.
 ## Verification and launch
 
 - Web: `npm run lint`, `npm test`, `npm run typecheck`, `npm run build -- --webpack`.
-- CMS: `npx tsc --noEmit`, `npm run build`.
+- CMS: `npm test`, `npx tsc --noEmit`, `npx tsc -p src/admin/tsconfig.json --noEmit`, `npm run build`.
 - While local Next dev runs, isolate a build with `NEXT_DIST_DIR=.next-build npm run build -- --webpack`.
 - Review desktop/mobile layouts, gallery drag versus image-opening, modal focus/close,
   reduced motion, long CMS content, real form submission, preview exit, and publication refresh.
 - Replace sample phone, commission availability, copyright and testimonial copy with approved values.
 - Review dependency audit findings before launch; do not use a forced major-version upgrade
   as an automatic fix. CI checks code/builds; it does not provision or migrate services.
+
+## Completed local verification versus launch work
+
+After Homepage Section removal, 29 frontend and 3 CMS tests, both production
+builds and frontend source lint passed. The editor order/collapse/open behavior
+and live Page rendering were checked locally. These results do not verify SMTP,
+production hosting/storage, a new snapshot restore or a full accessibility audit.
+The custom editor uses Strapi 5.53 internal renderer aliases; test that integration
+when upgrading Strapi. Plugin keep/remove decisions remain open in the project plan.

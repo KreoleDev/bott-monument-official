@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import vm from "node:vm";
 import ts from "typescript";
 import { loadTs } from "./load-ts.mjs";
-const { headerScrollRule } = loadTs("../src/lib/color-palette.ts");
+const { headerScrollRule, headerScrollRules } = loadTs("../src/lib/color-palette.ts");
 
 test("scroll settings default legacy palettes and reject unsafe colors and sections", () => {
   assert.equal(headerScrollRule(null).section, "work");
@@ -39,6 +39,7 @@ test("header applies local rules, restores colors, and follows palette updates w
     removeEventListener: (name) => listeners.delete(name),
   };
   let rect = { top: 200, bottom: 800 };
+  let contactRect = { top: 900, bottom: 1500 };
   const document = {
     body: {
       dataset: {
@@ -49,12 +50,17 @@ test("header applies local rules, restores colors, and follows palette updates w
         }),
       },
     },
-    getElementById: (id) => (id === "work" ? { getBoundingClientRect: () => rect } : null),
+    getElementById: (id) =>
+      id === "work" || id === "gallery"
+        ? { getBoundingClientRect: () => rect }
+        : id === "contact"
+          ? { getBoundingClientRect: () => contactRect }
+          : null,
   };
   const cleanup = vm.runInNewContext(`${js};effect()`, {
     window,
     document,
-    headerScrollRule,
+    headerScrollRules,
     setIsScrolled: (value) => (scrolled = value),
     setScrollColors: (value) => {
       colors = value;
@@ -91,10 +97,36 @@ test("header applies local rules, restores colors, and follows palette updates w
   document.body.dataset.headerScroll = JSON.stringify({ section: "contact" });
   updateRule();
   assert.equal(colors, undefined);
+  document.body.dataset.headerScroll = JSON.stringify([
+    { section: "gallery", backgroundColor: "#0000FF" },
+    { section: "contact", backgroundColor: "#FFFF00" },
+  ]);
+  updateRule();
+  assert.equal(colors["--palette-header-background"], "#0000FF");
+  rect = { top: -800, bottom: 0 };
+  contactRect = { top: 0, bottom: 900 };
+  listeners.get("scroll")();
+  assert.equal(colors["--palette-header-background"], "#FFFF00");
+  document.body.dataset.headerScroll = JSON.stringify([]);
+  updateRule();
+  assert.equal(colors, undefined);
   window.scrollY = 0;
   listeners.get("scroll")();
   assert.equal(scrolled, false);
   cleanup();
   assert.equal(listeners.size, 0);
   assert.equal(disconnected, true);
+});
+
+test("lists preserve ordering, disabled rules and intentionally empty settings", () => {
+  assert.equal(headerScrollRules(null).length, 1);
+  assert.equal(headerScrollRules([]).length, 0);
+  const rules = headerScrollRules([
+    { section: "magazine", backgroundColor: "#0000FF" },
+    { section: "contact", enabled: false, backgroundColor: "url(x)" },
+  ]);
+  assert.equal(rules[0].section, "gallery");
+  assert.equal(rules[0].backgroundColor, "#0000FF");
+  assert.equal(rules[1].enabled, false);
+  assert.equal(rules[1].backgroundColor, "#0A0A0A");
 });

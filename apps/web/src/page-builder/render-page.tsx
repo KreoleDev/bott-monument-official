@@ -9,7 +9,7 @@ export function RenderPage({ content }: { content: MappedFragment[] }) {
         const fragment = FRAGMENT_REGISTRY[item.fragmentName];
         if (!fragment || fragment.placement !== "main") return null;
         const Component = fragment.component as ComponentType<Record<string, unknown>>;
-        return <Component key={item.fragmentName} {...item.payload} />;
+        return <Component key={item.key || item.fragmentName} {...item.payload} />;
       })}
     </>
   );

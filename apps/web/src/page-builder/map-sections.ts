@@ -1,4 +1,4 @@
-import type { HomepageSection } from "@/lib/strapi";
+import type { SectionContent } from "@/lib/strapi";
 import { CHROME_FRAGMENT_KEYS, MAPPERS } from "./mappers";
 import type { FragmentName, MappedFragment, PageExtras } from "./types";
 
@@ -8,7 +8,7 @@ function isFragmentName(key: string): key is FragmentName {
   return Object.hasOwn(MAPPERS, key);
 }
 
-export function mapSections(sections: HomepageSection[], extras: PageExtras): MappedFragment[] {
+export function mapSections(sections: SectionContent[], extras: PageExtras): MappedFragment[] {
   return sections.flatMap((section) => {
     const key = section.sectionKey;
     if (!isFragmentName(key) || CHROME_KEYS.has(key)) return [];
@@ -22,7 +22,7 @@ export function mapSections(sections: HomepageSection[], extras: PageExtras): Ma
   });
 }
 
-export function mapFooterChrome(sections: HomepageSection[], extras: PageExtras) {
+export function mapFooterChrome(sections: SectionContent[], extras: PageExtras) {
   const footer = sections.find((section) => section.sectionKey === "footer") ?? null;
   return footer ? MAPPERS.footer(footer, extras) : null;
 }

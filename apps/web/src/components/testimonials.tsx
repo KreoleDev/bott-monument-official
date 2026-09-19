@@ -1,4 +1,4 @@
-import type { HomepageSection } from "@/lib/strapi";
+import type { SectionContent } from "@/lib/strapi";
 import type { Comment } from "@/lib/comments";
 import { TestimonialColumns } from "./testimonial-columns";
 import "./testimonials.css";
@@ -7,7 +7,7 @@ export function Testimonials({
   section,
   comments,
 }: {
-  section: HomepageSection | null;
+  section: SectionContent | null;
   comments: Comment[];
 }) {
   if (!section || !comments.length) return null;

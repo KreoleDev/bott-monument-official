@@ -1,4 +1,4 @@
-import { getStrapiMediaUrl, type HomepageSection } from "@/lib/strapi";
+import { getStrapiMediaUrl, type SectionContent } from "@/lib/strapi";
 import type { GalleryItem } from "@/lib/gallery";
 import { GalleryCarousel } from "./gallery-carousel";
 
@@ -6,7 +6,7 @@ export function Gallery({
   section,
   items,
 }: {
-  section: HomepageSection | null;
+  section: SectionContent | null;
   items: GalleryItem[];
 }) {
   if (!section) return null;

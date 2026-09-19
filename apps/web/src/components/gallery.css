@@ -1,5 +1,5 @@
 /* Circular gallery and access dialog copied from the local design. */
-#magazine {
+#gallery {
   position: relative;
   background: var(--palette-gallery-background, var(--section-gallery-background, #2c3a46));
   line-height: normal;
@@ -378,7 +378,7 @@
 }
 
 /* Keep native-dialog focus, Escape and modal behavior with the design's overlay. */
-#magazine .cg-title {
+#gallery .cg-title {
   color: var(
     --palette-gallery-text-color,
     var(--section-gallery-text, var(--palette-gallery-text-color, var(--bone)))
@@ -418,7 +418,7 @@
   }
 }
 @media (max-width: 900px) {
-  #magazine {
+  #gallery {
     padding: 4.5rem 0 5.5rem;
   }
   .cg-header-shell {
@@ -441,7 +441,7 @@
   }
 }
 @media (min-width: 700px) and (max-width: 1180px) {
-  #magazine {
+  #gallery {
     padding: 5rem 0 6.4rem;
   }
   .cg-header-shell {
@@ -533,20 +533,20 @@
   padding: 0.5rem;
 }
 
-#magazine .mag-access-trigger {
+#gallery .mag-access-trigger {
   background: var(--palette-gallery-button-color, var(--bone));
   border-color: var(
     --palette-gallery-border-color,
     rgba(var(--palette-gallery-accent-color-rgb, 201, 160, 80), 0.55)
   );
 }
-#magazine .mag-access-trigger-text {
+#gallery .mag-access-trigger-text {
   color: var(--palette-gallery-button-text-color, #111111);
 }
-#magazine .mag-access-trigger:hover {
+#gallery .mag-access-trigger:hover {
   background: var(--palette-gallery-button-text-color, #111111);
 }
-#magazine .mag-access-trigger:hover .mag-access-trigger-text {
+#gallery .mag-access-trigger:hover .mag-access-trigger-text {
   color: var(--palette-gallery-button-color, #ffffff);
 }
 .mag-access-card .mag-access-primary {

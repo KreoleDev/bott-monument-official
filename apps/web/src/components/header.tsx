@@ -1,6 +1,6 @@
 "use client";
 
-import { headerScrollRule } from "@/lib/color-palette";
+import { headerScrollRules } from "@/lib/color-palette";
 import type { CSSProperties } from "react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -8,9 +8,11 @@ import { useEffect, useRef, useState } from "react";
 export function Header({
   logo,
   siteName = "Bott Monument",
+  links,
 }: {
   logo?: string | null;
   siteName?: string;
+  links?: { label: string; href: string }[];
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
@@ -19,28 +21,28 @@ export function Header({
   const [scrollColors, setScrollColors] = useState<CSSProperties>();
 
   useEffect(() => {
-    let rule = headerScrollRule();
-    let section: HTMLElement | null = null;
+    let rules = headerScrollRules();
     let lastColors = "";
     const syncHeaderState = () => {
       setIsScrolled(window.scrollY > 80);
-      const rect = section?.getBoundingClientRect();
       // Geometry is local; scrolling never requests CMS data.
       const targetLine = window.innerHeight * 0.35;
       const active =
-        rule.enabled &&
-        window.scrollY > 80 &&
-        rect &&
-        rect.top <= targetLine &&
-        rect.bottom >= targetLine;
-      const colorsKey = active ? `${rule.backgroundColor}/${rule.textColor}` : "";
+        window.scrollY > 80
+          ? rules.find((rule) => {
+              if (!rule.enabled) return false;
+              const rect = document.getElementById(rule.section)?.getBoundingClientRect();
+              return rect && rect.top <= targetLine && rect.bottom > targetLine;
+            })
+          : undefined;
+      const colorsKey = active ? `${active.backgroundColor}/${active.textColor}` : "";
       if (colorsKey === lastColors) return;
       lastColors = colorsKey;
       setScrollColors(
         active
           ? ({
-              "--palette-header-background": rule.backgroundColor,
-              "--palette-header-text-color": rule.textColor,
+              "--palette-header-background": active.backgroundColor,
+              "--palette-header-text-color": active.textColor,
             } as CSSProperties)
           : undefined,
       );
@@ -48,11 +50,10 @@ export function Header({
 
     const syncRule = () => {
       try {
-        rule = headerScrollRule(JSON.parse(document.body.dataset.headerScroll || "null"));
+        rules = headerScrollRules(JSON.parse(document.body.dataset.headerScroll || "null"));
       } catch {
-        rule = headerScrollRule();
+        rules = headerScrollRules();
       }
-      section = document.getElementById(rule.section);
       syncHeaderState();
     };
     syncRule();
@@ -136,18 +137,20 @@ export function Header({
             if ((event.target as HTMLElement).closest("a")) setMenuOpen(false);
           }}
         >
-          <li>
-            <a href="#work">Masterpieces</a>
-          </li>
-          <li>
-            <a href="#magazine">Gallery</a>
-          </li>
-          <li>
-            <a href="#contact">Inquire</a>
-          </li>
-          <li>
-            <a href="#showroom">About</a>
-          </li>
+          {(
+            links ?? [
+              { label: "Masterpieces", href: "#work" },
+              { label: "Gallery", href: "#gallery" },
+              { label: "Inquire", href: "#contact" },
+              { label: "About", href: "#showroom" },
+            ]
+          )
+            .filter((link) => /^(#|\/(?!\/)|https?:\/\/)/i.test(link.href))
+            .map((link, index) => (
+              <li key={`${link.href}-${index}`}>
+                <a href={link.href === "#magazine" ? "#gallery" : link.href}>{link.label}</a>
+              </li>
+            ))}
         </ul>
       </nav>
     </>

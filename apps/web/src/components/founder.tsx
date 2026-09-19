@@ -1,9 +1,9 @@
 import Image from "next/image";
 import type { CSSProperties } from "react";
-import { getStrapiMediaUrl, type HomepageSection } from "@/lib/strapi";
+import { getStrapiMediaUrl, type SectionContent } from "@/lib/strapi";
 
 type FounderProps = {
-  section: HomepageSection | null;
+  section: SectionContent | null;
 };
 
 const defaultTitle = "The Most Trusted Name\nin Memorial Artistry";

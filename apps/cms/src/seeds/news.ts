@@ -62,25 +62,5 @@ export async function seedNews(strapi: Core.Strapi) {
     });
   }
 
-  const news = await strapi
-    .documents("api::homepage-section.homepage-section")
-    .findFirst({ filters: { sectionKey: "news" } });
-  if (!news) {
-    await strapi.documents("api::homepage-section.homepage-section").create({
-      status: "published",
-      data: {
-        sectionKey: "news",
-        eyebrow: "Our Work",
-        title: "Where Art Becomes News.",
-        quote: "Every curve.\nEvery inscription.\nEvery detail.",
-        description: "Thoughtfully crafted to become\na lasting legacy for generations.",
-        backgroundColor: "#2C3A46",
-        textColor: "#F7F2EA",
-        buttonLabel: "All Press Coverage",
-        buttonHref: "/news",
-        sortOrder: 4,
-      },
-    });
-  }
-  strapi.log.info("News design content imported and published.");
+  strapi.log.info("Press items published.");
 }

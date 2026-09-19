@@ -1,0 +1,36 @@
+{
+  "collectionName": "components_pages_gallery",
+  "info": {
+    "displayName": "Gallery"
+  },
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "buttonLabel": {
+      "type": "string"
+    },
+    "buttonHref": {
+      "type": "string"
+    },
+    "galleryAccess": {
+      "type": "component",
+      "repeatable": false,
+      "component": "gallery.access"
+    },
+    "backgroundColor": {
+      "type": "string"
+    },
+    "textColor": {
+      "type": "string"
+    },
+    "galleryItems": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::gallery-item.gallery-item"
+    }
+  }
+}

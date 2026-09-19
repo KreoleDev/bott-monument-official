@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Bott Monument frontend
 
-## Getting Started
+Next.js 16, React 19, TypeScript and Tailwind 4. Use Node 22 and npm.
+Visual source: `../../bott-monument-design/index.html`.
 
-First, run the development server:
+## Run locally
+
+From `apps/web`, run `npm ci`. On a new installation only, copy `.env.example` to
+`.env.local`; preserve an existing file. Configure the server-only Strapi URL and
+read token, plus a separate create-only inquiry token. Start the CMS separately.
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Site: http://localhost:3000. CMS: http://localhost:1337.
+A published Page with slug `home` and its content must exist; no demo body is
+silently substituted when the CMS is unavailable or the Page is missing.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Data and presentation
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `/` reads Page.header, hero, content, footer and SEO through GraphQL.
+- Header/Hero/Footer render in fixed positions; middle blocks follow Page.content order.
+- `src/page-builder/` contains the loader, adapters, registry and renderer.
+- Existing visual components consume `SectionContent`, a presentation type, not a CMS collection.
+- `/news` is a dedicated Press Item route. Other CMS slugs do not automatically create public routes.
+- Collections/selections are paginated; empty block selections use all published items.
+- Site Settings supplies the public URL, social links and active palette. Home Header owns the site name, menu and logo. Home SEO supplies metadata defaults, including the social image; /news retains its own title.
+- Fonts: Cormorant Garamond, Montserrat and Alex Brush through `next/font`.
+- Next Image media origins derive from `STRAPI_URL` and `MEDIA_ORIGINS`.
 
-## Learn More
+Published reads use a 60-second production cache and authenticated revalidation.
+Preview uses uncached draft reads, a banner and POST exit. Failed reads retain the
+last complete public result when available; valid empty results replace it.
+Contact submissions validate against the published Page and save private Inquiries.
 
-To learn more about Next.js, take a look at the following resources:
+## Checks
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm test
+npm run lint
+npm run typecheck
+npm run build
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+CI uses `npm run build -- --webpack`. To isolate output while development runs:
 
-## Deploy on Vercel
+```bash
+NEXT_DIST_DIR=.next-build npm run build -- --webpack
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Latest local verification (2026-09-18): 29 tests and production build passed.
+Source lint passed with `npm run lint -- --ignore-pattern '**/.next/**'` because
+this working checkout contains nested generated output; clean CI uses normal lint.
+Full cross-device/accessibility review and deployment verification remain pending.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Read [AGENTS.md](AGENTS.md) and the installed Next documentation before framework
+changes. Shared setup is in the [root README](../../README.md); operations are in
+[DEPLOYMENT.md](../../docs/DEPLOYMENT.md).

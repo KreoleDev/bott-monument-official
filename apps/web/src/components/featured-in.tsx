@@ -1,4 +1,4 @@
-import { getStrapiMediaUrl, type HomepageSection } from "@/lib/strapi";
+import { getStrapiMediaUrl, type SectionContent } from "@/lib/strapi";
 import type { Feature } from "@/lib/features";
 import { FeaturedInGallery } from "./featured-in-gallery";
 
@@ -6,7 +6,7 @@ export function FeaturedIn({
   section,
   features,
 }: {
-  section: HomepageSection | null;
+  section: SectionContent | null;
   features: Feature[];
 }) {
   if (!section) return null;

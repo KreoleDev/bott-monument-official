@@ -1,130 +1,63 @@
 # Page Builder Plan
 
-Homepage rendering uses a small motor: registry → mapper → `getPage` →
-`RenderPage`. Strapi is **not** changed in this phase.
+Current state: **2026-09-18**.
 
-Owner of the CMS follow-up: **Esmael**. Anything the current schema cannot
-express is listed under [Strapi follow-up](#strapi-follow-up-esmael).
+## Implemented
 
-## Now (this branch)
+- [x] Page collection with draft/publish, stable `slug`, localized content and SEO.
+- [x] `home` populated from the original content, preserving media and nested fields.
+- [x] Fixed Header, Hero and Footer fields; eight middle Dynamic Zone block types.
+- [x] Editor displays Header → Hero → middle sections → Footer, initially collapsed.
+- [x] Typed GraphQL query, preview, caching/revalidation and per-page SEO.
+- [x] Optional item selections; empty selections use all published collection items.
+- [x] Contact submission validation uses the published Page choices.
+- [x] Homepage Section retired from schema, GraphQL, local SQLite and seed code.
 
-Replace the homepage `switch (section.sectionKey)` with a small motor:
+## Current flow
 
-```text
-Homepage Section + collections
-  → getPage()
-  → mapSections() / mappers
-  → RenderPage + fragment registry
-  → existing React components (unchanged)
-```
+`Page.header / hero / content / footer` + collections + Site Settings
+→ `getPage` → existing visual components and `RenderPage`.
 
-Files:
+`SectionContent` is a presentation props type, not a CMS content type.
+The middle list supports Marquee, Founder, News, Featured In, Gallery, Showroom,
+Testimonials and Contact. Only these blocks can be dragged. Header owns the logo,
+site name and navigation links. Home SEO owns metadata and social image, also used
+as site-wide defaults. Site Settings contains only public URL, social links and
+active palette; header scroll colors remain in the palette.
 
-```text
-apps/web/src/page-builder/
-  types.ts
-  mappers.ts
-  map-sections.ts
-  get-page.ts
-  registry.ts
-  render-page.tsx
-  index.ts
-```
+## Retirement — 2026-09-18
 
-Rules:
+Backed up SQLite, verified complete Home drafts and published content, deleted all
+10 legacy documents through Strapi (including their owned nested components), then
+removed the collection schema and its database tables. Page versions, media and
+independent collection records were preserved. The old copy commands and their
+migration-only tests were retired. Old snapshots/backups remain recovery artifacts;
+they are not compatible imports for the current schema.
 
-- CMS shape stays in mappers. Components keep today's props.
-- A new section is a mapper + registry entry. Do not add switches to `page.tsx`.
-- Header / Footer / Preview / ScrollReveal stay chrome (outside `<main>`), same as today.
-- Unknown `sectionKey` values are skipped.
-- No Dynamic Zones, no new Strapi content types, no visual redesign.
+A teammate still using Homepage Section needs a backup and verified migration or
+compatible handoff before starting this schema-removal version. The retired copy
+commands are no longer provided; do not run old instructions against this schema.
 
-## How to add a section (frontend, current schema)
+## Admin integration
 
-1. Publish a `Homepage Section` with a stable `sectionKey`.
-2. If it needs a list, use an existing collection type (or ask Esmael for a new one).
-3. Add a mapper in `mappers.ts` and a component entry in `registry.ts`.
-4. Keep layout and motion in the React component, not in the motor.
+`src/admin/app.tsx` orders Page fields and collapses the fixed cards and SEO.
+Middle blocks use native Strapi controls. Two Vite aliases reuse Strapi 5.53
+internal input renderers to retain media, relations, validation and permissions.
+Recheck the admin build and editor interactions when upgrading Strapi.
 
-## Later (after Esmael adjusts Strapi)
+## Remaining
 
-When Dynamic Zones exist, the motor stays. Only the data source and mappers
-change:
+- Full visual/editorial acceptance against the local design.
+- Refresh the public content/media archive with Pages and test import into a copy
+  of an existing SQLite installation, preserving private records and accounts.
+- Additional slug routes, Art Process and extra languages are future scope.
+  `/news` remains a dedicated route using Press Item.
 
-1. `getPage` reads `Page.content` instead of a flat `Homepage Section` list.
-2. Mappers key off `__typename` (`ComponentPagesHero`, …) instead of `sectionKey`.
-3. Each fragment can own its GraphQL join.
-4. Components should not need a rewrite if mappers keep the same props.
+## Latest verification
 
-Optional after that: slug pages (`/news` as a CMS page), header/footer as
-layout fragments, Art Process section.
-
----
-
-## Strapi follow-up (Esmael)
-
-Do **not** block the frontend motor on these. Documented so the CMS can catch
-up without another homepage rewrite.
-
-### Cannot model cleanly today
-
-| Need | Current workaround | Desired Strapi shape |
-| --- | --- | --- |
-| Ordered homepage blocks with typed fields | One generic `Homepage Section` bag; unused component fields sit on every entry | Collection or single `Page` with **Dynamic Zone** `content` |
-| Marquee phrases | `title` split on `\|`, plus hardcoded fallbacks in `marquee-strip.tsx` | Repeatable component `marquee.item` `{ label }` |
-| Header nav links | Hardcoded in `header.tsx` | Repeatable `navigation.link` `{ label, href }` on Site Settings or a Header single type |
-| Footer as layout, not a homepage block | `sectionKey: footer` skipped in `<main>` | Footer component on Site Settings / Page, not a section in the zone |
-| Section → list items | Page loads **all** Press / Gallery / Features / Comments | Optional relations on each DZ component; empty relation = current “all published, sorted” fallback |
-| Per-block GraphQL | One `HOMEPAGE_FIELDS` query for every section | Fragment joins (`... on ComponentPagesGallery { ... }`) |
-| Per-page SEO | Only global Site Settings SEO | SEO component on `Page` |
-| Extra pages (e.g. `/news`) | Dedicated Next route + collection fetch | `Page.slug` + same motor |
-| Art Process (`#process`) | Out of MVP; commented in the design HTML | Optional DZ component when editorial wants it |
-
-`contact`, `showroom`, `footer`, `galleryAccess` nested components already exist
-but live on the generic Homepage Section, so every section *can* carry them.
-In Dynamic Zones, attach each component only to the block that uses it.
-
-### Suggested content types
-
-**`Page`** (collection, draft/publish, i18n on copy only):
-
-- `slug` (not localized, unique) — `home` for the homepage
-- `title`, `seo` (meta title/description/image)
-- `content` Dynamic Zone, allowed components below
-
-**Dynamic Zone components** (map 1:1 with today’s `sectionKey`):
-
-| Component | Fields to move | Relations |
-| --- | --- | --- |
-| `pages.hero` | title, description, button, colors, video | — |
-| `pages.marquee` | — | repeatable `marquee.item` |
-| `pages.founder` | title, description, quote, signature, person, image, colors | — |
-| `pages.news` | eyebrow, title, description, button | optional `press-item` (many) |
-| `pages.featured-in` | title, description | optional `feature` (many) |
-| `pages.gallery` | title + `gallery.access` | optional `gallery-item` (many) |
-| `pages.showroom` | `showroom.details` + image | — |
-| `pages.testimonials` | title, description | optional `comment` (many) |
-| `pages.contact` | `contact.details` | inquiries stay a separate collection for submissions |
-| `pages.process` | later, not MVP | — |
-
-Keep existing collections: Press Item, Feature, Gallery Item, Comment, Inquiry,
-Color Palette, Site Settings.
-
-**Header:** add nav links to Site Settings (or `Header` single type). Logo/SEO
-already live there.
-
-**Footer:** move `footer.details` off Homepage Section onto Site Settings or Page.
-
-### Migration notes
-
-- Keep published copy. Seed/mapping: `sectionKey` → DZ `__typename`.
-- Keep `en` as the only public locale; do not localize slugs or component UIDs.
-- After the schema lands, tell the frontend: `getPage` will switch to `Page`
-  by slug and mappers will read `__typename`. No need to change Hero/Gallery/etc.
-- Until then, editors keep using Homepage Section exactly as today.
-
-## Out of scope
-
-- Changing Strapi schemas or seeds in this branch
-- Rewriting section visuals
-- Porting design-only layout switchers
+29 frontend tests and 3 CMS integration tests passed after retirement; both
+production builds and source lint passed. The editor was checked in an isolated
+browser for ordering, closed cards, opening fields and absence of automatic
+unsaved changes. Local Page rendering and independent draft/published reads were
+verified. Full visual/accessibility acceptance and a new archive restore remain
+pending, as listed above and in [the project plan](../IMPLEMENTATION_PLAN.md).

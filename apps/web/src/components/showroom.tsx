@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { getStrapiMediaUrl, type HomepageSection } from "@/lib/strapi";
+import { getStrapiMediaUrl, type SectionContent } from "@/lib/strapi";
 import "./showroom.css";
 
 function DetailIcon({ kind }: { kind: "location" | "calendar" | "clock" }) {
@@ -27,7 +27,7 @@ function DetailIcon({ kind }: { kind: "location" | "calendar" | "clock" }) {
   );
 }
 
-export function Showroom({ section }: { section: HomepageSection | null }) {
+export function Showroom({ section }: { section: SectionContent | null }) {
   const image = getStrapiMediaUrl(section?.image);
   if (!section || !section.showroom || !image) return null;
   const details = section.showroom;

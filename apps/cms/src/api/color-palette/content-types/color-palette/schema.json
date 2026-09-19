@@ -76,7 +76,7 @@
     },
     "headerScroll": {
       "type": "component",
-      "repeatable": false,
+      "repeatable": true,
       "component": "theme.header-scroll"
     }
   }

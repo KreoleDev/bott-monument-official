@@ -4,12 +4,14 @@ import type { Core } from "@strapi/strapi";
 export async function seedColorPalettes(strapi: Core.Strapi) {
   const palettes = strapi.documents("api::color-palette.color-palette");
   const primary = {
-    headerScroll: {
-      enabled: true,
-      section: "work" as const,
-      backgroundColor: "#0A0A0A",
-      textColor: "#F5F5F0",
-    },
+    headerScroll: [
+      {
+        enabled: true,
+        section: "work" as const,
+        backgroundColor: "#0A0A0A",
+        textColor: "#F5F5F0",
+      },
+    ],
     header: { backgroundColor: "#24303D", backgroundEndColor: "#111820", gradientAngle: 160 },
     hero: { backgroundColor: "#0A0A0A" },
     marquee: { backgroundColor: "#24303D", backgroundEndColor: "#111820", gradientAngle: 160 },

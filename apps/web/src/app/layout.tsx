@@ -1,8 +1,9 @@
 import { draftMode } from "next/headers";
-import { paletteStyle, headerScrollRule } from "@/lib/color-palette";
+import { paletteStyle, headerScrollRules } from "@/lib/color-palette";
 import { PaletteSync } from "@/components/palette-sync";
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Montserrat, Alex_Brush } from "next/font/google";
+import { getHomePage } from "@/lib/pages";
 import { getSiteSettings } from "@/lib/site-settings";
 import { getStrapiMediaUrl } from "@/lib/strapi";
 import "./globals.css";
@@ -26,10 +27,11 @@ const script = Alex_Brush({
   variable: "--font-alex-brush",
 });
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSiteSettings();
-  const title = settings?.seoTitle || "Bott Monument";
-  const description = settings?.seoDescription || "Custom memorials crafted in stone.";
-  const image = getStrapiMediaUrl(settings?.socialImage);
+  const preview = (await draftMode()).isEnabled;
+  const [home, settings] = await Promise.all([getHomePage(preview), getSiteSettings(preview)]);
+  const title = home?.seo?.metaTitle || home?.header?.siteName || "Bott Monument";
+  const description = home?.seo?.metaDescription || "Custom memorials crafted in stone.";
+  const image = getStrapiMediaUrl(home?.seo?.metaImage);
   let metadataBase: URL | undefined;
   try {
     if (settings?.siteUrl && /^https?:\/\//.test(settings.siteUrl))
@@ -38,11 +40,16 @@ export async function generateMetadata(): Promise<Metadata> {
     /* Invalid editorial URL must not break rendering. */
   }
   return {
-    title: { default: title, template: `%s | ${settings?.siteName || "Bott Monument"}` },
+    title: { default: title, template: `%s | ${home?.header?.siteName || "Bott Monument"}` },
     description,
     metadataBase,
     openGraph: { title, description, ...(image ? { images: [image] } : {}) },
-    twitter: { card: image ? "summary_large_image" : "summary", title, description },
+    twitter: {
+      card: image ? "summary_large_image" : "summary",
+      title,
+      description,
+      ...(image ? { images: [image] } : {}),
+    },
   };
 }
 export default async function RootLayout({ children }: LayoutProps<"/">) {
@@ -56,7 +63,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       <body
         className="min-h-full flex flex-col"
         data-site-mode="primary"
-        data-header-scroll={JSON.stringify(headerScrollRule(settings?.activePalette?.headerScroll))}
+        data-header-scroll={JSON.stringify(headerScrollRules(settings?.activePalette?.headerScroll))}
         data-color-palette={settings?.activePalette?.name || "Primary"}
         style={paletteStyle(settings?.activePalette)}
       >

@@ -1,4 +1,3 @@
-import { cmsRead, cmsQuery } from "./cms-cache";
 export type ContactDetails = {
   titleEmphasis: string;
   counterText: string;
@@ -40,7 +39,7 @@ export type ShowroomDetails = {
   statistics: { id: string; value: string; label: string }[];
 };
 
-export type HomepageSection = {
+export type SectionContent = {
   contact: ContactDetails | null;
   footer: FooterDetails | null;
   showroom: ShowroomDetails | null;
@@ -67,61 +66,10 @@ export type StrapiMedia = {
   alternativeText: string | null;
 };
 
-export const HOMEPAGE_FIELDS = `      sectionKey
-      contact { titleEmphasis counterText totalCommissions remainingCommissions inquiryLabel inquiryTypes namePlaceholder emailPlaceholder messagePlaceholder note successMessage phone studio email }
-      footer { brand copyright tagline taglineEmphasis }
-      showroom { visitTitle location appointment hours statistics { id value label } }
-      galleryAccess { eyebrow title emphasis description requestLabel requestHref dismissLabel }
-      eyebrow
-      title
-      description
-      quote
-      signature
-      personName
-      personRole
-      backgroundColor
-      textColor
-      buttonLabel
-      buttonHref
-      sortOrder
-      image {
-        url
-        alternativeText
-      }
-      video {
-        url
-        alternativeText
-      }`;
-
 export function getStrapiMediaUrl(media?: StrapiMedia | null) {
   if (!media?.url) return null;
   if (/^https?:\/\//i.test(media.url)) return media.url;
   const url = process.env.STRAPI_URL?.replace(/\/$/, "");
   if (!url || !media.url.startsWith("/") || media.url.startsWith("//")) return null;
   return `${url}${media.url}`;
-}
-
-export async function getHomepageSections(preview = false): Promise<HomepageSection[]> {
-  return cmsRead(
-    "homepage-sections",
-    async () => {
-      const data = await cmsQuery<{ homepageSections: HomepageSection[] }>(
-        `query HomepageSections {
-      homepageSections(status: ${preview ? "DRAFT" : "PUBLISHED"}, sort: ["sortOrder:asc", "sectionKey:asc"], pagination: {limit:100}) { ${HOMEPAGE_FIELDS} }
-    }`,
-        {},
-        preview,
-      );
-      if (!Array.isArray(data.homepageSections)) throw new Error("Invalid homepage sections");
-      return data.homepageSections;
-    },
-    [],
-    preview,
-  );
-}
-export async function getHomepageSection(sectionKey: string, preview = false) {
-  return (
-    (await getHomepageSections(preview)).find((section) => section.sectionKey === sectionKey) ??
-    null
-  );
 }
