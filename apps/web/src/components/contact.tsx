@@ -2,7 +2,13 @@ import type { SectionContent } from "@/lib/strapi";
 import { ContactForm } from "./contact-form";
 import "./contact.css";
 
-export function Contact({ section }: { section: SectionContent | null }) {
+export function Contact({
+  section,
+  locale = "en",
+}: {
+  section: SectionContent | null;
+  locale?: string;
+}) {
   const details = section?.contact;
   if (!section || !details) return null;
   const total = Math.min(100, Math.max(0, details.totalCommissions || 0));
@@ -29,6 +35,7 @@ export function Contact({ section }: { section: SectionContent | null }) {
         )}
         <ContactForm
           details={details}
+          locale={locale}
           buttonLabel={section.buttonLabel || "Begin the conversation"}
         />
         <div className="cm-divider" />

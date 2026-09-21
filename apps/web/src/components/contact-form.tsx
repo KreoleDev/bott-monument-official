@@ -5,9 +5,11 @@ import type { ContactDetails } from "@/lib/strapi";
 export function ContactForm({
   details,
   buttonLabel,
+  locale,
 }: {
   details: ContactDetails;
   buttonLabel: string;
+  locale: string;
 }) {
   const [pending, setPending] = useState(false);
   const [feedback, setFeedback] = useState("");
@@ -23,7 +25,7 @@ export function ContactForm({
     setPending(true);
     setFeedback("");
     const form = event.currentTarget;
-    const data = Object.fromEntries(new FormData(form));
+    const data = { ...Object.fromEntries(new FormData(form)), locale };
     try {
       const response = await fetch("/api/inquiries", {
         method: "POST",

@@ -98,7 +98,7 @@ Submissions are saved even when email is disabled or delivery fails.
 
 ## Completed local verification versus launch work
 
-After Homepage Section removal, 29 frontend and 3 CMS tests, both production
+After locale routing, 31 frontend and 4 CMS tests, both production
 builds and frontend source lint passed. The editor order/collapse/open behavior
 and live Page rendering were checked locally. These results do not verify SMTP,
 production hosting/storage, a new snapshot restore or a full accessibility audit.

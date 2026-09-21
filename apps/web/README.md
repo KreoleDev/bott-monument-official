@@ -19,11 +19,13 @@ silently substituted when the CMS is unavailable or the Page is missing.
 
 ## Data and presentation
 
-- `/` reads Page.header, hero, content, footer and SEO through GraphQL.
+- `/` reads the English Page.header, hero, content, footer and SEO through GraphQL.
+- A published Home localization automatically resolves at `/{locale}`; its press
+  archive resolves at `/{locale}/news`. `/en` redirects to `/` to avoid duplicates.
 - Header/Hero/Footer render in fixed positions; middle blocks follow Page.content order.
 - `src/page-builder/` contains the loader, adapters, registry and renderer.
 - Existing visual components consume `SectionContent`, a presentation type, not a CMS collection.
-- `/news` is a dedicated Press Item route. Other CMS slugs do not automatically create public routes.
+- `/news` is the English Press Item route. Other Page slugs do not automatically create public routes.
 - Collections/selections are paginated; empty block selections use all published items.
 - Site Settings supplies the public URL, social links and active palette. Home Header owns the site name, menu and logo. Home SEO supplies metadata defaults, including the social image; /news retains its own title.
 - Fonts: Cormorant Garamond, Montserrat and Alex Brush through `next/font`.
@@ -49,7 +51,7 @@ CI uses `npm run build -- --webpack`. To isolate output while development runs:
 NEXT_DIST_DIR=.next-build npm run build -- --webpack
 ```
 
-Latest local verification (2026-09-18): 29 tests and production build passed.
+Latest local verification (2026-09-20): 31 tests and production build passed.
 Source lint passed with `npm run lint -- --ignore-pattern '**/.next/**'` because
 this working checkout contains nested generated output; clean CI uses normal lint.
 Full cross-device/accessibility review and deployment verification remain pending.

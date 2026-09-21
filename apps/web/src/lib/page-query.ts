@@ -1,8 +1,9 @@
 export const HOME_PAGE_QUERY = `
-query HomePage($status: PublicationStatus!, $relationPage: Int!) {
- pages(filters:{slug:{eq:"home"}},locale:"en",status:$status,pagination:{limit:1}) {
+query HomePage($status: PublicationStatus!, $relationPage: Int!, $locale: I18NLocaleCode!) {
+ pages(filters:{slug:{eq:"home"}},locale:$locale,status:$status,pagination:{limit:1}) {
  header { siteName logo { url alternativeText } links { id label href } }
- documentId title seo { metaTitle metaDescription metaImage { url alternativeText } }
+ documentId title locale localizations { locale }
+ seo { metaTitle metaDescription metaImage { url alternativeText } }
 
 hero {
 id

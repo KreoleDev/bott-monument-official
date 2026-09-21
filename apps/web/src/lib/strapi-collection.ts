@@ -1,12 +1,14 @@
 import { cmsRead, cmsQuery } from "./cms-cache";
+import { DEFAULT_LOCALE } from "./locale";
 export async function getCollection<T>(
   connection: string,
   fields: string,
   sort: string[],
   preview = false,
+  locale = DEFAULT_LOCALE,
 ): Promise<T[]> {
   return cmsRead(
-    `collection:${connection}`,
+    `collection:${connection}:${locale}`,
     async () => {
       const items: T[] = [];
       let page = 1,
@@ -15,12 +17,12 @@ export async function getCollection<T>(
         const data = await cmsQuery<
           Record<string, { nodes: T[]; pageInfo: { pageCount: number } }>
         >(
-          `query Collection($page:Int!) {
-    ${connection}(status:${preview ? "DRAFT" : "PUBLISHED"},sort:${JSON.stringify(sort)},pagination:{page:$page,pageSize:100}) {
+          `query Collection($page:Int!,$locale:I18NLocaleCode!) {
+    ${connection}(locale:$locale,status:${preview ? "DRAFT" : "PUBLISHED"},sort:${JSON.stringify(sort)},pagination:{page:$page,pageSize:100}) {
      nodes { ${fields} } pageInfo { pageCount }
     }
    }`,
-          { page },
+          { page, locale },
           preview,
         );
         const value = data[connection];

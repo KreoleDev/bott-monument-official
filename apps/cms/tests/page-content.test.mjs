@@ -207,6 +207,7 @@ test("GraphQL exposes Page blocks as typed fragments and removes the retired col
     [],
   );
   assert.equal(schema.getQueryType().getFields().homepageSections, undefined);
+  assert.ok(schema.getType("InquiryInput").getFields().submissionLocale);
   assert.deepEqual(
     validate(schema, parse(`query { siteSetting { activePalette { name } } }`)).map(
       (error) => error.message,
@@ -229,6 +230,26 @@ test("GraphQL exposes Page blocks as typed fragments and removes the retired col
   assert.equal(
     app.contentType("api::page.page").attributes.slug.pluginOptions.i18n.localized,
     false,
+  );
+  for (const uid of [
+    "api::comment.comment",
+    "api::feature.feature",
+    "api::gallery-item.gallery-item",
+    "api::press-item.press-item",
+  ]) {
+    assert.equal(app.contentType(uid).pluginOptions.i18n.localized, true);
+  }
+  assert.deepEqual(
+    validate(
+      schema,
+      parse(`query LocalizedItems($locale: I18NLocaleCode!) {
+        comments_connection(locale: $locale) { nodes { documentId quote } }
+        features_connection(locale: $locale) { nodes { documentId title } }
+        galleryItems_connection(locale: $locale) { nodes { documentId title } }
+        pressItems_connection(locale: $locale) { nodes { documentId title } }
+      }`),
+    ).map((error) => error.message),
+    [],
   );
 });
 
@@ -257,9 +278,15 @@ test("palettes preserve multiple ordered header rules through draft, publish and
   }
   const { parse, validate, getNullableType, isListType } = require("graphql");
   const schema = app.plugin("graphql").service("content-api").buildSchema();
-  assert.deepEqual(validate(schema, parse(`query {
+  assert.deepEqual(
+    validate(
+      schema,
+      parse(`query {
     colorPalettes { headerScroll { enabled section backgroundColor textColor } }
-  }`)).map((error) => error.message), []);
+  }`),
+    ).map((error) => error.message),
+    [],
+  );
   const type = schema.getType("ColorPalette").getFields().headerScroll.type;
   assert.ok(isListType(getNullableType(type)), "headerScroll is exposed as a GraphQL list");
 });

@@ -28,6 +28,10 @@
       "type": "text",
       "maxLength": 5000
     },
+    "submissionLocale": {
+      "type": "string",
+      "default": "en"
+    },
     "status": {
       "type": "enumeration",
       "enum": ["new", "reviewed", "replied"],

@@ -1,6 +1,7 @@
 "use client";
 
 import { headerScrollRules } from "@/lib/color-palette";
+import { localizedHref } from "@/lib/locale";
 import type { CSSProperties } from "react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -9,10 +10,12 @@ export function Header({
   logo,
   siteName = "Bott Monument",
   links,
+  locale = "en",
 }: {
   logo?: string | null;
   siteName?: string;
   links?: { label: string; href: string }[];
+  locale?: string;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
@@ -146,11 +149,14 @@ export function Header({
             ]
           )
             .filter((link) => /^(#|\/(?!\/)|https?:\/\/)/i.test(link.href))
-            .map((link, index) => (
-              <li key={`${link.href}-${index}`}>
-                <a href={link.href === "#magazine" ? "#gallery" : link.href}>{link.label}</a>
-              </li>
-            ))}
+            .map((link, index) => {
+              const href = link.href === "#magazine" ? "#gallery" : link.href;
+              return (
+                <li key={`${link.href}-${index}`}>
+                  <a href={localizedHref(locale, href)}>{link.label}</a>
+                </li>
+              );
+            })}
         </ul>
       </nav>
     </>

@@ -1,10 +1,12 @@
 import { getStrapiMediaUrl, type SectionContent } from "@/lib/strapi";
+import { localizedHref } from "@/lib/locale";
 
 type HeroProps = {
   section: SectionContent | null;
+  locale?: string;
 };
 
-export function Hero({ section }: HeroProps) {
+export function Hero({ section, locale = "en" }: HeroProps) {
   const title = section?.title ?? "Crafted to stand forever.";
   const isDefaultTitle = title.trim().toLowerCase() === "crafted to stand forever.";
   const videoUrl = getStrapiMediaUrl(section?.video);
@@ -50,7 +52,7 @@ export function Hero({ section }: HeroProps) {
         {section?.buttonLabel && section.buttonHref ? (
           <a
             className="mt-10 inline-flex rounded-full border border-[#C9A050]/40 bg-[#6b551d]/80 px-8 py-4 text-xs uppercase tracking-[0.35em] text-white"
-            href={section.buttonHref}
+            href={localizedHref(locale, section.buttonHref)}
           >
             {section.buttonLabel}
           </a>

@@ -147,6 +147,20 @@ nunca levam esse prefixo.
 - **Page** tem `header`, `hero` e `footer` fixos e oito tipos de bloco em `content` (Dynamic Zone); `home` identifica a homepage.
 - **Homepage Section** foi retirado; todo o conteúdo da homepage está em Page e nas coleções de itens.
 
+### Idiomas e rotas
+
+O inglês é o locale padrão e mantém os URLs `/` e `/news`. Ao adicionar outro
+locale em **Settings → Internationalization** e publicar a localização de
+**Page → Home**, o frontend disponibiliza `/{locale}` e `/{locale}/news`; por
+exemplo, `/pt` e `/pt/news`. `/en` redireciona para `/`.
+
+Page, Comments, Features, Gallery e Press Item estão preparados para localização.
+Para lançar um idioma, traduz e publica Home e os itens selecionados nesse locale.
+Queries, cache, preview, metadata, atributo `lang`, datas e validação do formulário
+usam o locale da rota. O envio de Inquiry também grava o locale de origem em
+`submissionLocale`.
+Isto adiciona idiomas à homepage; não cria rotas para outros slugs de Page.
+
 ### Paletas de cores
 
 **Header por secção:** cada paleta tem uma lista `headerScroll`. Adiciona uma entrada
@@ -412,7 +426,7 @@ Use terminais separados para os dois servidores. Mais detalhes nos READMEs de
 
 ## Estado da verificação e trabalho restante
 
-Em 2026-09-18: 29 testes frontend e 3 testes CMS passaram; ambos os builds e o
+Em 2026-09-20: 31 testes frontend e 4 testes CMS passaram; o build frontend e o
 lint de código-fonte passaram. O editor ordenado/fechado e a homepage foram
 verificados localmente. Não equivale a auditoria completa de acessibilidade ou produção.
 

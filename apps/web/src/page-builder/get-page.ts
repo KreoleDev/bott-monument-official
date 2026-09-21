@@ -8,22 +8,25 @@ import { getHomePage } from "@/lib/pages";
 import { mapPageContent } from "./map-page";
 
 import type { PageExtras } from "./types";
+import { DEFAULT_LOCALE } from "@/lib/locale";
 
 export type GetPageOptions = {
   preview?: boolean;
+  locale?: string;
 };
 
-export async function getPage({ preview = false }: GetPageOptions = {}) {
+export async function getPage({ preview = false, locale = DEFAULT_LOCALE }: GetPageOptions = {}) {
   const [home, comments, galleryItems, features, pressItems, settings] = await Promise.all([
-    getHomePage(preview),
-    getComments(preview),
-    getGalleryItems(preview),
-    getFeatures(preview),
-    getPressItems(preview),
+    getHomePage(preview, locale),
+    getComments(preview, locale),
+    getGalleryItems(preview, locale),
+    getFeatures(preview, locale),
+    getPressItems(preview, locale),
     getSiteSettings(preview),
   ]);
 
   const extras: PageExtras = {
+    locale,
     comments,
     galleryItems,
     features,
@@ -38,6 +41,7 @@ export async function getPage({ preview = false }: GetPageOptions = {}) {
       ? { section: { sectionKey: "footer", footer: home.footer } as SectionContent, settings }
       : null,
     header: {
+      locale,
       logo: getStrapiMediaUrl(home?.header?.logo),
       siteName: home?.header?.siteName || undefined,
       links: home?.header?.links,

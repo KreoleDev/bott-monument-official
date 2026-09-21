@@ -1,4 +1,5 @@
 import { getHomePage } from "@/lib/pages";
+import { DEFAULT_LOCALE, isLocaleCode } from "@/lib/locale";
 
 export async function POST(request: Request) {
   const origin = request.headers.get("origin");
@@ -16,6 +17,7 @@ export async function POST(request: Request) {
       return Response.json({ error: "Invalid form" }, { status: 400 });
     if (body.website) return Response.json({ ok: true });
     const { name, email, inquiryType, message = "" } = body;
+    const locale = typeof body.locale === "string" ? body.locale : DEFAULT_LOCALE;
     if (
       typeof name !== "string" ||
       !name.trim() ||
@@ -26,10 +28,11 @@ export async function POST(request: Request) {
       typeof inquiryType !== "string" ||
       inquiryType.length > 150 ||
       typeof message !== "string" ||
-      message.length > 5000
+      message.length > 5000 ||
+      !isLocaleCode(locale)
     )
       return Response.json({ error: "Invalid form" }, { status: 400 });
-    const page = await getHomePage();
+    const page = await getHomePage(false, locale);
     const options = (page?.content || [])
       .filter((block) => block.__typename === "ComponentPagesContact")
       .flatMap((block) => (block.contact?.inquiryTypes || "").split("\n"))
@@ -47,7 +50,13 @@ export async function POST(request: Request) {
         query:
           "mutation SubmitInquiry($data: InquiryInput!) { createInquiry(data: $data) { documentId } }",
         variables: {
-          data: { name: name.trim(), email: email.trim(), inquiryType, message: message.trim() },
+          data: {
+            name: name.trim(),
+            email: email.trim(),
+            inquiryType,
+            message: message.trim(),
+            submissionLocale: locale,
+          },
         },
       }),
       cache: "no-store",

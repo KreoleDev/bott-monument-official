@@ -80,6 +80,10 @@ test("failed later collection page keeps complete prior result", async () => {
     },
   });
   assert.equal((await api.getCollection("galleryItems_connection", "documentId", [])).length, 2);
+  assert.equal(
+    (await api.getCollection("galleryItems_connection", "documentId", [], false, "pt")).length,
+    2,
+  );
   fail = true;
   assert.equal((await api.getCollection("galleryItems_connection", "documentId", [])).length, 2);
 });

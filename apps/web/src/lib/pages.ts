@@ -1,5 +1,6 @@
 import { cmsQuery, cmsRead } from "./cms-cache";
 import { HOME_PAGE_QUERY } from "./page-query";
+import { DEFAULT_LOCALE } from "./locale";
 import type { FooterDetails, SectionContent, StrapiMedia } from "./strapi";
 
 export const ITEM_RELATIONS = ["comments", "features", "galleryItems", "pressItems"] as const;
@@ -12,6 +13,8 @@ export type PageBlock = Partial<SectionContent> & {
 export type CmsPage = {
   documentId: string;
   title: string;
+  locale: string;
+  localizations: { locale: string }[];
   seo: {
     metaTitle: string | null;
     metaDescription: string | null;
@@ -27,9 +30,12 @@ export type CmsPage = {
   content: PageBlock[];
 };
 
-export async function getHomePage(preview = false): Promise<CmsPage | null> {
+export async function getHomePage(
+  preview = false,
+  locale = DEFAULT_LOCALE,
+): Promise<CmsPage | null> {
   return cmsRead(
-    "page:home",
+    `page:home:${locale}`,
     async () => {
       let result: CmsPage | null = null;
       let relationPage = 1;
@@ -40,6 +46,7 @@ export async function getHomePage(preview = false): Promise<CmsPage | null> {
           {
             status: preview ? "DRAFT" : "PUBLISHED",
             relationPage,
+            locale,
           },
           preview,
         );

@@ -5,8 +5,9 @@ const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Admin => 
     enabled: Boolean(env("PREVIEW_SECRET")),
     config: {
       allowedOrigins: [env("WEB_URL", "http://localhost:3000")],
-      async handler(uid: string) {
-        const path = uid === "api::press-item.press-item" ? "/news" : "/";
+      async handler(uid: string, params) {
+        const prefix = params.locale && params.locale !== "en" ? `/${params.locale}` : "";
+        const path = uid === "api::press-item.press-item" ? `${prefix}/news` : prefix || "/";
         return `${env("WEB_URL", "http://localhost:3000")}/api/preview?${new URLSearchParams({ secret: env("PREVIEW_SECRET", ""), path })}`;
       },
     },

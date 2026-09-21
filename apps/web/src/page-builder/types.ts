@@ -6,6 +6,7 @@ import type { SiteSettings } from "@/lib/site-settings";
 import type { SectionContent } from "@/lib/strapi";
 
 export type PageExtras = {
+  locale: string;
   comments: Comment[];
   galleryItems: GalleryItem[];
   features: Feature[];

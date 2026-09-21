@@ -16,7 +16,7 @@ export function mapFounder(section: SectionContent) {
 }
 
 export function mapNews(section: SectionContent, extras: PageExtras) {
-  return { section, items: extras.pressItems };
+  return { section, items: extras.pressItems, locale: extras.locale };
 }
 
 export function mapFeaturedIn(section: SectionContent, extras: PageExtras) {
@@ -24,19 +24,19 @@ export function mapFeaturedIn(section: SectionContent, extras: PageExtras) {
 }
 
 export function mapGallery(section: SectionContent, extras: PageExtras) {
-  return { section, items: extras.galleryItems };
+  return { section, items: extras.galleryItems, locale: extras.locale };
 }
 
-export function mapShowroom(section: SectionContent) {
-  return { section };
+export function mapShowroom(section: SectionContent, extras: PageExtras) {
+  return { section, locale: extras.locale };
 }
 
 export function mapTestimonials(section: SectionContent, extras: PageExtras) {
   return { section, comments: extras.comments };
 }
 
-export function mapContact(section: SectionContent) {
-  return { section };
+export function mapContact(section: SectionContent, extras: PageExtras) {
+  return { section, locale: extras.locale };
 }
 
 export function mapFooter(section: SectionContent, extras: PageExtras) {

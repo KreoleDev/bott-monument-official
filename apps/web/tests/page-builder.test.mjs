@@ -39,7 +39,10 @@ test("keeps footer as chrome instead of a main fragment", () => {
     { sectionKey: "footer", footer: { brand: "Bott®" } },
   ];
   assert.equal(mapSections(sections, extras).length, 1);
-  assert.equal(mapFooterChrome(sections, extras).settings.facebookUrl, "https://www.facebook.com/example");
+  assert.equal(
+    mapFooterChrome(sections, extras).settings.facebookUrl,
+    "https://www.facebook.com/example",
+  );
   assert.equal(mapFooterChrome([{ sectionKey: "hero" }], extras), null);
 });
 
@@ -137,6 +140,23 @@ test("Page reads paginate selections, isolate preview and honor an intentionally
   assert.equal(calls[2].status, "DRAFT");
   assert.equal(calls[2].token, "Bearer preview");
   assert.equal(calls[0].status, "PUBLISHED");
+  assert.equal(calls[0].locale, "en");
+  await getHomePage(false, "pt");
+  assert.equal(calls.at(-1).locale, "pt");
   empty = true;
   assert.equal((await getHomePage()).content.length, 0);
+});
+
+test("locale paths keep English at root and prefix future languages", () => {
+  const { isLocaleCode, localizedHref, localizedPath } = loadTs("../src/lib/locale.ts");
+  assert.equal(localizedPath("en"), "/");
+  assert.equal(localizedPath("en", "/news"), "/news");
+  assert.equal(localizedPath("pt"), "/pt");
+  assert.equal(localizedPath("pt-BR", "/news"), "/pt-BR/news");
+  assert.equal(localizedHref("pt", "/news"), "/pt/news");
+  assert.equal(localizedHref("pt", "/pt/news"), "/pt/news");
+  assert.equal(localizedHref("pt", "#contact"), "#contact");
+  assert.equal(localizedHref("pt", "https://example.com"), "https://example.com");
+  assert.equal(isLocaleCode("kea"), true);
+  assert.equal(isLocaleCode("../../admin"), false);
 });

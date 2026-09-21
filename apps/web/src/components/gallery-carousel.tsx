@@ -5,15 +5,18 @@ import { ImageLightbox } from "./image-lightbox";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import type { SectionContent } from "@/lib/strapi";
 import type { GalleryItem } from "@/lib/gallery";
+import { localizedHref } from "@/lib/locale";
 import { startGalleryMotion } from "./gallery-motion";
 import "./gallery.css";
 
 export function GalleryCarousel({
   section,
   items,
+  locale = "en",
 }: {
   section: SectionContent;
   items: (GalleryItem & { src: string })[];
+  locale?: string;
 }) {
   const [lightbox, setLightbox] = useState<number | null>(null);
   const viewport = useRef<HTMLDivElement>(null);
@@ -49,10 +52,12 @@ export function GalleryCarousel({
     dialog.current?.close();
     restoreScroll();
   }
-  const requestHref =
+  const requestHref = localizedHref(
+    locale,
     access?.requestHref && /^(#[\w-]+|\/(?!\/))/.test(access.requestHref)
       ? access.requestHref
-      : "#contact";
+      : "#contact",
+  );
 
   return (
     <section

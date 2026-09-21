@@ -1,6 +1,6 @@
 # Bott Monument Project Plan
 
-Current state: **2026-09-18**. This is the shared checklist for the implemented
+Current state: **2026-09-20**. This is the shared checklist for the implemented
 project and remaining work. Completed historical approaches are not instructions
 for the current code.
 
@@ -13,7 +13,8 @@ for the current code.
 - Runtime: Node 22 (matching CI), npm lockfiles per app; no npm workspaces.
 - Formatting: root Biome; frontend lint: ESLint.
 - Fonts: Cormorant Garamond, Montserrat, Alex Brush through `next/font`.
-- Public language: English only. Hosting has not been selected.
+- Default public language: English at `/`; localized Home routes are ready at
+  `/{locale}` and `/{locale}/news`. Hosting has not been selected.
 
 ## Design to product map
 
@@ -59,6 +60,9 @@ HTML uses `#founder` for the showroom; keep the implemented IDs above.
 - [x] Mobile menu, skip link, scroll reveals, reduced-motion handling and no-JS content visibility.
 - [x] Contact validation uses published Page choices; submissions are saved to Inquiries.
 - [x] Dedicated `/news` route reads Press Item; arbitrary CMS slug routes are not implemented.
+- [x] Locale-aware routing keeps English at `/` and `/news`; another published
+  Home localization is exposed at `/{locale}` and `/{locale}/news`, with localized
+  queries, collections, metadata, cache keys, document language and form validation.
 - [x] Next Image optimization and configurable media origins.
 
 ### Palettes, preview and reliability
@@ -78,7 +82,7 @@ HTML uses `#founder` for the showroom; keep the implemented IDs above.
 
 Latest checks after collection removal:
 
-- **29 frontend tests and 3 CMS integration tests passed.** Migration-only tests were retired with the removed migration code.
+- **31 frontend tests and 4 CMS integration tests passed.** Migration-only tests were retired with the removed migration code.
 - Frontend and CMS production builds passed; frontend source lint passed with nested generated `.next` output excluded locally.
 - Admin TypeScript check passed during the ordered-editor change.
 - Isolated browser verified editor order, collapsed cards, opening fixed fields and no automatic unsaved changes.
@@ -119,7 +123,9 @@ Do not add SEO, redirects or translation plugins without a demonstrated requirem
 ## Optional future scope — not missing MVP work
 
 - Art Process: commented out in the design; add only if requested, using a Page block and an appropriate item collection.
-- Additional languages: confirm locale and URL strategy first, then localized collections, routing, metadata, cache keys and fallback behavior.
+- Additional languages: routing and localized content models are ready. Add the
+  locale in Strapi, localize and publish Home plus its selected item records, then
+  verify translated interface copy, metadata and both localized URLs.
 - Additional CMS slug routes: Page can store entries, but the frontend currently consumes `home`; `/news` remains a dedicated route.
 - Demo layout pickers, headline switchers and design toolbar are excluded. CMS palettes are a real feature; demo controls are not.
 

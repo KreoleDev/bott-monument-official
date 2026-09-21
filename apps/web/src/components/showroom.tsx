@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { localizedHref } from "@/lib/locale";
 import { getStrapiMediaUrl, type SectionContent } from "@/lib/strapi";
 import "./showroom.css";
 
@@ -27,14 +28,22 @@ function DetailIcon({ kind }: { kind: "location" | "calendar" | "clock" }) {
   );
 }
 
-export function Showroom({ section }: { section: SectionContent | null }) {
+export function Showroom({
+  section,
+  locale = "en",
+}: {
+  section: SectionContent | null;
+  locale?: string;
+}) {
   const image = getStrapiMediaUrl(section?.image);
   if (!section || !section.showroom || !image) return null;
   const details = section.showroom;
-  const href =
+  const href = localizedHref(
+    locale,
     section.buttonHref && /^(#[\w-]+|\/(?!\/)|https?:\/\/)/.test(section.buttonHref)
       ? section.buttonHref
-      : "#contact";
+      : "#contact",
+  );
   return (
     <section id="showroom" aria-labelledby="showroom-title">
       <Image

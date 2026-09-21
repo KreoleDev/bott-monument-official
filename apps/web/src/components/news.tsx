@@ -4,14 +4,16 @@ import { Fragment, type CSSProperties } from "react";
 import { pressDate, pressImageUrl, type PressItem } from "@/lib/news";
 import type { SectionContent } from "@/lib/strapi";
 import "./news.css";
+import { localizedHref, localizedPath } from "@/lib/locale";
 
 type NewsProps = {
   items: PressItem[];
   section?: SectionContent | null;
   all?: boolean;
+  locale?: string;
 };
 
-export function News({ items, section, all = false }: NewsProps) {
+export function News({ items, section, all = false, locale = "en" }: NewsProps) {
   if (!items.length) return null;
 
   const featured = items.filter((item) => item.featured);
@@ -87,7 +89,7 @@ export function News({ items, section, all = false }: NewsProps) {
           <div className="wpp-rule" />
           {stories.map((story, index) => {
             const image = pressImageUrl(story);
-            const date = pressDate(story.date);
+            const date = pressDate(story.date, locale);
             const content = (
               <>
                 {image && (
@@ -134,10 +136,10 @@ export function News({ items, section, all = false }: NewsProps) {
             className="wpp-all-link"
             href={
               all
-                ? "/#work"
+                ? `${localizedPath(locale)}#work`
                 : section?.buttonHref?.startsWith("/") && !section.buttonHref.startsWith("//")
-                  ? section.buttonHref
-                  : "/news"
+                  ? localizedHref(locale, section.buttonHref)
+                  : localizedPath(locale, "/news")
             }
           >
             {all ? "Back to Home" : section?.buttonLabel || "All Press Coverage"}{" "}

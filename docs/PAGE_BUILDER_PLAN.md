@@ -1,6 +1,6 @@
 # Page Builder Plan
 
-Current state: **2026-09-18**.
+Current state: **2026-09-20**.
 
 ## Implemented
 
@@ -12,6 +12,8 @@ Current state: **2026-09-18**.
 - [x] Optional item selections; empty selections use all published collection items.
 - [x] Contact submission validation uses the published Page choices.
 - [x] Homepage Section retired from schema, GraphQL, local SQLite and seed code.
+- [x] English remains at `/`; published Home localizations resolve at `/{locale}`.
+  Page and item queries, caches, metadata, preview and inquiry validation carry locale.
 
 ## Current flow
 
@@ -50,12 +52,13 @@ Recheck the admin build and editor interactions when upgrading Strapi.
 - Full visual/editorial acceptance against the local design.
 - Refresh the public content/media archive with Pages and test import into a copy
   of an existing SQLite installation, preserving private records and accounts.
-- Additional slug routes, Art Process and extra languages are future scope.
-  `/news` remains a dedicated route using Press Item.
+- Additional arbitrary Page slug routes and Art Process are future scope. Locale
+  routing is implemented for Home and its dedicated News route; adding actual
+  languages and approved translations remains editorial work in Strapi.
 
 ## Latest verification
 
-29 frontend tests and 3 CMS integration tests passed after retirement; both
+31 frontend tests and 4 CMS integration tests passed after locale routing; both
 production builds and source lint passed. The editor was checked in an isolated
 browser for ordering, closed cards, opening fields and absence of automatic
 unsaved changes. Local Page rendering and independent draft/published reads were

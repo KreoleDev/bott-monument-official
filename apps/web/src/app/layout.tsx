@@ -1,4 +1,4 @@
-import { draftMode } from "next/headers";
+import { draftMode, headers } from "next/headers";
 import { paletteStyle, headerScrollRules } from "@/lib/color-palette";
 import { PaletteSync } from "@/components/palette-sync";
 import type { Metadata } from "next";
@@ -28,7 +28,11 @@ const script = Alex_Brush({
 });
 export async function generateMetadata(): Promise<Metadata> {
   const preview = (await draftMode()).isEnabled;
-  const [home, settings] = await Promise.all([getHomePage(preview), getSiteSettings(preview)]);
+  const locale = (await headers()).get("x-site-locale") || "en";
+  const [home, settings] = await Promise.all([
+    getHomePage(preview, locale),
+    getSiteSettings(preview),
+  ]);
   const title = home?.seo?.metaTitle || home?.header?.siteName || "Bott Monument";
   const description = home?.seo?.metaDescription || "Custom memorials crafted in stone.";
   const image = getStrapiMediaUrl(home?.seo?.metaImage);
@@ -54,16 +58,19 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const preview = (await draftMode()).isEnabled;
+  const locale = (await headers()).get("x-site-locale") || "en";
   const settings = await getSiteSettings(preview);
   return (
     <html
-      lang="en"
+      lang={locale}
       className={`h-full antialiased ${display.variable} ${utility.variable} ${script.variable}`}
     >
       <body
         className="min-h-full flex flex-col"
         data-site-mode="primary"
-        data-header-scroll={JSON.stringify(headerScrollRules(settings?.activePalette?.headerScroll))}
+        data-header-scroll={JSON.stringify(
+          headerScrollRules(settings?.activePalette?.headerScroll),
+        )}
         data-color-palette={settings?.activePalette?.name || "Primary"}
         style={paletteStyle(settings?.activePalette)}
       >

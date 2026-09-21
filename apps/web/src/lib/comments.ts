@@ -6,11 +6,12 @@ export type Comment = {
   location: string | null;
   sortOrder: number;
 };
-export async function getComments(preview = false): Promise<Comment[]> {
+export async function getComments(preview = false, locale = "en"): Promise<Comment[]> {
   return getCollection<Comment>(
     "comments_connection",
     "documentId quote personName location sortOrder",
     ["sortOrder:asc", "documentId:asc"],
     preview,
+    locale,
   );
 }

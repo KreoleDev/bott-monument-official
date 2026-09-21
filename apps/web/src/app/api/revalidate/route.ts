@@ -6,7 +6,6 @@ export async function POST(request: Request) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   clearCmsMemory();
   revalidateTag("cms", "max");
-  revalidatePath("/");
-  revalidatePath("/news");
+  revalidatePath("/", "layout");
   return Response.json({ revalidated: true });
 }
