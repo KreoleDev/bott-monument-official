@@ -1,106 +1,137 @@
-# Deployment and content operations
+# Deployment plan
 
-Current status: **2026-09-22**. The code is prepared for production. No host,
-database or media account has been selected. Open launch tasks are in
-[IMPLEMENTATION_PLAN.md](../IMPLEMENTATION_PLAN.md).
+Decision: **2026-09-22**. Production is one Railway project in the client's
+account. Open work stays in [IMPLEMENTATION_PLAN.md](../IMPLEMENTATION_PLAN.md).
 
-Copy content between developers with [LOCAL_SQLITE_HANDOFF.md](LOCAL_SQLITE_HANDOFF.md).
-Do not import the committed pre-Page archive. Local development uses the database
-named in `apps/cms/.env`: SQLite by default, or PostgreSQL when
-`DATABASE_CLIENT=postgres`. That local database is not the team source of truth.
+| Piece | Where |
+| --- | --- |
+| Next.js site (`apps/web`) | Railway service |
+| Strapi (`apps/cms`) | Railway service |
+| Database | Railway Postgres |
+| Images and video | S3-compatible bucket, public read |
+| Account and card | Client. Kreoletech is a workspace member |
+| Plan | Railway Pro ($20/month, includes $20 of usage) |
 
-## Protect the existing site
+A quiet month stays inside that credit. Strapi, Postgres and the always-on
+Next.js server together are expected around $20–45/month. Set a spend limit on
+the workspace. Visitor payments are not part of Railway. A later checkout, if
+any, is a separate client account.
 
-1. Keep the same Git revision and Strapi version on source and destination.
-2. Stop the source Strapi process before exporting: `npm run strapi -- export --file ./exports/bott-content` from `apps/cms`.
-3. Save the encrypted export and its key separately. It contains content and media;
-   it may also contain inquiry details. Do not commit or publicly share it.
-4. Provision an empty destination database/media store. Import replaces destination
-   data, so back up any existing destination before proceeding.
-5. Use Strapi's import command on the destination. Do not import into the current local
-   database just to update code. Verify upload provider compatibility during migration.
-6. Verify Page `home` with fixed Header/Hero/Footer, all eight middle blocks,
-   selected item relations, Gallery, Features, Comments, Press Item, palettes and
-   Site Settings. Verify independent drafts/publication, media and local accounts/tokens.
+Do not import `handoff/`. That archive is pre-Page. Developer copies follow
+[LOCAL_SQLITE_HANDOFF.md](LOCAL_SQLITE_HANDOFF.md).
 
-This export is a private production copy. It is separate from the public
-`handoff/` archive, which is still pre-Page and must not be imported. The
-public snapshot procedure is in the handoff guide.
+## 1. Account
 
-## CMS service
+1. The client creates the Railway account with an email the client controls, including recovery.
+2. Upgrade that workspace to Pro and add the client's card. Set a monthly spend limit.
+3. Invite Kreoletech as a member. Kreoletech does not own the workspace and does not put the client's card on an agency account.
+4. Create one project for this site.
 
-- Root: `apps/cms`; Node 22; install: `npm ci`; build: `npm run build`; start: `npm start`.
-- Set `HOST=0.0.0.0`, host-provided `PORT`, public HTTPS `PUBLIC_URL`, `WEB_URL`, and
-  explicit `CORS_ORIGINS`.
-- Generate production `APP_KEYS`, `API_TOKEN_SALT`, `ADMIN_JWT_SECRET`,
-  `TRANSFER_TOKEN_SALT`, `JWT_SECRET`, `ENCRYPTION_KEY`.
-- Set `DATABASE_CLIENT=postgres`, `DATABASE_URL`, and provider-required SSL settings.
-  The PostgreSQL driver is installed. Do not reuse example secrets.
-- Set `GRAPHQL_LANDING_PAGE=false`.
-- If using S3, set `S3_BUCKET`, `S3_REGION`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`;
-  optional `S3_ENDPOINT`, `S3_FORCE_PATH_STYLE` support compatible providers.
-  `MEDIA_PUBLIC_URL` is the public delivery URL; list its origin in `MEDIA_CSP_ORIGINS`.
-  Configure public image delivery on the storage provider. No bucket policy is created by this app.
-- Leaving `S3_BUCKET` empty preserves local uploads. Those require persistent storage
-  if deployed that way; an ephemeral filesystem will lose them.
+A Kreoletech Railway account may hold a temporary preview. It is not production, and it is discarded once the client project is live.
 
-## Frontend service
+## 2. Services
 
-- Root: `apps/web`; Node 22; install: `npm ci`; build: `npm run build`; Node start: `npm start`.
-- `STRAPI_URL` must resolve from the server and supply a browser-reachable media URL.
-- `STRAPI_API_TOKEN`: content read-only token.
-- `STRAPI_INQUIRY_TOKEN`: custom token with only `api::inquiry.inquiry.create`.
-- `MEDIA_ORIGINS`: comma-separated public media origins for Next Image optimization.
-  Local/private IP optimization is allowed only in development by the app's configuration.
-- `PREVIEW_SECRET`, `REVALIDATION_SECRET`: match the CMS configuration.
-- Optional `STRAPI_PREVIEW_TOKEN`: separate read token for draft requests.
-- Set the public site URL in **Site Settings**. Set the site name/logo in **Page → Home → Header** and metadata/social image in **Home → SEO**.
-- Set homepage logo/name/menu in **Page → Home → Header** and page SEO in its SEO card.
+Create three services in the project. Set Node 22 on the two app services.
+Railway supplies `PORT`. Do not copy a local `.env` into the dashboard.
+Generate new production secrets.
 
-## Preview and publication refresh
+### Postgres
 
-- Strapi preview opens `/api/preview?secret=…&path=/{locale}` (or
-  `/{locale}/news`). Only locale-prefixed content paths are allowed. Preview uses
-  draft queries, bypasses public caches, and displays an exit form.
-- In Strapi **Settings → Webhooks**, configure **Website content refresh**:
-  URL: `https://YOUR_WEB_HOST/api/revalidate`; header `x-revalidation-secret` equal to
-  `REVALIDATION_SECRET`; events: entry publish, unpublish, update and delete.
-- A webhook already exists for the local installation. Update its URL for the deployed site.
-  Secrets are held in local env/database, not source code.
-- Public pages use Next.js caching with 60-second revalidation; webhook marks data stale.
-  Draft requests use no-store. The eight middle sections follow `Page.content` order;
-  Header, Hero and Footer occupy fixed positions. Item collections use their own sort order.
-- Successful complete reads, including an intentional empty result, replace cached content.
-  Failed reads preserve the last successful public result in the running process. Production
-  also uses Next's persistent Data Cache. A cold process without a cached result shows the
-  unavailable state; this is not an offline copy of media or a database backup.
+Add the Railway Postgres service. The CMS reads `DATABASE_URL` from that
+service over the private network, with `DATABASE_CLIENT=postgres` and
+`DATABASE_SSL=false` for the internal URL. Do not point `DATABASE_HOST` at
+`localhost`.
 
-## Inquiry notifications
+### Strapi
 
-Submissions are saved even when email is disabled or delivery fails.
+- Root directory: `apps/cms`
+- Build: `npm ci && npm run build`
+- Start: `npm start`
 
-- Set `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASSWORD`,
-  `EMAIL_FROM`, `EMAIL_REPLY_TO`, `INQUIRY_NOTIFICATION_TO`.
-- After confirming sender/recipient, set `INQUIRY_NOTIFICATIONS_ENABLED=true`.
-- The lifecycle sends an internal notification with the visitor as Reply-To. It does not
-  send visitors an automatic email. Delivery failure is logged; review the saved inquiry
-  and contact the visitor from the CMS workflow. Automatic retries are not implemented.
-- This integration is disabled locally; real delivery has not been tested without credentials.
+Variables:
 
-## Verification and launch
+| Variable | Value |
+| --- | --- |
+| `HOST` | `0.0.0.0` |
+| `PUBLIC_URL` | Public HTTPS URL of this service |
+| `WEB_URL` | Public HTTPS URL of the Next.js service |
+| `CORS_ORIGINS` | The public site origin only |
+| `APP_KEYS` | Two new random keys, comma-separated |
+| `API_TOKEN_SALT`, `ADMIN_JWT_SECRET`, `TRANSFER_TOKEN_SALT`, `JWT_SECRET`, `ENCRYPTION_KEY` | New random secrets |
+| `DATABASE_CLIENT` | `postgres` |
+| `DATABASE_URL` | Railway Postgres private URL |
+| `DATABASE_SSL` | `false` on the private network |
+| `GRAPHQL_LANDING_PAGE` | `false` |
+| `S3_BUCKET`, `S3_REGION`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY` | Bucket credentials |
+| `S3_ENDPOINT`, `S3_FORCE_PATH_STYLE` | Only for a non-AWS S3-compatible store |
+| `MEDIA_PUBLIC_URL` | Public HTTPS origin of the bucket |
+| `MEDIA_CSP_ORIGINS` | That same origin |
+| `PREVIEW_SECRET`, `REVALIDATION_SECRET` | Shared with the Next.js service |
+
+Leave `S3_BUCKET` empty only for a disposable preview. A Railway disk loses
+uploads when the service is recreated. Production media is the bucket.
+
+Create the first admin user on the public `/admin` URL. Then create two API
+tokens: `web-readonly` (read-only) and `web-inquiries` (custom, only
+`api::inquiry.inquiry.create`).
+
+### Next.js
+
+- Root directory: `apps/web`
+- Build: `npm ci && npm run build`
+- Start: `npm start`
+
+Variables, all server-only:
+
+| Variable | Value |
+| --- | --- |
+| `STRAPI_URL` | Public HTTPS URL of Strapi |
+| `STRAPI_API_TOKEN` | `web-readonly` |
+| `STRAPI_INQUIRY_TOKEN` | `web-inquiries` |
+| `STRAPI_PREVIEW_TOKEN` | Optional second read-only token for drafts |
+| `PREVIEW_SECRET`, `REVALIDATION_SECRET` | Same values as Strapi |
+| `MEDIA_ORIGINS` | Public bucket origin |
+
+No variable uses the `NEXT_PUBLIC_` prefix for the CMS URL or tokens.
+
+### Domains
+
+Attach the client's domain to the Next.js service and a CMS hostname, such as
+`cms` on the same domain, to the Strapi service. Update `PUBLIC_URL`,
+`WEB_URL`, `CORS_ORIGINS`, `STRAPI_URL` and `MEDIA_ORIGINS` to those final
+HTTPS origins. In Strapi, set **Site Settings** site URL to the public site.
+Name and logo stay in **Page → Home → Header**. Title, description and social
+image stay in **Home → SEO**.
+
+## 3. Content
+
+1. Stop the source Strapi.
+2. From `apps/cms`, export a private archive. Do not commit it. It may contain inquiries, so keep the file and its key outside Git:
+
+```bash
+npm run strapi -- export --file ./exports/bott-content
+```
+
+3. Back up the destination database before import. Import replaces destination data.
+4. Import into the Railway Strapi. On a SQLite destination, copy `inquiries`, admin users and API token tables back from the pre-import backup, as described in the handoff guide. On Railway Postgres, restore those tables from the database backup instead.
+5. Confirm Page `home`: draft and published, Header, Hero, eight middle blocks, Footer, collections, palettes, Site Settings, and that media URLs open from the bucket.
+
+The committed `handoff/` archive stays unused.
+
+## 4. Preview, refresh and mail
+
+- Strapi preview opens `/api/preview?secret=…&path=/{locale}` or `/{locale}/news`.
+- Webhook **Website content refresh**: `https://PUBLIC_SITE/api/revalidate`, header `x-revalidation-secret` equal to `REVALIDATION_SECRET`, events publish, unpublish, update and delete. Replace the local webhook URL. Do not copy the local secret.
+- Public pages revalidate after 60 seconds. The webhook marks them stale. Draft preview is uncached.
+- Inquiry email stays off until a real sender and recipient exist. Then set `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASSWORD`, `EMAIL_FROM`, `EMAIL_REPLY_TO`, `INQUIRY_NOTIFICATION_TO` and `INQUIRY_NOTIFICATIONS_ENABLED=true`. A failed send still keeps the saved inquiry. The visitor does not get an automatic reply.
+
+## 5. Launch checks
 
 - Web: `npm run lint`, `npm test`, `npm run typecheck`, `npm run build -- --webpack`.
 - CMS: `npm test`, `npx tsc --noEmit`, `npx tsc -p src/admin/tsconfig.json --noEmit`, `npm run build`.
-- While local Next dev runs, isolate a build with `NEXT_DIST_DIR=.next-build npm run build -- --webpack`.
-- Review desktop/mobile layouts, gallery drag versus image-opening, modal focus/close,
-  reduced motion, long CMS content, real form submission, preview exit, and publication refresh.
-- Replace sample phone, commission availability, copyright and testimonial copy with approved values.
-- Review dependency audit findings before launch; do not use a forced major-version upgrade
-  as an automatic fix. CI checks code/builds; it does not provision or migrate services.
+- On the live URLs: home in English, `/` language redirect, gallery images from the bucket, contact form stored as an Inquiry, preview banner and exit, publish then refresh, mobile layout, keyboard and reduced motion.
+- Replace the sample phone, commission availability, copyright year and placeholder testimonials before launch.
+- Re-test the Strapi 5.53 admin editor aliases when upgrading Strapi.
 
-## What this guide does not close
-
-Recorded test and build results, and everything still open, are in the project
-plan. This guide does not by itself verify SMTP, hosting, persistent media, a
-new snapshot restore or an accessibility audit. The Page editor aliases two
-Strapi 5.53 internal renderers; retest that integration when upgrading Strapi.
+Provisioning the Railway project, the bucket, the domain and SMTP is still to do.
+CI builds the code. It does not create these services.

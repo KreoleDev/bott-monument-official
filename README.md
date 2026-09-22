@@ -440,16 +440,19 @@ Operação, variáveis completas e migração: [docs/DEPLOYMENT.md](docs/DEPLOYM
 A notificação de inquiries só é enviada quando explicitamente ativada/configurada;
 sem email, o formulário continua a guardar a mensagem em Strapi.
 
-## Hosting (depois)
+## Hosting
 
-| Peça | Destino provável |
+Um projeto Railway Pro, na conta do cliente. O plano está em
+[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+
+| Peça | Destino |
 | --- | --- |
-| Next.js | Vercel |
+| Next.js | Railway |
 | Strapi | Railway |
-| Base de dados | Postgres (Railway, Neon ou Supabase) |
-| Media | Cloudinary ou S3 |
+| Base de dados | Postgres na Railway |
+| Media | Bucket compatível com S3 |
 
-Até lá, o desenvolvimento usa a base configurada em `apps/cms/.env`:
+Até esse projeto existir, o desenvolvimento usa a base configurada em `apps/cms/.env`:
 SQLite por omissão, ou PostgreSQL quando `DATABASE_CLIENT=postgres`.
 Essa base local não é a fonte de verdade da equipa. O arquivo em `handoff/`
 também ainda não o é, porque é anterior a Pages.

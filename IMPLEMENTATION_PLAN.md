@@ -127,7 +127,7 @@ These checks are not a cross-device or accessibility audit, and they are not a p
 
 ### Content the team can share
 
-- [ ] Export a Page-based public snapshot and restore it into a copy of an existing SQLite database. Preserve inquiries, accounts, tokens and local configuration. Until that passes, do not import `handoff/`.
+- [ ] Replace `handoff/` after an explicit public-content approval. The Page snapshot in `apps/cms/exports/page-snapshot-20260922.tar.gz.enc` restored Home, both publication states and the eight blocks into SQLite. Import deletes destination data; copying `inquiries`, admin users and API token tables back from a pre-import backup restored the private inquiry and left Page in place. The archive still contains the sample phone and placeholder testimonials, and it has not replaced the committed pre-Page file.
 - [ ] Replace the sample phone, commission availability, copyright year and placeholder testimonials with approved copy.
 
 ### Quality
@@ -138,8 +138,8 @@ These checks are not a cross-device or accessibility audit, and they are not a p
 ### Launch
 
 - [ ] Record keep or remove for each optional Strapi plugin in the table below. If one is removed, retest the APIs that depend on it.
-- [ ] Choose hosting for the site, the CMS, the database and media.
-- [ ] Provision those services, migrate with backups and verify media delivery.
+- [x] Hosting decision: one Railway Pro project in the client account for Next.js, Strapi and Postgres. Media is an S3-compatible bucket. Plan: [DEPLOYMENT.md](docs/DEPLOYMENT.md).
+- [ ] Provision that project, the bucket and the domain. Migrate with backups and verify media delivery.
 - [ ] Configure the approved SMTP sender and recipient and send a real inquiry notification.
 - [ ] Run the launch checks in [DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
