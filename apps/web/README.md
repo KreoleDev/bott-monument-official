@@ -13,19 +13,20 @@ read token, plus a separate create-only inquiry token. Start the CMS separately.
 npm run dev
 ```
 
-Site: http://localhost:3000. CMS: http://localhost:1337.
+Site entry: http://localhost:3000 (language detection). English:
+http://localhost:3000/en. CMS: http://localhost:1337.
 A published Page with slug `home` and its content must exist; no demo body is
 silently substituted when the CMS is unavailable or the Page is missing.
 
 ## Data and presentation
 
-- `/` reads the English Page.header, hero, content, footer and SEO through GraphQL.
-- A published Home localization automatically resolves at `/{locale}`; its press
-  archive resolves at `/{locale}/news`. `/en` redirects to `/` to avoid duplicates.
+- Every published Home localization resolves at `/{locale}`; English uses `/en`.
+  Its press archive resolves at `/{locale}/news`. `/` and `/news` detect the browser
+  language and redirect to an available published Home locale, with English fallback.
 - Header/Hero/Footer render in fixed positions; middle blocks follow Page.content order.
 - `src/page-builder/` contains the loader, adapters, registry and renderer.
 - Existing visual components consume `SectionContent`, a presentation type, not a CMS collection.
-- `/news` is the English Press Item route. Other Page slugs do not automatically create public routes.
+- `/en/news` is the English Press Item route. Other Page slugs do not automatically create public routes.
 - Collections/selections are paginated; empty block selections use all published items.
 - Site Settings supplies the public URL, social links and active palette. Home Header owns the site name, menu and logo. Home SEO supplies metadata defaults, including the social image; /news retains its own title.
 - Fonts: Cormorant Garamond, Montserrat and Alex Brush through `next/font`.
@@ -52,6 +53,8 @@ NEXT_DIST_DIR=.next-build npm run build -- --webpack
 ```
 
 Latest local verification (2026-09-20): 31 tests and production build passed.
+This predates the 2026-09-21 canonical locale-route adjustment; rerun these checks
+before merging.
 Source lint passed with `npm run lint -- --ignore-pattern '**/.next/**'` because
 this working checkout contains nested generated output; clean CI uses normal lint.
 Full cross-device/accessibility review and deployment verification remain pending.

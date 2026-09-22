@@ -1,6 +1,6 @@
 # Page Builder Plan
 
-Current state: **2026-09-20**.
+Current state: **2026-09-21**.
 
 ## Implemented
 
@@ -12,8 +12,10 @@ Current state: **2026-09-20**.
 - [x] Optional item selections; empty selections use all published collection items.
 - [x] Contact submission validation uses the published Page choices.
 - [x] Homepage Section retired from schema, GraphQL, local SQLite and seed code.
-- [x] English remains at `/`; published Home localizations resolve at `/{locale}`.
-  Page and item queries, caches, metadata, preview and inquiry validation carry locale.
+- [x] Every published Home localization resolves at `/{locale}`, including English
+  at `/en`; its archive resolves at `/{locale}/news`. `/` and `/news` detect the
+  browser language and redirect to an available localization. Page and item queries,
+  caches, metadata, preview and inquiry validation carry locale.
 
 ## Current flow
 
@@ -53,8 +55,9 @@ Recheck the admin build and editor interactions when upgrading Strapi.
 - Refresh the public content/media archive with Pages and test import into a copy
   of an existing SQLite installation, preserving private records and accounts.
 - Additional arbitrary Page slug routes and Art Process are future scope. Locale
-  routing is implemented for Home and its dedicated News route; adding actual
-  languages and approved translations remains editorial work in Strapi.
+  routing is implemented for Home and its dedicated News route. Locales are added
+  or removed in Strapi Internationalization; translations and publication remain
+  editorial work in Strapi.
 
 ## Latest verification
 
@@ -64,3 +67,5 @@ browser for ordering, closed cards, opening fields and absence of automatic
 unsaved changes. Local Page rendering and independent draft/published reads were
 verified. Full visual/accessibility acceptance and a new archive restore remain
 pending, as listed above and in [the project plan](../IMPLEMENTATION_PLAN.md).
+That verification predates the 2026-09-21 switch to canonical `/en` routes and
+browser-language redirects; rerun the frontend checks before merge.

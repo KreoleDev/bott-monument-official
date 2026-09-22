@@ -1,8 +1,7 @@
-import { DEFAULT_LOCALE } from "@/lib/locale";
-import { NewsPage } from "../news-page";
+import { redirect } from "next/navigation";
+import { localizedPath } from "@/lib/locale";
+import { detectedLocale } from "@/lib/server-locale";
 
-export const metadata = { title: "Press Coverage" };
-
-export default function DefaultNewsPage() {
-  return <NewsPage locale={DEFAULT_LOCALE} />;
+export default async function NewsLocaleRedirect() {
+  redirect(localizedPath(await detectedLocale(), "/news"));
 }

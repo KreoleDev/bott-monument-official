@@ -30,11 +30,11 @@ Press Item, Features, Gallery and Comments remain independent item collections.
 Inquiries stores private form submissions. Site Settings holds social links, public URL and active Color Palette.
 Edit the site name/logo in Home → Header and metadata in Home → SEO. Header scroll colors remain in palettes.
 
-Page, Comments, Features, Gallery and Press Item are localized. English is the
-default. To add a language, add its locale under Settings → Internationalization,
-create and publish the Home localization, and localize/publish the item records
-selected by its blocks. The frontend then exposes `/{locale}` and
-`/{locale}/news`; no new React page is required.
+Page, Comments, Features, Gallery and Press Item are localized. Add or remove
+languages under Settings → Internationalization. For an added language, create and
+publish the Home localization and localize/publish the item records selected by its
+blocks. The frontend then exposes `/{locale}` and `/{locale}/news`, including `/en`
+for English. The bare `/` detects the browser language; no new React page is required.
 
 **Homepage Section has been removed.** Its old copying scripts are retired.
 The committed archive predates Pages: do not import it into this schema. Read

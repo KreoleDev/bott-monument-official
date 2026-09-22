@@ -1,6 +1,6 @@
 # Bott Monument Project Plan
 
-Current state: **2026-09-20**. This is the shared checklist for the implemented
+Current state: **2026-09-21**. This is the shared checklist for the implemented
 project and remaining work. Completed historical approaches are not instructions
 for the current code.
 
@@ -13,8 +13,9 @@ for the current code.
 - Runtime: Node 22 (matching CI), npm lockfiles per app; no npm workspaces.
 - Formatting: root Biome; frontend lint: ESLint.
 - Fonts: Cormorant Garamond, Montserrat, Alex Brush through `next/font`.
-- Default public language: English at `/`; localized Home routes are ready at
-  `/{locale}` and `/{locale}/news`. Hosting has not been selected.
+- Every public language uses `/{locale}` and `/{locale}/news`, including English
+  at `/en`. `/` and `/news` detect the browser language and redirect to a published
+  Home localization, falling back to English. Hosting has not been selected.
 
 ## Design to product map
 
@@ -59,10 +60,11 @@ HTML uses `#founder` for the showroom; keep the implemented IDs above.
 - [x] Preserve gallery rotation, private-gallery dialog, image lightbox, navigation and Escape handling.
 - [x] Mobile menu, skip link, scroll reveals, reduced-motion handling and no-JS content visibility.
 - [x] Contact validation uses published Page choices; submissions are saved to Inquiries.
-- [x] Dedicated `/news` route reads Press Item; arbitrary CMS slug routes are not implemented.
-- [x] Locale-aware routing keeps English at `/` and `/news`; another published
-  Home localization is exposed at `/{locale}` and `/{locale}/news`, with localized
-  queries, collections, metadata, cache keys, document language and form validation.
+- [x] Dedicated `/{locale}/news` route reads Press Item; arbitrary CMS slug routes are not implemented.
+- [x] Locale-aware routing exposes every published Home localization at `/{locale}`
+  and `/{locale}/news`. `/` and `/news` negotiate the browser's `Accept-Language`
+  against published Home locales and redirect, with English fallback. Queries,
+  collections, metadata, cache keys, document language and form validation carry locale.
 - [x] Next Image optimization and configurable media origins.
 
 ### Palettes, preview and reliability
@@ -91,6 +93,8 @@ Latest checks after collection removal:
 - No legacy collection tables, media references or permission/configuration references remained in local SQLite.
 
 These checks do not constitute a completed cross-device/accessibility audit or a production launch test. CI is configured for tests/builds; local success does not assert a remote CI run.
+They predate the 2026-09-21 switch to canonical `/en` routes and browser-language
+redirects; rerun the frontend checks before merging that routing change.
 
 ## Remaining work — current scope
 
@@ -123,10 +127,10 @@ Do not add SEO, redirects or translation plugins without a demonstrated requirem
 ## Optional future scope — not missing MVP work
 
 - Art Process: commented out in the design; add only if requested, using a Page block and an appropriate item collection.
-- Additional languages: routing and localized content models are ready. Add the
-  locale in Strapi, localize and publish Home plus its selected item records, then
-  verify translated interface copy, metadata and both localized URLs.
-- Additional CMS slug routes: Page can store entries, but the frontend currently consumes `home`; `/news` remains a dedicated route.
+- Additional languages: routing and localized content models are ready. Add or remove
+  locales in Strapi Internationalization. Localize and publish Home plus its selected
+  item records, then verify translated interface copy, metadata and both localized URLs.
+- Additional CMS slug routes: Page can store entries, but the frontend currently consumes `home`; `/{locale}/news` remains a dedicated route.
 - Demo layout pickers, headline switchers and design toolbar are excluded. CMS palettes are a real feature; demo controls are not.
 
 ## Data handoff and maintenance

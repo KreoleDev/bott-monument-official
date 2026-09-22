@@ -1,8 +1,7 @@
-import { DEFAULT_LOCALE } from "@/lib/locale";
-import { HomePage, homeMetadata } from "./home-page";
+import { redirect } from "next/navigation";
+import { localizedPath } from "@/lib/locale";
+import { detectedLocale } from "@/lib/server-locale";
 
-export const generateMetadata = () => homeMetadata(DEFAULT_LOCALE);
-
-export default function Home() {
-  return <HomePage locale={DEFAULT_LOCALE} />;
+export default async function LocaleRedirect() {
+  redirect(localizedPath(await detectedLocale()));
 }

@@ -147,16 +147,19 @@ test("Page reads paginate selections, isolate preview and honor an intentionally
   assert.equal((await getHomePage()).content.length, 0);
 });
 
-test("locale paths keep English at root and prefix future languages", () => {
-  const { isLocaleCode, localizedHref, localizedPath } = loadTs("../src/lib/locale.ts");
-  assert.equal(localizedPath("en"), "/");
-  assert.equal(localizedPath("en", "/news"), "/news");
+test("locale paths prefix every language and browser preferences select published locales", () => {
+  const { isLocaleCode, localizedHref, localizedPath, preferredLocale } =
+    loadTs("../src/lib/locale.ts");
+  assert.equal(localizedPath("en"), "/en");
+  assert.equal(localizedPath("en", "/news"), "/en/news");
   assert.equal(localizedPath("pt"), "/pt");
   assert.equal(localizedPath("pt-BR", "/news"), "/pt-BR/news");
   assert.equal(localizedHref("pt", "/news"), "/pt/news");
   assert.equal(localizedHref("pt", "/pt/news"), "/pt/news");
   assert.equal(localizedHref("pt", "#contact"), "#contact");
   assert.equal(localizedHref("pt", "https://example.com"), "https://example.com");
+  assert.equal(preferredLocale("pt-BR,pt;q=0.9,en;q=0.8", ["en", "pt"]), "pt");
+  assert.equal(preferredLocale("fr;q=0.9,en;q=0.8", ["en", "pt"]), "en");
   assert.equal(isLocaleCode("kea"), true);
   assert.equal(isLocaleCode("../../admin"), false);
 });

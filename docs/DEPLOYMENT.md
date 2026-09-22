@@ -58,8 +58,9 @@ Do not import it here. Refresh and restore-test the archive first; see the hando
 
 ## Preview and publication refresh
 
-- Strapi preview opens `/api/preview?secret=…&path=/` (or `/news`). Only these paths are
-  allowed. Preview uses draft queries, bypasses public caches, and displays an exit form.
+- Strapi preview opens `/api/preview?secret=…&path=/{locale}` (or
+  `/{locale}/news`). Only locale-prefixed content paths are allowed. Preview uses
+  draft queries, bypasses public caches, and displays an exit form.
 - In Strapi **Settings → Webhooks**, configure **Website content refresh**:
   URL: `https://YOUR_WEB_HOST/api/revalidate`; header `x-revalidation-secret` equal to
   `REVALIDATION_SECRET`; events: entry publish, unpublish, update and delete.
@@ -102,5 +103,7 @@ After locale routing, 31 frontend and 4 CMS tests, both production
 builds and frontend source lint passed. The editor order/collapse/open behavior
 and live Page rendering were checked locally. These results do not verify SMTP,
 production hosting/storage, a new snapshot restore or a full accessibility audit.
+These checks predate the 2026-09-21 canonical `/en` and browser-language redirect
+adjustment; rerun the frontend checks before deployment.
 The custom editor uses Strapi 5.53 internal renderer aliases; test that integration
 when upgrading Strapi. Plugin keep/remove decisions remain open in the project plan.

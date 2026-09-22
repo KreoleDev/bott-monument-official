@@ -149,10 +149,12 @@ nunca levam esse prefixo.
 
 ### Idiomas e rotas
 
-O inglês é o locale padrão e mantém os URLs `/` e `/news`. Ao adicionar outro
-locale em **Settings → Internationalization** e publicar a localização de
-**Page → Home**, o frontend disponibiliza `/{locale}` e `/{locale}/news`; por
-exemplo, `/pt` e `/pt/news`. `/en` redireciona para `/`.
+Todas as páginas públicas usam o locale na rota. Inglês usa `/en` e `/en/news`;
+português pode usar `/pt` e `/pt/news`. `/` e `/news` detetam o idioma preferido
+do browser, escolhem entre as localizações publicadas de Home e redirecionam para
+a rota correspondente, com inglês como fallback. Os locales são adicionados ou
+removidos em **Settings → Internationalization** no Strapi. Depois de adicionar um,
+cria e publica a localização de **Page → Home** para a tornar disponível no site.
 
 Page, Comments, Features, Gallery e Press Item estão preparados para localização.
 Para lançar um idioma, traduz e publica Home e os itens selecionados nesse locale.
@@ -230,7 +232,7 @@ os itens individuais; `Inquiries` guarda as mensagens do formulário.
 
 Navegação: **Masterpieces → `#work`**, **Gallery → `#gallery`**,
 **Inquire → `#contact`**, **About → `#showroom`**. A secção `#work` usa a chave
-`news`; não existe uma secção adicional com a chave `work`. `/news` lista as notícias.
+`news`; não existe uma secção adicional com a chave `work`. `/{locale}/news` lista as notícias.
 
 No HTML original, `#founder` identifica o showroom. Na implementação,
 `#founder` identifica a introdução de Drew e `#showroom` identifica o showroom.

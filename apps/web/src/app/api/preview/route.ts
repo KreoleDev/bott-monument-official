@@ -9,8 +9,6 @@ export async function GET(request: Request) {
   const path = url.searchParams.get("path") || "/";
   const segments = path.split("/").filter(Boolean);
   const validPath =
-    path === "/" ||
-    path === "/news" ||
     (segments.length === 1 && isLocaleCode(segments[0]) && path === `/${segments[0]}`) ||
     (segments.length === 2 &&
       isLocaleCode(segments[0]) &&
