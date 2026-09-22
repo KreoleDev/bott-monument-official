@@ -1,23 +1,34 @@
 # Bott Monument
 
-## Depois do pull: conteúdo da homepage
+Site oficial da Bott Monument: memoriais em pedra, feitos à medida.
 
-A homepage usa **Page → Home**: Header e Hero fixos, oito secções intermédias
-reordenáveis e Footer fixo. Os cartões começam fechados. **Homepage Section foi
-removido do CMS e da base local**, depois de verificar as versões draft/publicada.
+## Documentos
 
-Os antigos comandos `migrate:home-page` e `migrate:fixed-page-fields` foram
-retirados: a migração local está concluída. Não execute instruções antigas de cópia
-nesta versão. Se outro ambiente ainda depende de Homepage Section, guarde um backup e prepare
-um caminho de migração/handoff validado antes de iniciar este código.
+| Ficheiro | Função |
+| --- | --- |
+| [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) | Ficheiro principal: modelo da homepage, o que está feito e o que falta |
+| [docs/LOCAL_SQLITE_HANDOFF.md](docs/LOCAL_SQLITE_HANDOFF.md) | Copiar conteúdo entre bases locais |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Produção e verificações de lançamento |
+| [apps/cms/README.md](apps/cms/README.md) | Comandos e edição no CMS |
+| [apps/web/README.md](apps/web/README.md) | Comandos do site |
 
-**O arquivo em `handoff/` ainda é anterior a Pages. Não o importe com o schema
-atual.** O próximo handoff requer um export atualizado e teste de importação numa
-cópia SQLite. Veja [o estado do handoff](docs/LOCAL_SQLITE_HANDOFF.md).
+## Depois do pull
+
+A homepage é **Page → Home**: Header e Hero fixos, oito blocos intermédios
+reordenáveis e Footer fixo. Homepage Section já não existe no schema.
+
+O arquivo em `handoff/` é anterior a Pages. Não o importes com este schema.
+O export seguinte, e o teste numa cópia SQLite, estão por fazer:
+[handoff](docs/LOCAL_SQLITE_HANDOFF.md).
+
+Se a base local ainda tiver `homepage_sections`, faz backup antes de arrancar
+o Strapi. Este repositório não inclui um script que copie essa coleção para Page.
+Ao arrancar, o Strapi aplica o schema novo e remove a coleção antiga.
+
+`migrate:header-rules` só serve para uma SQLite que já tenha regras de header.
+Faz backup, preserva as cores e renomeia `magazine` para `gallery`. Não cria Page.
 
 ---
-
-Site oficial da Bott Monument: memoriais em pedra, feitos à medida.
 
 O design visual já existe. Este repositório reconstrói esse design como produto
 editável: **Strapi** guarda conteúdo e media; **Next.js** guarda layout,
@@ -365,49 +376,22 @@ vazia mostra todos os itens publicados, uma seleção preenchida limita os itens
 Preview mostra o rascunho; visitantes recebem a versão publicada. O SEO fica em Page → Home → SEO e fornece os valores padrão para o site. Paletas e cores de scroll continuam em Site Settings.
 
 A antiga coleção Homepage Section e os comandos que a copiavam foram removidos.
-Progresso: [Page Builder Plan](docs/PAGE_BUILDER_PLAN.md).
+O modelo, a renderização e as tarefas estão em
+[IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
 
 ## Como adicionar uma secção
 
-A homepage usa o page-builder em `apps/web/src/page-builder/` (registry +
-mapper + `getPage` + `RenderPage`). Não adicionar `switch` em `page.tsx`.
-O estado implementado e as tarefas restantes estão em
-[docs/PAGE_BUILDER_PLAN.md](docs/PAGE_BUILDER_PLAN.md).
+O procedimento está em [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md):
+componente `pages.*`, Dynamic Zone, fragmentos GraphQL, mapper e registry.
+Não adicionar `switch` em `page.tsx`. A ordem do corpo vem de `Page.content`.
 
-1. Para um tipo já existente, adicione o bloco em **Page → Home → content**,
-   ajuste a ordem e publique. Para um novo tipo, crie primeiro o componente
-   `pages.*` no Strapi e adicione-o à Dynamic Zone e aos fragmentos GraphQL.
-2. Se forem itens de lista, usa um collection type próprio, não um campo
-   JSON dentro de um bloco.
-3. No Next, adiciona um mapper em `page-builder/mappers.ts` e o componente
-   em `page-builder/registry.ts`.
-4. Define o comportamento quando não existe conteúdo no componente.
-5. Copia layout, spacing e motion de `bott-monument-design/index.html`.
-6. Marca a tarefa em `IMPLEMENTATION_PLAN.md`.
-   O que ainda não der para modelar no Strapi fica no plano do page-builder
-   para o Esmael ajustar a estrutura depois.
+## Conteúdo entre instalações
 
-## Preservar conteúdo e media entre instalações
-
-A equipa recebe código, schemas e o snapshot de **dados e media** pelo Git.
-Os dois ficheiros em `handoff/` são a exceção explícita à regra de ignorar exports;
-a base SQLite, os uploads de trabalho e os backups locais continuam ignorados.
-O snapshot atual ainda é antigo e não deve ser importado com este schema.
-O estado e o próximo procedimento estão no [guia SQLite](docs/LOCAL_SQLITE_HANDOFF.md).
-
-Para atualizar o snapshot público, com Strapi parado, exporta a partir de `apps/cms`:
-
-```bash
-npm run strapi -- export --only content,files --exclude-content-types api::inquiry.inquiry,plugin::users-permissions.user --file ../../handoff/bott-content --key "$(cat ../../handoff/bott-content-key.txt)"
-```
-
-Confirma que o snapshot contém apenas conteúdo que pode ser público antes de
-commitar a atualização. A chave versionada serve para importar o ficheiro;
-não torna privados os dados publicados neste repositório.
-
-A ordem do corpo da homepage vem da posição dos blocos em `Page.content`. Cabeçalho
-e rodapé mantêm as posições semânticas. O `sortOrder` dos itens ordena as coleções;
-Gallery, Features, Press Item e Comments carregam todas as páginas publicadas.
+Código e schemas chegam pelo Git. A base local, os uploads de trabalho e os
+backups não. Os ficheiros em `handoff/` são a exceção, mas o arquivo atual é
+anterior a Pages e não deve ser importado. O procedimento do próximo export,
+incluindo o que fica de fora (inquiries e contas), está em
+[docs/LOCAL_SQLITE_HANDOFF.md](docs/LOCAL_SQLITE_HANDOFF.md).
 
 ## Comandos (a partir da raiz)
 
@@ -426,16 +410,11 @@ npm --prefix apps/web run build
 Use terminais separados para os dois servidores. Mais detalhes nos READMEs de
 [CMS](apps/cms/README.md) e [frontend](apps/web/README.md).
 
-## Estado da verificação e trabalho restante
+## Estado
 
-Em 2026-09-20: 31 testes frontend e 4 testes CMS passaram; o build frontend e o
-lint de código-fonte passaram. O editor ordenado/fechado e a homepage foram
-verificados localmente. Não equivale a auditoria completa de acessibilidade ou produção.
-
-Falta atualizar/testar o snapshot, concluir revisão visual/acessibilidade,
-substituir conteúdo de exemplo, rever plugins e configurar/verificar hosting,
-media e SMTP. Process, idiomas adicionais e novas rotas CMS são opcionais.
-A checklist atual está em [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
+A checklist viva está em [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
+O arquivo público de conteúdo ainda não acompanha Pages. Revisão visual,
+conteúdo aprovado, plugins, hosting, media persistente e SMTP continuam abertos.
 
 ## Segurança
 
@@ -470,8 +449,10 @@ sem email, o formulário continua a guardar a mensagem em Strapi.
 | Base de dados | Postgres (Railway, Neon ou Supabase) |
 | Media | Cloudinary ou S3 |
 
-Até lá, SQLite local chega para desenvolvimento. Não uses a base local
-como fonte de verdade da equipa.
+Até lá, o desenvolvimento usa a base configurada em `apps/cms/.env`:
+SQLite por omissão, ou PostgreSQL quando `DATABASE_CLIENT=postgres`.
+Essa base local não é a fonte de verdade da equipa. O arquivo em `handoff/`
+também ainda não o é, porque é anterior a Pages.
 
 ### Editor de Page
 

@@ -1,15 +1,18 @@
 # Bott Monument Project Plan
 
-Current state: **2026-09-21**. This is the shared checklist for the implemented
-project and remaining work. Completed historical approaches are not instructions
-for the current code.
+Current state: **2026-09-22**. This is the principal project file: what is
+done, how the homepage is modeled and rendered, and what is still open.
+Run commands stay in the READMEs. Copying a database stays in
+[LOCAL_SQLITE_HANDOFF.md](docs/LOCAL_SQLITE_HANDOFF.md). Production stays in
+[DEPLOYMENT.md](docs/DEPLOYMENT.md). Completed historical approaches are not
+instructions for the current code.
 
 ## Source of truth and stack
 
 - Visual reference: `bott-monument-design/index.html` and its local assets.
 - Content: Strapi **Page → Home**, slug `home`, plus the collections below.
 - Frontend: Next.js 16, React 19, TypeScript, Tailwind 4; server-side GraphQL reads.
-- CMS: Strapi 5.53, GraphQL, SQLite and local uploads for development.
+- CMS: Strapi 5.53, GraphQL. Local development uses SQLite unless `DATABASE_CLIENT=postgres`.
 - Runtime: Node 22 (matching CI), npm lockfiles per app; no npm workspaces.
 - Formatting: root Biome; frontend lint: ESLint.
 - Fonts: Cormorant Garamond, Montserrat, Alex Brush through `next/font`.
@@ -36,6 +39,33 @@ for the current code.
 Default navigation: Masterpieces → `#work`, Gallery → `#gallery`, Inquire →
 `#contact`, About → `#showroom`. Header links are editable in Page. The original
 HTML uses `#founder` for the showroom; keep the implemented IDs above.
+
+## How the homepage is rendered
+
+`Page.header`, `Page.hero`, `Page.content` and `Page.footer`, plus the item
+collections and Site Settings, load through `getPage` in
+`apps/web/src/page-builder/`. Mappers adapt that content and `RenderPage`
+places Hero, then the middle blocks, then Footer.
+
+`SectionContent` is a presentation type passed to the visual components. It is
+not a CMS content type. Only the eight middle blocks can be dragged. Header
+owns the logo, site name and menu. Home SEO owns the title, description and
+social image, and those values are the site-wide metadata defaults. Site
+Settings holds the public URL, social links and active palette. Header scroll
+colors stay on the palette.
+
+`apps/cms/src/admin/app.tsx` orders the Page fields and starts the fixed cards
+and SEO collapsed. Middle blocks keep Strapi's native controls. Two Vite
+aliases reuse Strapi 5.53 internal input renderers so media, relations,
+validation and permissions stay intact. Recheck the admin build and those
+interactions when upgrading Strapi. No dependency files are patched.
+
+To add a section: create the `pages.*` component, add it to the Dynamic Zone
+and the GraphQL fragments, then add a mapper in `page-builder/mappers.ts` and
+the component in `page-builder/registry.ts`. List items belong in their own
+collection, not in a JSON field. Copy layout and motion from
+`bott-monument-design/index.html`. Do not add a switch in `page.tsx`. Mark the
+task in this file.
 
 ## Completed
 
@@ -80,34 +110,40 @@ HTML uses `#founder` for the showroom; keep the implemented IDs above.
 - [x] Optional inquiry email notification code; email failure does not lose a saved inquiry.
 - [x] Optional PostgreSQL, S3 and SMTP configuration; these services are not activated or deployment-tested.
 
-## Verification completed
+## Verification recorded
 
-Latest checks after collection removal:
+Recorded before 2026-09-22, on the machines where those checks were run:
 
-- **31 frontend tests and 4 CMS integration tests passed.** Migration-only tests were retired with the removed migration code.
+- 31 frontend tests and 4 CMS integration tests passed. Migration-only tests were retired with the removed migration code.
 - Frontend and CMS production builds passed; frontend source lint passed with nested generated `.next` output excluded locally.
 - Admin TypeScript check passed during the ordered-editor change.
-- Isolated browser verified editor order, collapsed cards, opening fixed fields and no automatic unsaved changes.
-- Live draft/published Page reads and rendered Header → Hero → middle sections → Footer verified.
-- Before removal, SQLite was backed up. After removal, Pages, media records, item collections, Site Settings, palettes, inquiries and admin accounts matched the backup.
-- No legacy collection tables, media references or permission/configuration references remained in local SQLite.
+- An isolated browser verified editor order, collapsed cards, opening fixed fields and no automatic unsaved changes.
+- Draft and published Page reads rendered Header → Hero → middle sections → Footer.
+- The author's SQLite was backed up before Homepage Section was removed. After removal, Pages, media, item collections, Site Settings, palettes, inquiries and admin accounts matched that backup.
 
-These checks do not constitute a completed cross-device/accessibility audit or a production launch test. CI is configured for tests/builds; local success does not assert a remote CI run.
-They predate the 2026-09-21 switch to canonical `/en` routes and browser-language
-redirects; rerun the frontend checks before merging that routing change.
+These checks are not a cross-device or accessibility audit, and they are not a production launch test. CI checks code and builds; it does not provision services. The counts above were not rerun in the 2026-09-22 documentation pass.
 
-## Remaining work — current scope
+## Remaining work
 
-- [ ] Refresh the public CMS content/media snapshot with Pages and test restoring it into an existing SQLite copy. Preserve private records and local accounts/configuration.
-- [ ] Complete desktop/mobile visual and accessibility review: keyboard use, focus, dialogs, gallery gestures, reduced motion, long content, form, preview and publishing.
-- [ ] Replace sample phone, availability, copyright and testimonial text with approved content.
-- [ ] Review optional Strapi plugins and record keep/remove decisions; validate affected APIs if anything is removed.
-- [ ] Select CMS/frontend hosting and persistent database/media storage.
-- [ ] Provision the selected services, migrate with backups and verify media delivery.
-- [ ] Configure approved SMTP sender/recipient and verify real email delivery.
-- [ ] Run the deployment and launch checks in [DEPLOYMENT.md](docs/DEPLOYMENT.md).
+### Content the team can share
 
-The first two items can progress locally. Approved copy, SMTP and hosting require the corresponding content, decisions or access.
+- [ ] Export a Page-based public snapshot and restore it into a copy of an existing SQLite database. Preserve inquiries, accounts, tokens and local configuration. Until that passes, do not import `handoff/`.
+- [ ] Replace the sample phone, commission availability, copyright year and placeholder testimonials with approved copy.
+
+### Quality
+
+- [ ] Rerun frontend and CMS tests, typecheck and production builds on current `dev`.
+- [ ] Review desktop and mobile layout, keyboard use, focus, dialogs, gallery gestures, reduced motion, long content, the contact form, preview and publishing.
+
+### Launch
+
+- [ ] Record keep or remove for each optional Strapi plugin in the table below. If one is removed, retest the APIs that depend on it.
+- [ ] Choose hosting for the site, the CMS, the database and media.
+- [ ] Provision those services, migrate with backups and verify media delivery.
+- [ ] Configure the approved SMTP sender and recipient and send a real inquiry notification.
+- [ ] Run the launch checks in [DEPLOYMENT.md](docs/DEPLOYMENT.md).
+
+The snapshot and the visual review can proceed locally. Approved copy, SMTP and hosting need the corresponding content, decision or access.
 
 ## Plugin review still pending
 
@@ -135,16 +171,15 @@ Do not add SEO, redirects or translation plugins without a demonstrated requirem
 
 ## Data handoff and maintenance
 
-Homepage Section and the old copy commands are retired. Git pull changes code,
-not a teammate's local content. **The committed pre-Page archive is incompatible
-with the current schema and must not be imported into it.** A refreshed snapshot
-and validated restore remain pending; see [LOCAL_SQLITE_HANDOFF.md](docs/LOCAL_SQLITE_HANDOFF.md).
-Do not start this schema-removal version against unmigrated legacy data without
-a backup and a verified migration/handoff path.
+Git pull updates code, not a teammate's database. Homepage Section and the old
+copy commands are gone. The committed archive is still pre-Page and must not be
+imported. Procedure: [LOCAL_SQLITE_HANDOFF.md](docs/LOCAL_SQLITE_HANDOFF.md).
 
-The custom Page editor reuses two Strapi 5.53 internal input renderers through
-Vite aliases. Recheck builds, permissions, media, relations and editor behavior
-when upgrading Strapi. No dependency files are patched.
+On 2026-09-22 one local PostgreSQL database (`bott_monument`) was copied from
+its pre-sync backup into a published Page `home`. That copy is not in Git and
+does not replace the public snapshot. A database that still contains
+`homepage_sections` needs its own backup before Strapi starts; startup drops
+that table.
 
 ## Working rules and references
 
@@ -153,4 +188,4 @@ when upgrading Strapi. No dependency files are patched.
 - Do not commit env files, tokens, raw SQLite databases, working uploads or local backups.
 - The public archive/key are an explicit exception; exclude inquiries and user accounts, and review all included content.
 - Update this checklist when work is completed. Use the app READMEs for commands.
-- [Project README](README.md) · [Page Builder](docs/PAGE_BUILDER_PLAN.md) · [SQLite handoff](docs/LOCAL_SQLITE_HANDOFF.md) · [Deployment](docs/DEPLOYMENT.md)
+- [Project README](README.md) · [SQLite handoff](docs/LOCAL_SQLITE_HANDOFF.md) · [Deployment](docs/DEPLOYMENT.md)

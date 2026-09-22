@@ -1,7 +1,9 @@
 # Bott Monument CMS
 
-Strapi 5.53 with GraphQL, local SQLite and local uploads. Use Node 22 and npm.
-See the [project README](../../README.md) for shared setup and conventions.
+Strapi 5.53 with GraphQL and local uploads. Use Node 22 and npm.
+The database comes from `.env`: SQLite by default, or PostgreSQL when
+`DATABASE_CLIENT=postgres`. See the [project README](../../README.md) for shared
+setup and the [plan](../../IMPLEMENTATION_PLAN.md) for open work.
 
 ## Run locally
 
@@ -36,13 +38,13 @@ publish the Home localization and localize/publish the item records selected by 
 blocks. The frontend then exposes `/{locale}` and `/{locale}/news`, including `/en`
 for English. The bare `/` detects the browser language; no new React page is required.
 
-**Homepage Section has been removed.** Its old copying scripts are retired.
-The committed archive predates Pages: do not import it into this schema. Read
-[SQLite handoff status](../../docs/LOCAL_SQLITE_HANDOFF.md) before transferring data.
-A blank database needs new Page content or a future compatible, validated snapshot.
+**Homepage Section has been removed.** Do not import `handoff/` into this schema.
+A blank database needs a new Page `home`, or a snapshot that has been
+restore-tested. Details: [SQLite handoff](../../docs/LOCAL_SQLITE_HANDOFF.md).
 
-The one-time header migration is retired. Duplicate Site Settings branding/SEO
-fields have been removed after verifying Home draft and published values.
+Site Settings no longer stores the site name, logo or SEO. Those live on
+Page → Home. `migrate:header-rules` remains available for an existing SQLite
+file that still has header color rules; see the handoff guide.
 
 ## Checks
 
@@ -52,9 +54,8 @@ npm run build
 npx tsc -p src/admin/tsconfig.json --noEmit
 ```
 
-Latest verification (2026-09-18): three isolated CMS integration tests and CMS
-production build passed. Tests use temporary SQLite databases, not the working data.
-Admin TypeScript and browser checks passed during the editor change.
+Tests use temporary SQLite databases, not the working data. The latest recorded
+results are in the [project plan](../../IMPLEMENTATION_PLAN.md).
 
 ## Admin customization
 
@@ -78,6 +79,6 @@ shows live palette colors, gradient stops and photo overlay; inherited colors
 are marked explicitly. First matching enabled rule wins; an empty list disables
 all overrides. Publish changes to apply them to visitors.
 
-For existing SQLite databases, stop Strapi and run `npm run migrate:header-rules`
-before restarting. This backs up SQLite, keeps existing rules and colors, sets
-list order, and renames magazine to gallery in rules and menu links.
+On a stopped SQLite database that already has those rules, `npm run migrate:header-rules`
+backs up the file, keeps the colors, sets list order, and renames `magazine` to
+`gallery`. It does not create Page. See the handoff guide before running it.

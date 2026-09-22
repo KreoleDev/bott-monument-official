@@ -1,13 +1,13 @@
 # Deployment and content operations
 
-Current status: **2026-09-18**. Preparation is implemented; production launch remains pending.
+Current status: **2026-09-22**. The code is prepared for production. No host,
+database or media account has been selected. Open launch tasks are in
+[IMPLEMENTATION_PLAN.md](../IMPLEMENTATION_PLAN.md).
 
-**For developer-to-developer SQLite copies, use [LOCAL_SQLITE_HANDOFF.md](LOCAL_SQLITE_HANDOFF.md).**
-The production infrastructure below is optional and is not required for that workflow.
-
-The code is prepared for a Node-compatible Next.js host, a persistent Strapi service,
-PostgreSQL, public S3-compatible media and SMTP. No production account or destination
-has been selected or changed. Local SQLite and uploads remain authoritative for this demo.
+Copy content between developers with [LOCAL_SQLITE_HANDOFF.md](LOCAL_SQLITE_HANDOFF.md).
+Do not import the committed pre-Page archive. Local development uses the database
+named in `apps/cms/.env`: SQLite by default, or PostgreSQL when
+`DATABASE_CLIENT=postgres`. That local database is not the team source of truth.
 
 ## Protect the existing site
 
@@ -23,8 +23,9 @@ has been selected or changed. Local SQLite and uploads remain authoritative for 
    selected item relations, Gallery, Features, Comments, Press Item, palettes and
    Site Settings. Verify independent drafts/publication, media and local accounts/tokens.
 
-The committed pre-Page handoff archive is not compatible with the current schema.
-Do not import it here. Refresh and restore-test the archive first; see the handoff guide.
+This export is a private production copy. It is separate from the public
+`handoff/` archive, which is still pre-Page and must not be imported. The
+public snapshot procedure is in the handoff guide.
 
 ## CMS service
 
@@ -97,13 +98,9 @@ Submissions are saved even when email is disabled or delivery fails.
 - Review dependency audit findings before launch; do not use a forced major-version upgrade
   as an automatic fix. CI checks code/builds; it does not provision or migrate services.
 
-## Completed local verification versus launch work
+## What this guide does not close
 
-After locale routing, 31 frontend and 4 CMS tests, both production
-builds and frontend source lint passed. The editor order/collapse/open behavior
-and live Page rendering were checked locally. These results do not verify SMTP,
-production hosting/storage, a new snapshot restore or a full accessibility audit.
-These checks predate the 2026-09-21 canonical `/en` and browser-language redirect
-adjustment; rerun the frontend checks before deployment.
-The custom editor uses Strapi 5.53 internal renderer aliases; test that integration
-when upgrading Strapi. Plugin keep/remove decisions remain open in the project plan.
+Recorded test and build results, and everything still open, are in the project
+plan. This guide does not by itself verify SMTP, hosting, persistent media, a
+new snapshot restore or an accessibility audit. The Page editor aliases two
+Strapi 5.53 internal renderers; retest that integration when upgrading Strapi.

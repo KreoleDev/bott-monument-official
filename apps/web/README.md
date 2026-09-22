@@ -52,12 +52,10 @@ CI uses `npm run build -- --webpack`. To isolate output while development runs:
 NEXT_DIST_DIR=.next-build npm run build -- --webpack
 ```
 
-Latest local verification (2026-09-20): 31 tests and production build passed.
-This predates the 2026-09-21 canonical locale-route adjustment; rerun these checks
-before merging.
-Source lint passed with `npm run lint -- --ignore-pattern '**/.next/**'` because
-this working checkout contains nested generated output; clean CI uses normal lint.
-Full cross-device/accessibility review and deployment verification remain pending.
+Recorded results and the remaining visual, content and launch work are in the
+[project plan](../../IMPLEMENTATION_PLAN.md). Source lint in a checkout that
+contains generated `.next` output needs
+`npm run lint -- --ignore-pattern '**/.next/**'`. Clean CI uses normal lint.
 
 Read [AGENTS.md](AGENTS.md) and the installed Next documentation before framework
 changes. Shared setup is in the [root README](../../README.md); operations are in
