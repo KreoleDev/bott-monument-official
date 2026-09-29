@@ -1,0 +1,12 @@
+{
+  "collectionName": "components_marquee_items",
+  "info": {
+    "displayName": "Marquee Item"
+  },
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

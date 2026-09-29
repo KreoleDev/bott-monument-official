@@ -1,0 +1,31 @@
+{
+  "collectionName": "components_pages_contact",
+  "info": {
+    "displayName": "Contact"
+  },
+  "attributes": {
+    "eyebrow": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "buttonLabel": {
+      "type": "string"
+    },
+    "contact": {
+      "type": "component",
+      "repeatable": false,
+      "component": "contact.details"
+    },
+    "backgroundColor": {
+      "type": "string"
+    },
+    "textColor": {
+      "type": "string"
+    }
+  }
+}

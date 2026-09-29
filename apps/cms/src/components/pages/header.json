@@ -1,0 +1,9 @@
+{
+  "collectionName": "components_pages_header",
+  "info": { "displayName": "Header" },
+  "attributes": {
+    "siteName": { "type": "string" },
+    "logo": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
+    "links": { "type": "component", "repeatable": true, "component": "navigation.link" }
+  }
+}

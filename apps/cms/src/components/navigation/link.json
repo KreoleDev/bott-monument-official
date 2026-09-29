@@ -1,0 +1,8 @@
+{
+  "collectionName": "components_navigation_links",
+  "info": { "displayName": "Menu link" },
+  "attributes": {
+    "label": { "type": "string", "required": true },
+    "href": { "type": "string", "required": true }
+  }
+}

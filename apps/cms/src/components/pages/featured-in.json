@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_pages_featured_in",
+  "info": {
+    "displayName": "Featured In"
+  },
+  "attributes": {
+    "eyebrow": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "backgroundColor": {
+      "type": "string"
+    },
+    "textColor": {
+      "type": "string"
+    },
+    "features": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::feature.feature"
+    }
+  }
+}

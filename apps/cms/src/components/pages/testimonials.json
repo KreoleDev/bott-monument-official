@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_pages_testimonials",
+  "info": {
+    "displayName": "Testimonials"
+  },
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "backgroundColor": {
+      "type": "string"
+    },
+    "textColor": {
+      "type": "string"
+    },
+    "comments": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::comment.comment"
+    }
+  }
+}

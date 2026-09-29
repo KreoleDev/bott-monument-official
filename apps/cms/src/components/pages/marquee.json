@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_pages_marquee",
+  "info": {
+    "displayName": "Marquee"
+  },
+  "attributes": {
+    "backgroundColor": {
+      "type": "string"
+    },
+    "textColor": {
+      "type": "string"
+    },
+    "items": {
+      "type": "component",
+      "repeatable": true,
+      "component": "marquee.item"
+    }
+  }
+}

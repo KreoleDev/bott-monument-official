@@ -1,0 +1,67 @@
+{
+  "collectionName": "components_theme_section_colors",
+  "info": {
+    "displayName": "Section Colors",
+    "description": "Optional #RRGGBB colors. Empty fields retain the original design. End/middle colors create a gradient; overlay is the showroom photo shade. Surface colors control cards and dialogs; button colors control actions."
+  },
+  "attributes": {
+    "backgroundColor": {
+      "type": "string",
+      "regex": "^#[0-9a-fA-F]{6}$"
+    },
+    "backgroundMiddleColor": {
+      "type": "string",
+      "regex": "^#[0-9a-fA-F]{6}$"
+    },
+    "backgroundEndColor": {
+      "type": "string",
+      "regex": "^#[0-9a-fA-F]{6}$"
+    },
+    "textColor": {
+      "type": "string",
+      "regex": "^#[0-9a-fA-F]{6}$"
+    },
+    "mutedTextColor": {
+      "type": "string",
+      "regex": "^#[0-9a-fA-F]{6}$"
+    },
+    "accentColor": {
+      "type": "string",
+      "regex": "^#[0-9a-fA-F]{6}$"
+    },
+    "surfaceColor": {
+      "type": "string",
+      "regex": "^#[0-9a-fA-F]{6}$"
+    },
+    "surfaceTextColor": {
+      "type": "string",
+      "regex": "^#[0-9a-fA-F]{6}$"
+    },
+    "borderColor": {
+      "type": "string",
+      "regex": "^#[0-9a-fA-F]{6}$"
+    },
+    "buttonColor": {
+      "type": "string",
+      "regex": "^#[0-9a-fA-F]{6}$"
+    },
+    "buttonTextColor": {
+      "type": "string",
+      "regex": "^#[0-9a-fA-F]{6}$"
+    },
+    "overlayColor": {
+      "type": "string",
+      "regex": "^#[0-9a-fA-F]{6}$"
+    },
+    "avatarColor": {
+      "type": "string",
+      "regex": "^#[0-9a-fA-F]{6}$"
+    },
+    "gradientAngle": {
+      "type": "integer",
+      "min": 0,
+      "max": 360,
+      "default": 120
+    }
+  }
+}
