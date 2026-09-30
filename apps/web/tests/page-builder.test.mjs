@@ -36,11 +36,14 @@ test("keeps footer as chrome instead of a main fragment", () => {
   const { mapSections, mapFooterChrome } = motor();
   const sections = [
     { sectionKey: "contact", title: "Contact" },
-    { sectionKey: "footer", footer: { brand: "Bott®" } },
+    {
+      sectionKey: "footer",
+      footer: { brand: "Bott®", facebookUrl: "https://www.facebook.com/example" },
+    },
   ];
   assert.equal(mapSections(sections, extras).length, 1);
   assert.equal(
-    mapFooterChrome(sections, extras).settings.facebookUrl,
+    mapFooterChrome(sections, extras).section.footer.facebookUrl,
     "https://www.facebook.com/example",
   );
   assert.equal(mapFooterChrome([{ sectionKey: "hero" }], extras), null);
