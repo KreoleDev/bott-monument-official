@@ -45,8 +45,11 @@ export interface FooterDetails extends Struct.ComponentSchema {
   attributes: {
     brand: Schema.Attribute.Text;
     copyright: Schema.Attribute.Text;
+    facebookUrl: Schema.Attribute.String;
+    instagramUrl: Schema.Attribute.String;
     tagline: Schema.Attribute.Text;
     taglineEmphasis: Schema.Attribute.Text;
+    youtubeUrl: Schema.Attribute.String;
   };
 }
 
