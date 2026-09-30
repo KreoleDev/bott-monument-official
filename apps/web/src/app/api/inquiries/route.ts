@@ -1,9 +1,18 @@
 import { getHomePage } from "@/lib/pages";
 import { DEFAULT_LOCALE, isLocaleCode } from "@/lib/locale";
 
+function getAllowedOrigins(request: Request) {
+  const headers = request.headers;
+  const origins = new Set([new URL(request.url).origin]);
+  const forwardedHost = headers.get("x-forwarded-host") || headers.get("host");
+  const forwardedProto = headers.get("x-forwarded-proto") || "https";
+  if (forwardedHost) origins.add(`${forwardedProto}://${forwardedHost}`);
+  return origins;
+}
+
 export async function POST(request: Request) {
   const origin = request.headers.get("origin");
-  if (origin && origin !== new URL(request.url).origin)
+  if (origin && !getAllowedOrigins(request).has(origin))
     return Response.json({ error: "Invalid origin" }, { status: 403 });
   if (!request.headers.get("content-type")?.includes("application/json"))
     return Response.json({ error: "Invalid content type" }, { status: 415 });
