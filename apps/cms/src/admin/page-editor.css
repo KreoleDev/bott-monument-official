@@ -1,4 +1,60 @@
-.bott-fixed-page-field { width: 100%; border: 1px solid #666687; border-radius: 6px; }
-.bott-fixed-page-field > summary { cursor: pointer; padding: 20px; font-weight: 600; font-size: 14px; text-transform: none; }
-.bott-fixed-page-field > summary span { float: right; font-size: 12px; font-weight: 400; opacity: .7; }
-.bott-fixed-page-field-content { padding: 16px; }
+.bott-collapsible-field {
+  width: 100%;
+  margin: 0 0 16px;
+  overflow: hidden;
+  border: 1px solid #4a4a6a;
+  border-radius: 6px;
+}
+
+.bott-collapsible-field > summary {
+  display: flex;
+  min-height: 64px;
+  align-items: center;
+  gap: 12px;
+  padding: 0 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  list-style: none;
+  text-transform: none;
+}
+
+.bott-collapsible-field > summary::-webkit-details-marker {
+  display: none;
+}
+
+.bott-collapsible-field > summary::before {
+  content: "";
+  flex: 0 0 auto;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 6px solid currentColor;
+  transition: transform 140ms ease;
+}
+
+.bott-collapsible-field[open] > summary {
+  border-bottom: 1px solid #4a4a6a;
+}
+
+.bott-collapsible-field[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+.bott-collapsible-title {
+  flex: 1 1 auto;
+}
+
+.bott-collapsible-meta {
+  flex: 0 0 auto;
+  color: #a5a5ba;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.bott-collapsible-field-content {
+  padding: 20px;
+}
+
+.bott-palette-section-field > summary {
+  min-height: 56px;
+}
