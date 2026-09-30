@@ -1,8 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ImageLightbox } from "./image-lightbox";
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, type CSSProperties } from "react";
 import type { SectionContent } from "@/lib/strapi";
 import type { GalleryItem } from "@/lib/gallery";
 import { localizedHref } from "@/lib/locale";
@@ -18,7 +17,6 @@ export function GalleryCarousel({
   items: (GalleryItem & { src: string })[];
   locale?: string;
 }) {
-  const [lightbox, setLightbox] = useState<number | null>(null);
   const viewport = useRef<HTMLDivElement>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   const savedOverflow = useRef<string | null>(null);
@@ -121,15 +119,6 @@ export function GalleryCarousel({
                 }}
               >
                 <div className="cg-card">
-                  <button
-                    type="button"
-                    className="cg-view-image"
-                    aria-label={`View ${item.title}`}
-                    onPointerDown={(event) => event.stopPropagation()}
-                    onClick={() => setLightbox(index)}
-                  >
-                    ↗
-                  </button>
                   <Image
                     src={item.src}
                     alt={item.image?.alternativeText || item.title}
@@ -148,18 +137,6 @@ export function GalleryCarousel({
           </div>
         </div>
       </div>
-      {lightbox !== null && (
-        <ImageLightbox
-          images={items.map((item) => ({
-            src: item.src,
-            title: item.title,
-            alt: item.image?.alternativeText || item.title,
-          }))}
-          index={lightbox}
-          onChange={setLightbox}
-          onClose={() => setLightbox(null)}
-        />
-      )}
       {access && (
         <dialog
           ref={dialog}

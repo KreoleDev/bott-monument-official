@@ -475,23 +475,6 @@
   }
 }
 
-.cg-view-image {
-  position: absolute;
-  right: 0.6rem;
-  top: 0.6rem;
-  z-index: 3;
-  border: 1px solid var(--palette-gallery-accent-color, var(--gold));
-  border-radius: 50%;
-  width: 2.5rem;
-  height: 2.5rem;
-  background: #17150dcc;
-  color: #f0ede8;
-  cursor: pointer;
-}
-.cg-view-image:focus-visible {
-  outline: 2px solid white;
-  outline-offset: 3px;
-}
 .image-lightbox {
   margin: auto;
   max-width: 94vw;
