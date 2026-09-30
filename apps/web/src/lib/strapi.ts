@@ -19,6 +19,9 @@ export type FooterDetails = {
   copyright: string;
   tagline: string;
   taglineEmphasis: string;
+  facebookUrl: string | null;
+  instagramUrl: string | null;
+  youtubeUrl: string | null;
 };
 
 export type GalleryAccess = {

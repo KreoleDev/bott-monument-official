@@ -3,15 +3,13 @@ import { cmsRead, cmsQuery } from "./cms-cache";
 export type SiteSettings = {
   activePalette: ColorPalette | null;
   siteUrl: string | null;
-  facebookUrl: string | null;
-  instagramUrl: string | null;
 };
 export function getSiteSettings(preview = false): Promise<SiteSettings | null> {
   return cmsRead(
     "site-settings",
     async () => {
       const data = await cmsQuery<{ siteSetting: SiteSettings | null }>(
-        `query SiteSettings { siteSetting(status:${preview ? "DRAFT" : "PUBLISHED"}) { siteUrl facebookUrl instagramUrl activePalette { ${PALETTE_FIELDS} } } }`,
+        `query SiteSettings { siteSetting(status:${preview ? "DRAFT" : "PUBLISHED"}) { siteUrl activePalette { ${PALETTE_FIELDS} } } }`,
         {},
         preview,
       );

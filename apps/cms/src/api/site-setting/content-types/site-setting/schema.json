@@ -14,12 +14,6 @@
     "siteUrl": {
       "type": "string"
     },
-    "facebookUrl": {
-      "type": "string"
-    },
-    "instagramUrl": {
-      "type": "string"
-    },
     "activePalette": {
       "type": "relation",
       "relation": "manyToOne",

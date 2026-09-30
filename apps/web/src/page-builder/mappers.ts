@@ -39,8 +39,9 @@ export function mapContact(section: SectionContent, extras: PageExtras) {
   return { section, locale: extras.locale };
 }
 
-export function mapFooter(section: SectionContent, extras: PageExtras) {
-  return { section, settings: extras.settings };
+export function mapFooter(section: SectionContent, _extras: PageExtras) {
+  void _extras;
+  return { section };
 }
 
 export const MAPPERS = {

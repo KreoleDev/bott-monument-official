@@ -17,7 +17,7 @@ textColor
 image { url alternativeText }
 video { url alternativeText }
 }
-footer { brand copyright tagline taglineEmphasis }
+footer { brand copyright tagline taglineEmphasis facebookUrl instagramUrl youtubeUrl }
  content { __typename
 ... on ComponentPagesContact {
 id

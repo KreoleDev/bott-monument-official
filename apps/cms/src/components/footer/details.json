@@ -15,6 +15,15 @@
     },
     "taglineEmphasis": {
       "type": "text"
+    },
+    "facebookUrl": {
+      "type": "string"
+    },
+    "instagramUrl": {
+      "type": "string"
+    },
+    "youtubeUrl": {
+      "type": "string"
     }
   }
 }
