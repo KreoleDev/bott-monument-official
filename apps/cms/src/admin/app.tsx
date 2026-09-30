@@ -15,6 +15,17 @@ const FixedCard = styled.details`
   border-color: ${({ theme }) => theme.colors.neutral200};
 `;
 
+const TITLE_OVERRIDES: Record<string, string> = {
+  featuredIn: "Featured In",
+  headerScroll: "Header Scroll",
+  seo: "SEO",
+};
+
+function fieldTitle(name: unknown, label: unknown) {
+  const key = String(name);
+  return TITLE_OVERRIDES[key] || String(label || key[0].toUpperCase() + key.slice(1));
+}
+
 function FixedPageField(props: Record<string, unknown>) {
   const { model, layout } = useContentManagerContext();
   const attribute = props.attribute as { component: string };
@@ -37,16 +48,21 @@ function FixedPageField(props: Record<string, unknown>) {
   useEffect(() => {
     if (error && details.current) details.current.open = true;
   }, [error]);
-  if (
-    model !== "api::page.page" ||
-    !["header", "hero", "footer", "seo"].includes(String(props.name))
-  )
+
+  const fixedPageField =
+    model === "api::page.page" && ["header", "hero", "footer", "seo"].includes(String(props.name));
+  const colorPaletteSection =
+    model === "api::color-palette.color-palette" && attribute.component === "theme.section-colors";
+
+  if (!fixedPageField && !colorPaletteSection)
     return input;
+
   return (
     <FixedCard ref={details} className="bott-fixed-page-field">
       <summary>
-        {props.name === "seo" ? "SEO" : String(props.label)}{" "}
-        {props.name !== "seo" && <span>Fixed position</span>}
+        {fieldTitle(props.name, props.label)}{" "}
+        {fixedPageField && props.name !== "seo" && <span>Fixed position</span>}
+        {colorPaletteSection && <span>Color section</span>}
       </summary>
       <div className="bott-fixed-page-field-content">{input}</div>
     </FixedCard>

@@ -42,6 +42,10 @@ const validColor = (value: unknown): value is string =>
   typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value);
 const cssName = (name: string) => name.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
 
+export function paletteSiteMode(name?: string | null) {
+  return name?.toLowerCase() === "secondary" ? "secondary" : "primary";
+}
+
 // Emit only known variables and hex colors: CMS content cannot inject CSS or URLs.
 // Missing palettes/fields leave all existing design colors and section overrides intact.
 export function paletteStyle(palette: ColorPalette | null | undefined): CSSProperties {

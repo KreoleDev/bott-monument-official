@@ -1,5 +1,5 @@
 import { draftMode, headers } from "next/headers";
-import { paletteStyle, headerScrollRules } from "@/lib/color-palette";
+import { paletteStyle, headerScrollRules, paletteSiteMode } from "@/lib/color-palette";
 import { PaletteSync } from "@/components/palette-sync";
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Montserrat, Alex_Brush } from "next/font/google";
@@ -60,6 +60,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   const preview = (await draftMode()).isEnabled;
   const locale = (await headers()).get("x-site-locale") || "en";
   const settings = await getSiteSettings(preview);
+  const paletteName = settings?.activePalette?.name || "Primary";
   return (
     <html
       lang={locale}
@@ -67,11 +68,11 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body
         className="min-h-full flex flex-col"
-        data-site-mode="primary"
+        data-site-mode={paletteSiteMode(paletteName)}
         data-header-scroll={JSON.stringify(
           headerScrollRules(settings?.activePalette?.headerScroll),
         )}
-        data-color-palette={settings?.activePalette?.name || "Primary"}
+        data-color-palette={paletteName}
         style={paletteStyle(settings?.activePalette)}
       >
         {children}

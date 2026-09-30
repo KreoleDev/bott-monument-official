@@ -118,12 +118,13 @@ test("switching palettes removes stale gradient variables without replacing unre
   };
   applyPalette(body, { name: "Secondary", style: { "--palette-founder-background": "#FFFFFF" } });
   assert.equal(body.dataset.colorPalette, "Secondary");
-  assert.equal(body.dataset.siteMode, "primary");
+  assert.equal(body.dataset.siteMode, "secondary");
   assert.equal(values.get("--palette-founder-background"), "#FFFFFF");
   assert.equal(values.has("--palette-founder-background-end-color"), false);
   assert.equal(values.get("overflow"), "hidden");
   assert.equal(values.get("--font-display"), "Georgia");
   applyPalette(body, { name: "Primary", style: {} });
+  assert.equal(body.dataset.siteMode, "primary");
   assert.equal(values.has("--palette-founder-background"), false);
 });
 
@@ -138,6 +139,13 @@ test("new Secondary palettes include the local design’s black gallery", async 
     },
   };
   await seedColorPalettes({ documents: () => documents });
-  assert.equal(created.find((p) => p.name === "Secondary").gallery.backgroundColor, "#0A0A0A");
+  const secondary = created.find((p) => p.name === "Secondary");
+  assert.equal(secondary.header.backgroundColor, "#24303D");
+  assert.equal(secondary.header.backgroundEndColor, "#111820");
+  assert.equal(secondary.header.textColor, "#F5F5F0");
+  assert.equal(secondary.gallery.backgroundColor, "#0A0A0A");
+  assert.equal(secondary.headerScroll[0].section, "work");
+  assert.equal(secondary.headerScroll[0].backgroundColor, "#24303D");
+  assert.equal(secondary.headerScroll[0].textColor, "#F5F5F0");
   assert.equal(created.find((p) => p.name === "Primary").gallery.backgroundColor, "#2C3A46");
 });

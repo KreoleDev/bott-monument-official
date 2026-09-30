@@ -31,7 +31,20 @@ export async function seedColorPalettes(strapi: Core.Strapi) {
   };
   const secondary = {
     ...primary,
-    header: { backgroundColor: "#0A0A0A" },
+    headerScroll: [
+      {
+        enabled: true,
+        section: "work" as const,
+        backgroundColor: "#24303D",
+        textColor: "#F5F5F0",
+      },
+    ],
+    header: {
+      backgroundColor: "#24303D",
+      backgroundEndColor: "#111820",
+      textColor: "#F5F5F0",
+      gradientAngle: 160,
+    },
     founder: { backgroundColor: "#FFFFFF" },
     news: { backgroundColor: "#24303D", backgroundEndColor: "#111820", gradientAngle: 160 },
     gallery: { backgroundColor: "#0A0A0A" },
@@ -61,7 +74,7 @@ export async function seedColorPalettes(strapi: Core.Strapi) {
       data: {
         name: "Secondary",
         description:
-          "Colors from the local Secondary design: white founder, navy news and showroom, dark header. Keeps the current site layout and interactions.",
+          "Colors from the local Secondary design: white founder, navy news and showroom, navy header. Keeps the current site layout and interactions.",
         ...secondary,
       },
     });

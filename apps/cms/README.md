@@ -59,8 +59,9 @@ results are in the [project plan](../../IMPLEMENTATION_PLAN.md).
 
 ## Admin customization
 
-`src/admin/app.tsx` orders Page fields and collapses fixed cards/SEO while keeping
-native middle-section controls. `src/admin/vite.config.ts` aliases two Strapi 5.53
+`src/admin/app.tsx` orders Page fields, collapses fixed cards/SEO, and makes Color
+Palette section-color components expandable so palette editing does not require
+scrolling through every section. `src/admin/vite.config.ts` aliases two Strapi 5.53
 internal renderers. Recheck editor behavior, media/relations and permissions when
 upgrading Strapi. No `node_modules` patches are used.
 
