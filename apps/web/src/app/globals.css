@@ -53,6 +53,10 @@ a {
     background 0.4s ease;
 }
 
+body[data-site-mode="secondary"] .site-nav {
+  background: var(--palette-header-background, #f5f5f0);
+}
+
 .site-nav.scrolled {
   padding: max(1.2rem, 1.2vw) max(4rem, 4.23vw) max(0.5rem, 0.5vw);
   background: rgba(10, 10, 10, 0.97);
@@ -62,6 +66,9 @@ body[data-site-mode="primary"] .site-nav.scrolled {
   background: var(--palette-header-background, var(--primary-header-gradient));
 }
 
+body[data-site-mode="secondary"] .site-nav.scrolled {
+  background: var(--palette-header-background, #f5f5f0);
+}
 
 .nav-logo {
   font-family: var(--font-display);
