@@ -16,7 +16,17 @@ const FixedCard = styled.details`
 `;
 
 const TITLE_OVERRIDES: Record<string, string> = {
+  header: "Header",
+  hero: "Hero",
+  marquee: "Marquee",
+  founder: "Founder",
+  news: "News",
   featuredIn: "Featured In",
+  gallery: "Gallery",
+  showroom: "Showroom",
+  testimonials: "Testimonials",
+  contact: "Contact",
+  footer: "Footer",
   headerScroll: "Header Scroll",
   seo: "SEO",
 };
@@ -58,13 +68,20 @@ function FixedPageField(props: Record<string, unknown>) {
     return input;
 
   return (
-    <FixedCard ref={details} className="bott-fixed-page-field">
+    <FixedCard
+      ref={details}
+      className={`bott-collapsible-field ${
+        colorPaletteSection ? "bott-palette-section-field" : "bott-fixed-page-field"
+      }`}
+    >
       <summary>
-        {fieldTitle(props.name, props.label)}{" "}
-        {fixedPageField && props.name !== "seo" && <span>Fixed position</span>}
-        {colorPaletteSection && <span>Color section</span>}
+        <span className="bott-collapsible-title">{fieldTitle(props.name, props.label)}</span>
+        {fixedPageField && props.name !== "seo" && (
+          <span className="bott-collapsible-meta">Fixed position</span>
+        )}
+        {colorPaletteSection && <span className="bott-collapsible-meta">Color section</span>}
       </summary>
-      <div className="bott-fixed-page-field-content">{input}</div>
+      <div className="bott-collapsible-field-content">{input}</div>
     </FixedCard>
   );
 }
