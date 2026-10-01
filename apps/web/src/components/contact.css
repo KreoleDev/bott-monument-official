@@ -411,6 +411,11 @@ textarea.cm-input {
     padding: 3.5rem 2rem;
   }
 }
+@media (max-width: 699px) {
+  #contact {
+    padding: 3.4rem 1.25rem calc(4.1rem + env(safe-area-inset-bottom, 0px));
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .cm-submit::before {
     animation: none;

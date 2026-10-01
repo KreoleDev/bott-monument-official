@@ -21,17 +21,30 @@ export function Header({
   const menuButton = useRef<HTMLButtonElement>(null);
   const nav = useRef<HTMLElement>(null);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
   const [scrollColors, setScrollColors] = useState<CSSProperties>();
 
   useEffect(() => {
     let rules = headerScrollRules();
     let lastColors = "";
+    let previousScrollY = window.scrollY;
     const syncHeaderState = () => {
-      setIsScrolled(window.scrollY > 80);
+      const y = window.scrollY;
+      const isMobile = window.innerWidth < 700;
+      const delta = y - previousScrollY;
+      setIsScrolled(y > 80);
+      if (typeof setIsHidden === "function") {
+        if (!isMobile || y < 48) {
+          setIsHidden(false);
+        } else if (Math.abs(delta) > 8) {
+          setIsHidden(delta > 0);
+        }
+      }
+      previousScrollY = y;
       // Geometry is local; scrolling never requests CMS data.
       const targetLine = window.innerHeight * 0.35;
       const active =
-        window.scrollY > 80
+        y > 80
           ? rules.find((rule) => {
               if (!rule.enabled) return false;
               const rect = document.getElementById(rule.section)?.getBoundingClientRect();
@@ -106,7 +119,7 @@ export function Header({
         aria-label="Main navigation"
         id="navbar"
         style={scrollColors}
-        className={`site-nav${isScrolled ? " scrolled" : ""}`}
+        className={`site-nav${isScrolled ? " scrolled" : ""}${isHidden && !menuOpen ? " nav-hidden" : ""}`}
       >
         <a className="nav-logo" href="#" aria-label="Bott Monument home">
           <span className="sr-only">Bott Monument</span>
@@ -129,7 +142,10 @@ export function Header({
           className="nav-menu-toggle"
           aria-expanded={menuOpen}
           aria-controls="main-nav-links"
-          onClick={() => setMenuOpen((open) => !open)}
+          onClick={() => {
+            setIsHidden(false);
+            setMenuOpen((open) => !open);
+          }}
         >
           {menuOpen ? "Close" : "Menu"} <span aria-hidden="true">{menuOpen ? "×" : "☰"}</span>
         </button>

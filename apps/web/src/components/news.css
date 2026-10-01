@@ -355,14 +355,14 @@
 
 @media (max-width: 800px) {
   #work.creations-section {
-    padding: 4rem 1.5rem;
+    padding: 3rem 1.25rem;
   }
   #work .creations-header {
     display: none;
   }
   #work .luxury-creations-layout {
     grid-template-columns: minmax(0, 1fr);
-    gap: 2rem;
+    gap: 1.5rem;
     min-height: auto;
   }
   #work .creations-left {
@@ -375,7 +375,7 @@
   #work .work-press-panel {
     width: 100%;
     max-width: none;
-    padding: 1.5rem;
+    padding: 1.25rem;
   }
   #work .wpp-header {
     gap: 1rem;

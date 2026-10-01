@@ -493,7 +493,7 @@
   #gallery {
     --cg-card-w: 220px;
     --cg-card-h: 300px;
-    padding: 3.2rem 0 3.6rem;
+    padding: 2.6rem 0 2.8rem;
   }
   .cg-header-shell {
     min-height: 0;
@@ -505,14 +505,14 @@
     padding: 0;
   }
   .cg-title {
-    font-size: clamp(2.7rem, 12vw, 3.65rem);
+    font-size: clamp(2.45rem, 11vw, 3.35rem);
     line-height: 1;
     margin-bottom: 0.65rem;
   }
   .cg-viewport {
-    height: clamp(320px, 48svh, 380px);
-    min-height: 320px;
-    margin-top: 0.35rem;
+    height: clamp(300px, 44svh, 360px);
+    min-height: 300px;
+    margin-top: 0.1rem;
     perspective: 1200px;
   }
   .cg-caption {

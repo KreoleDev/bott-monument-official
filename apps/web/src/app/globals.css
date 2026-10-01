@@ -50,7 +50,8 @@ a {
   background: linear-gradient(to bottom, rgba(10, 10, 10, 0.95) 0%, transparent 100%);
   transition:
     padding 0.4s ease,
-    background 0.4s ease;
+    background 0.4s ease,
+    transform 0.34s ease;
 }
 
 body[data-site-mode="secondary"] .site-nav {
@@ -649,6 +650,9 @@ body[data-site-mode="secondary"] .site-nav.scrolled {
     padding: 1rem 1.25rem;
     background: var(--palette-header-background, var(--primary-header-gradient));
   }
+  .site-nav.nav-hidden {
+    transform: translateY(calc(-100% - env(safe-area-inset-top, 0px)));
+  }
   .nav-menu-toggle {
     display: flex;
     align-items: center;
@@ -688,6 +692,25 @@ body[data-site-mode="secondary"] .site-nav.scrolled {
     display: block;
     padding: 0.9rem 0;
     font-size: 0.8rem;
+  }
+  #hero {
+    height: min(740px, 82svh);
+    min-height: 560px;
+    align-items: flex-end;
+  }
+  .hero-content {
+    width: min(100%, 390px);
+    padding: 0 1.45rem clamp(2.6rem, 9svh, 4rem);
+  }
+  .hero-eyebrow {
+    font-size: 0.55rem;
+    letter-spacing: 0.28em;
+    margin-bottom: 1rem;
+  }
+  .hero-title {
+    font-size: clamp(3.05rem, 14vw, 4.25rem);
+    line-height: 0.96;
+    margin-bottom: 0;
   }
 }
 main section h2,
