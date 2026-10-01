@@ -489,6 +489,42 @@
     perspective: 1300px;
   }
 }
+@media (max-width: 699px) {
+  #gallery {
+    --cg-card-w: 220px;
+    --cg-card-h: 300px;
+    padding: 3.2rem 0 3.6rem;
+  }
+  .cg-header-shell {
+    min-height: 0;
+    gap: 0.85rem;
+    width: min(92vw, 420px);
+  }
+  .cg-header {
+    margin-bottom: 0;
+    padding: 0;
+  }
+  .cg-title {
+    font-size: clamp(2.7rem, 12vw, 3.65rem);
+    line-height: 1;
+    margin-bottom: 0.65rem;
+  }
+  .cg-viewport {
+    height: clamp(320px, 48svh, 380px);
+    min-height: 320px;
+    margin-top: 0.35rem;
+    perspective: 1200px;
+  }
+  .cg-caption {
+    padding: 0.9rem 1rem 1rem;
+  }
+  .cg-caption h3 {
+    font-size: 0.92rem;
+  }
+  .cg-caption em {
+    font-size: 0.72rem;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .cg-card,
   .mag-access-modal,
