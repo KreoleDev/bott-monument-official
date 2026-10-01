@@ -1,6 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { Fragment, type CSSProperties } from "react";
+import { Fragment, useRef, useState, type CSSProperties } from "react";
 import { pressDate, pressImageUrl, type PressItem } from "@/lib/news";
 import type { SectionContent } from "@/lib/strapi";
 import "./news.css";
@@ -14,8 +16,8 @@ type NewsProps = {
 };
 
 export function News({ items, section, all = false, locale = "en" }: NewsProps) {
-  if (!items.length) return null;
-
+  const [activeStory, setActiveStory] = useState(0);
+  const storyTrack = useRef<HTMLDivElement>(null);
   const featured = items.filter((item) => item.featured);
   const stories = all ? items : (featured.length ? featured : items).slice(0, 2);
   const allHref = all
@@ -24,6 +26,28 @@ export function News({ items, section, all = false, locale = "en" }: NewsProps) 
       ? localizedHref(locale, section.buttonHref)
       : localizedPath(locale, "/news");
   const allLabel = all ? "Back to Home" : section?.buttonLabel || "All Press Coverage";
+
+  if (!items.length) return null;
+
+  function syncActiveStory() {
+    const track = storyTrack.current;
+    if (!track) return;
+    const articles = Array.from(track.querySelectorAll<HTMLElement>(".wpp-article"));
+    const trackCenter = track.scrollLeft + track.clientWidth / 2;
+    let closestIndex = 0;
+    let closestDistance = Number.POSITIVE_INFINITY;
+
+    articles.forEach((article, index) => {
+      const articleCenter = article.offsetLeft + article.offsetWidth / 2;
+      const distance = Math.abs(trackCenter - articleCenter);
+      if (distance < closestDistance) {
+        closestIndex = index;
+        closestDistance = distance;
+      }
+    });
+
+    setActiveStory(closestIndex);
+  }
 
   return (
     <section
@@ -96,7 +120,12 @@ export function News({ items, section, all = false, locale = "en" }: NewsProps) 
             </Link>
           </div>
           <div className="wpp-rule" />
-          <div className="wpp-stories-track" aria-label={`${all ? "All" : "Featured"} stories`}>
+          <div
+            ref={storyTrack}
+            className="wpp-stories-track"
+            aria-label={`${all ? "All" : "Featured"} stories`}
+            onScroll={syncActiveStory}
+          >
             {stories.map((story, index) => {
               const image = pressImageUrl(story);
               const date = pressDate(story.date, locale);
@@ -118,7 +147,7 @@ export function News({ items, section, all = false, locale = "en" }: NewsProps) 
                       {story.title}{" "}
                       {/https?:\/\//i.test(story.url) && (
                         <span className="wpp-card-arrow" aria-hidden="true">
-                          ↗
+                          →
                         </span>
                       )}
                     </h4>
@@ -149,11 +178,15 @@ export function News({ items, section, all = false, locale = "en" }: NewsProps) 
               );
             })}
           </div>
-          <div className="wpp-rule" />
+          <div className="wpp-rule wpp-rule-after" />
           {stories.length > 1 && (
             <div className="wpp-swipe-hint" aria-hidden="true">
-              <span />
-              <span />
+              {stories.map((story, index) => (
+                <span
+                  key={story.documentId}
+                  className={index === activeStory ? "is-active" : undefined}
+                />
+              ))}
               <p>Swipe for more →</p>
             </div>
           )}
