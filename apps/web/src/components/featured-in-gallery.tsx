@@ -20,6 +20,10 @@ export function FeaturedInGallery({
   const selected = covers.find((cover) => cover.documentId === selectedId) ?? initial;
   const sides = covers.filter((cover) => cover.documentId !== initial.documentId);
   const middle = Math.ceil(sides.length / 2);
+  const leftCovers = sides.slice(0, middle);
+  const rightCovers = sides.slice(middle);
+  const sideClass = (sideCovers: Cover[]) =>
+    `ptw-side${sideCovers.length > 3 ? " ptw-side-double" : ""}`;
   const thumbnail = (cover: Cover, index: number) => (
     <button
       key={cover.documentId}
@@ -65,7 +69,9 @@ export function FeaturedInGallery({
           <div className="press-clippings-rule" aria-hidden="true" />
         </div>
         <div className="ptw-wrap">
-          <div className="ptw-side ptw-left">{sides.slice(0, middle).map(thumbnail)}</div>
+          <div className={`${sideClass(leftCovers)} ptw-left`}>
+            {leftCovers.map((cover, index) => thumbnail(cover, index))}
+          </div>
           <a
             className="ptw-center-frame"
             href={selected.src}
@@ -96,8 +102,8 @@ export function FeaturedInGallery({
               </button>
             )}
           </div>
-          <div className="ptw-side ptw-right">
-            {sides.slice(middle).map((cover, index) => thumbnail(cover, middle + index))}
+          <div className={`${sideClass(rightCovers)} ptw-right`}>
+            {rightCovers.map((cover, index) => thumbnail(cover, middle + index))}
           </div>
         </div>
       </div>
