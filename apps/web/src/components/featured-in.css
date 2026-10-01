@@ -322,24 +322,40 @@
   }
 }
 @media (max-width: 700px) {
+  #press-clippings {
+    padding: 3.25rem 1rem 3.6rem;
+  }
+  .press-clippings-header {
+    margin-bottom: 1.5rem;
+  }
+  .press-clippings-title {
+    font-size: clamp(2.45rem, 11vw, 3.35rem);
+    margin-bottom: 0.85rem;
+  }
   .ptw-wrap {
-    gap: 1.45rem;
+    gap: 1.25rem;
   }
   .ptw-center-frame {
-    width: min(82vw, 310px);
+    width: min(78vw, 285px);
   }
   .ptw-caption {
     max-width: 320px;
     text-align: center;
     justify-self: center;
   }
+  .ptw-kicker {
+    margin-bottom: 0.55rem;
+  }
+  .ptw-headline {
+    font-size: clamp(1.2rem, 6vw, 1.55rem);
+  }
   .ptw-other-shell {
     grid-template-columns: 34px minmax(0, 1fr) 34px;
     gap: 0.45rem;
   }
   .ptw-other-strip {
-    grid-auto-columns: minmax(96px, 116px);
-    gap: 0.75rem;
+    grid-auto-columns: minmax(84px, 104px);
+    gap: 0.65rem;
   }
   .ptw-other-arrow {
     width: 32px;
