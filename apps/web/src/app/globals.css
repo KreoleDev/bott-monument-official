@@ -600,6 +600,51 @@ body[data-site-mode="secondary"] .site-nav.scrolled {
   }
 }
 
+@media (min-width: 700px) and (max-width: 1180px) and (orientation: portrait) {
+  .press-page {
+    padding: 5.2rem 2rem 4.4rem;
+  }
+
+  .press-page-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 2.1rem;
+    align-items: center;
+    max-width: 760px;
+  }
+
+  .press-founder {
+    --founder-size: clamp(170px, 23vw, 220px);
+    margin: 0 auto;
+  }
+
+  .press-founder-name {
+    text-align: center;
+  }
+
+  .press-page-head {
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .press-page-divider {
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .press-page-story {
+    max-width: 660px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .press-page-signature {
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
+
 @media (max-width: 699px) {
   .press-page {
     padding: 4rem 1.5rem;
