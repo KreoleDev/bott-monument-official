@@ -512,7 +512,7 @@
   .cg-viewport {
     height: clamp(245px, 34svh, 300px);
     min-height: 245px;
-    margin-top: 0.35rem;
+    margin-top: 1.05rem;
     perspective: 1200px;
   }
   .cg-caption {
