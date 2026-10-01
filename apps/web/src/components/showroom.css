@@ -836,7 +836,7 @@ body[data-site-mode="primary"] .showroom-details {
   }
 
   body[data-site-mode="primary"] .showroom-stats {
-    margin-bottom: 0.75rem !important;
+    margin-bottom: 0.5rem !important;
   }
 
   body[data-site-mode="primary"] .showroom-stat {
@@ -1479,10 +1479,11 @@ body[data-site-mode="primary"] .showroom-detail .showroom-icon {
 
 @media (max-width: 700px) {
   body[data-site-mode="primary"] #showroom {
-    --showroom-hero-height: min(440px, 96vw);
+    --showroom-image-height: 55.8vw;
     position: relative !important;
     height: auto !important;
     min-height: 0 !important;
+    padding-top: var(--showroom-image-height) !important;
     overflow: hidden !important;
   }
 
@@ -1491,13 +1492,14 @@ body[data-site-mode="primary"] .showroom-detail .showroom-icon {
     inset: 0 auto auto 0 !important;
     width: 100% !important;
     height: auto !important;
+    max-height: none !important;
     object-fit: contain !important;
     object-position: top center !important;
   }
 
   body[data-site-mode="primary"] #showroom::after {
     inset: 0 0 auto 0 !important;
-    height: var(--showroom-hero-height) !important;
+    height: var(--showroom-image-height) !important;
     background:
       linear-gradient(
         to bottom,
@@ -1513,22 +1515,23 @@ body[data-site-mode="primary"] .showroom-detail .showroom-icon {
   }
 
   body[data-site-mode="primary"] .showroom-content {
-    position: relative !important;
+    position: absolute !important;
     z-index: 3 !important;
-    inset: auto !important;
-    width: 100% !important;
-    height: var(--showroom-hero-height) !important;
+    top: calc(var(--showroom-image-height) * 0.48) !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: 1rem !important;
+    width: auto !important;
+    height: auto !important;
     min-height: 0 !important;
-    padding: calc(var(--showroom-hero-height) * 0.48) 1rem 0 !important;
+    padding: 0 !important;
     transform: none !important;
-    display: flex !important;
-    align-items: flex-start !important;
-    justify-content: flex-start !important;
+    display: block !important;
     background: transparent !important;
   }
 
   body[data-site-mode="primary"] .showroom-panel {
-    width: min(54vw, 220px) !important;
+    width: min(52vw, 205px) !important;
     padding: 0 !important;
     background: transparent !important;
   }
@@ -1539,20 +1542,20 @@ body[data-site-mode="primary"] .showroom-detail .showroom-icon {
   }
 
   body[data-site-mode="primary"] .showroom-kicker {
-    grid-template-columns: 34px auto 1fr !important;
-    gap: 0.45rem !important;
-    margin-bottom: 0.38rem !important;
+    grid-template-columns: 28px auto 1fr !important;
+    gap: 0.35rem !important;
+    margin-bottom: 0.25rem !important;
   }
 
   body[data-site-mode="primary"] .showroom-kicker p {
-    font-size: 0.38rem !important;
-    letter-spacing: 0.18em !important;
+    font-size: 0.34rem !important;
+    letter-spacing: 0.16em !important;
   }
 
   body[data-site-mode="primary"] .showroom-title {
-    font-size: clamp(1.35rem, 7vw, 1.85rem) !important;
+    font-size: clamp(1.18rem, 6.1vw, 1.55rem) !important;
     line-height: 0.92 !important;
-    margin-bottom: 0.58rem !important;
+    margin-bottom: 0.36rem !important;
     max-width: 100% !important;
   }
 
@@ -1561,15 +1564,16 @@ body[data-site-mode="primary"] .showroom-detail .showroom-icon {
   }
 
   body[data-site-mode="primary"] .showroom-cta {
-    width: 52vw !important;
-    min-height: 38px !important;
-    padding: 0 0.72rem !important;
-    font-size: 0.48rem !important;
-    letter-spacing: 0.13em !important;
+    width: min(50vw, 196px) !important;
+    min-height: 30px !important;
+    padding: 0 0.55rem !important;
+    font-size: 0.4rem !important;
+    letter-spacing: 0.11em !important;
+    gap: 0.45rem !important;
   }
 
   body[data-site-mode="primary"] .showroom-cta-arrow {
-    font-size: 1.15rem !important;
+    font-size: 0.95rem !important;
   }
 
   body[data-site-mode="primary"] .showroom-lower {
@@ -1578,7 +1582,7 @@ body[data-site-mode="primary"] .showroom-detail .showroom-icon {
     inset: auto !important;
     width: 100% !important;
     margin: 0 !important;
-    padding: 0.85rem 0.8rem 1.1rem !important;
+    padding: 0.7rem 0.8rem 1.1rem !important;
     background:
       linear-gradient(
         to bottom,
@@ -1602,8 +1606,8 @@ body[data-site-mode="primary"] .showroom-detail .showroom-icon {
   }
 
   body[data-site-mode="primary"] .showroom-visit-card {
-    gap: 0.62rem !important;
-    padding: 0.72rem !important;
+    gap: 0.48rem !important;
+    padding: 0.58rem !important;
   }
 
   body[data-site-mode="primary"] .showroom-location-group {
@@ -1627,7 +1631,7 @@ body[data-site-mode="primary"] .showroom-detail .showroom-icon {
   }
 
   body[data-site-mode="primary"] .showroom-details {
-    gap: 0.42rem !important;
+    gap: 0.32rem !important;
   }
 
   body[data-site-mode="primary"] .showroom-detail {

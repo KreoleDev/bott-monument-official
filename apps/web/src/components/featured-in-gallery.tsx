@@ -101,15 +101,7 @@ export function FeaturedInGallery({
             <h3 className="ptw-headline">{selected.title}</h3>
             <p className="ptw-meta">{selected.publication}</p>
             <p className="ptw-sub">{selected.detail}</p>
-            {selected.documentId !== initial.documentId && (
-              <button
-                className="ptw-reset"
-                type="button"
-                onClick={() => setSelectedId(initial.documentId)}
-              >
-                Back to featured cover
-              </button>
-            )}
+            
           </div>
           <div className={`${sideClass(rightCovers)} ptw-right`}>
             {rightCovers.map((cover, index) => thumbnail(cover, middle + index))}
