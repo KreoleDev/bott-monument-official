@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, type CSSProperties } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import type { SectionContent } from "@/lib/strapi";
 import type { GalleryItem } from "@/lib/gallery";
 import { localizedHref } from "@/lib/locale";
@@ -20,12 +20,28 @@ export function GalleryCarousel({
   const viewport = useRef<HTMLDivElement>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   const savedOverflow = useRef<string | null>(null);
+  const [useReducedMobileSet, setUseReducedMobileSet] = useState(false);
   const access = section.galleryAccess;
+  const visibleItems = useMemo(
+    () =>
+      useReducedMobileSet && items.length > 4
+        ? items.filter((_, index) => index % 2 === 0)
+        : items,
+    [items, useReducedMobileSet],
+  );
+
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 699px)");
+    const sync = () => setUseReducedMobileSet(query.matches);
+    sync();
+    query.addEventListener("change", sync);
+    return () => query.removeEventListener("change", sync);
+  }, []);
 
   useEffect(() => {
     if (!viewport.current) return;
     return startGalleryMotion(viewport.current);
-  }, [items]);
+  }, [visibleItems]);
 
   useEffect(
     () => () => {
@@ -107,15 +123,15 @@ export function GalleryCarousel({
           tabIndex={0}
         >
           <div className="cg-ring">
-            {items.map((item, index) => (
+            {visibleItems.map((item, index) => (
               <div
                 key={item.documentId}
                 className="cg-item"
                 role="group"
                 aria-roledescription="slide"
-                aria-label={`${index + 1} of ${items.length}: ${item.title}`}
+                aria-label={`${index + 1} of ${visibleItems.length}: ${item.title}`}
                 style={{
-                  transform: `rotateY(${(index * 360) / items.length}deg) translateZ(560px)`,
+                  transform: `rotateY(${(index * 360) / visibleItems.length}deg) translateZ(560px)`,
                 }}
               >
                 <div className="cg-card">

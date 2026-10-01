@@ -497,7 +497,7 @@
   }
   .cg-header-shell {
     min-height: 0;
-    gap: 0.85rem;
+    gap: 1rem;
     width: min(92vw, 420px);
   }
   .cg-header {
@@ -507,12 +507,12 @@
   .cg-title {
     font-size: clamp(2.45rem, 11vw, 3.35rem);
     line-height: 1;
-    margin-bottom: 0.65rem;
+    margin-bottom: 0.75rem;
   }
   .cg-viewport {
-    height: clamp(300px, 44svh, 360px);
-    min-height: 300px;
-    margin-top: 0.1rem;
+    height: clamp(315px, 46svh, 370px);
+    min-height: 315px;
+    margin-top: 1.45rem;
     perspective: 1200px;
   }
   .cg-caption {
