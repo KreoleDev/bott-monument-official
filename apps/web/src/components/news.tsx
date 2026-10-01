@@ -18,6 +18,12 @@ export function News({ items, section, all = false, locale = "en" }: NewsProps) 
 
   const featured = items.filter((item) => item.featured);
   const stories = all ? items : (featured.length ? featured : items).slice(0, 2);
+  const allHref = all
+    ? `${localizedPath(locale)}#work`
+    : section?.buttonHref?.startsWith("/") && !section.buttonHref.startsWith("//")
+      ? localizedHref(locale, section.buttonHref)
+      : localizedPath(locale, "/news");
+  const allLabel = all ? "Back to Home" : section?.buttonLabel || "All Press Coverage";
 
   return (
     <section
@@ -85,64 +91,74 @@ export function News({ items, section, all = false, locale = "en" }: NewsProps) 
             <span className="wpp-counter" aria-label={`${stories.length} stories`}>
               {String(stories.length).padStart(2, "0")}
             </span>
+            <Link className="wpp-mobile-link" href={allHref}>
+              View all <span aria-hidden="true">→</span>
+            </Link>
           </div>
           <div className="wpp-rule" />
-          {stories.map((story, index) => {
-            const image = pressImageUrl(story);
-            const date = pressDate(story.date, locale);
-            const content = (
-              <>
-                {image && (
-                  <div className="wpp-thumb">
-                    <Image
-                      src={image}
-                      alt={story.image?.alternativeText || story.source}
-                      width={120}
-                      height={120}
-                    />
+          <div className="wpp-stories-track" aria-label={`${all ? "All" : "Featured"} stories`}>
+            {stories.map((story, index) => {
+              const image = pressImageUrl(story);
+              const date = pressDate(story.date, locale);
+              const content = (
+                <>
+                  {image && (
+                    <div className="wpp-thumb">
+                      <Image
+                        src={image}
+                        alt={story.image?.alternativeText || story.source}
+                        width={120}
+                        height={120}
+                      />
+                    </div>
+                  )}
+                  <div className="wpp-text">
+                    <p className="wpp-pub">{story.source}</p>
+                    <h4 className="wpp-headline">
+                      {story.title}{" "}
+                      {/https?:\/\//i.test(story.url) && (
+                        <span className="wpp-card-arrow" aria-hidden="true">
+                          ↗
+                        </span>
+                      )}
+                    </h4>
+                    <p className="wpp-meta">
+                      {date && <time dateTime={story.date!}>{date}</time>}
+                      {date && story.category ? " · " : ""}
+                      {story.category}
+                    </p>
                   </div>
-                )}
-                <div className="wpp-text">
-                  <p className="wpp-pub">{story.source}</p>
-                  <h4 className="wpp-headline">{story.title}</h4>
-                  <p className="wpp-meta">
-                    {date && <time dateTime={story.date!}>{date}</time>}
-                    {date && story.category ? " · " : ""}
-                    {story.category}
-                  </p>
-                </div>
-              </>
-            );
-            return (
-              <Fragment key={story.documentId}>
-                {index > 0 && <div className="wpp-divider" />}
-                {/^https?:\/\//i.test(story.url) ? (
-                  <a
-                    className="wpp-article"
-                    href={story.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {content}
-                  </a>
-                ) : (
-                  <article className="wpp-article">{content}</article>
-                )}
-              </Fragment>
-            );
-          })}
+                </>
+              );
+              return (
+                <Fragment key={story.documentId}>
+                  {index > 0 && <div className="wpp-divider" />}
+                  {/^https?:\/\//i.test(story.url) ? (
+                    <a
+                      className="wpp-article"
+                      href={story.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {content}
+                    </a>
+                  ) : (
+                    <article className="wpp-article">{content}</article>
+                  )}
+                </Fragment>
+              );
+            })}
+          </div>
           <div className="wpp-rule" />
-          <Link
-            className="wpp-all-link"
-            href={
-              all
-                ? `${localizedPath(locale)}#work`
-                : section?.buttonHref?.startsWith("/") && !section.buttonHref.startsWith("//")
-                  ? localizedHref(locale, section.buttonHref)
-                  : localizedPath(locale, "/news")
-            }
-          >
-            {all ? "Back to Home" : section?.buttonLabel || "All Press Coverage"}{" "}
+          {stories.length > 1 && (
+            <div className="wpp-swipe-hint" aria-hidden="true">
+              <span />
+              <span />
+              <p>Swipe for more →</p>
+            </div>
+          )}
+          <Link className="wpp-all-link" href={allHref}>
+            {allLabel}{" "}
             <span aria-hidden="true">→</span>
           </Link>
         </div>
