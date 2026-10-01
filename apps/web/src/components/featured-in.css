@@ -214,9 +214,13 @@
   text-decoration: underline;
   cursor: pointer;
 }
+.ptw-other-shell {
+  display: none;
+}
 .ptw-cover:focus-visible,
 .ptw-center-frame:focus-visible,
-.ptw-reset:focus-visible {
+.ptw-reset:focus-visible,
+.ptw-other-arrow:focus-visible {
   outline: 3px solid var(--palette-featured-in-accent-color, var(--gold));
   outline-offset: 5px;
 }
@@ -251,56 +255,77 @@
     padding: 0;
   }
   .ptw-wrap {
-    grid-template-columns: minmax(240px, 320px) minmax(240px, 340px);
-    grid-template-areas:
-      "center caption"
-      "left right";
-    align-items: center;
-    gap: 2rem clamp(1.25rem, 4vw, 2rem);
-    max-width: 720px;
-  }
-  .ptw-center-frame {
-    grid-area: center;
-    justify-self: end;
-    width: min(40vw, 320px);
-  }
-  .ptw-caption {
-    grid-area: caption;
-    max-width: 300px;
-    text-align: left;
-    justify-self: start;
-  }
-  .ptw-side {
-    grid-template-columns: repeat(2, minmax(0, 116px));
-    justify-content: center;
-    transform: none;
-    margin: 0;
-    gap: 1rem;
-  }
-  .ptw-left {
-    grid-area: left;
-    justify-self: end;
-  }
-  .ptw-right {
-    grid-area: right;
-    justify-self: start;
-  }
-  .ptw-cover {
-    width: 100%;
-  }
-}
-@media (max-width: 700px) {
-  .ptw-wrap {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
       "center"
       "caption"
-      "left"
-      "right";
-    gap: 2rem;
+      "other";
+    justify-items: center;
+    gap: 1.7rem;
+    max-width: 680px;
   }
   .ptw-center-frame {
+    grid-area: center;
     justify-self: center;
+    width: min(58vw, 360px);
+  }
+  .ptw-caption {
+    grid-area: caption;
+    max-width: min(92vw, 430px);
+    text-align: center;
+    justify-self: center;
+  }
+  .ptw-side {
+    display: none;
+  }
+  .ptw-other-shell {
+    grid-area: other;
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr) 42px;
+    align-items: center;
+    gap: 0.75rem;
+    width: min(100%, 680px);
+  }
+  .ptw-other-strip {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(104px, 128px);
+    gap: 1rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-padding-inline: 0.5rem;
+    scroll-snap-type: x mandatory;
+    padding: 0.45rem 0.25rem 0.95rem;
+    scrollbar-width: none;
+  }
+  .ptw-other-strip::-webkit-scrollbar {
+    display: none;
+  }
+  .ptw-other-strip .ptw-cover {
+    scroll-snap-align: center;
+    width: 100%;
+  }
+  .ptw-other-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border: 1px solid rgba(var(--palette-featured-in-text-color-rgb, 28, 24, 18), 0.22);
+    border-radius: 50%;
+    background: rgba(var(--palette-featured-in-surface-color-rgb, 255, 255, 255), 0.68);
+    color: var(--palette-featured-in-text-color, #1c1812);
+    box-shadow: 0 10px 24px -16px rgba(0, 0, 0, 0.45);
+    cursor: pointer;
+    font-size: 1.6rem;
+    line-height: 1;
+  }
+}
+@media (max-width: 700px) {
+  .ptw-wrap {
+    gap: 1.45rem;
+  }
+  .ptw-center-frame {
     width: min(82vw, 310px);
   }
   .ptw-caption {
@@ -308,9 +333,18 @@
     text-align: center;
     justify-self: center;
   }
-  .ptw-side {
-    grid-template-columns: repeat(2, minmax(0, 112px));
-    justify-self: center;
+  .ptw-other-shell {
+    grid-template-columns: 34px minmax(0, 1fr) 34px;
+    gap: 0.45rem;
+  }
+  .ptw-other-strip {
+    grid-auto-columns: minmax(96px, 116px);
+    gap: 0.75rem;
+  }
+  .ptw-other-arrow {
+    width: 32px;
+    height: 32px;
+    font-size: 1.35rem;
   }
 }
 @media (prefers-reduced-motion: reduce) {

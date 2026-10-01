@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState, type CSSProperties } from "react";
+import { useRef, useState, type CSSProperties } from "react";
 import type { SectionContent } from "@/lib/strapi";
 import type { Feature } from "@/lib/features";
 import "./featured-in.css";
@@ -17,6 +17,7 @@ export function FeaturedInGallery({
 }) {
   const initial = covers.find((cover) => cover.featured) ?? covers[0];
   const [selectedId, setSelectedId] = useState(initial.documentId);
+  const otherCoversRef = useRef<HTMLDivElement>(null);
   const selected = covers.find((cover) => cover.documentId === selectedId) ?? initial;
   const sides = covers.filter((cover) => cover.documentId !== initial.documentId);
   const middle = Math.ceil(sides.length / 2);
@@ -42,6 +43,14 @@ export function FeaturedInGallery({
       />
     </button>
   );
+  const scrollOtherCovers = (direction: -1 | 1) => {
+    const strip = otherCoversRef.current;
+    if (!strip) return;
+    strip.scrollBy({
+      left: direction * Math.max(strip.clientWidth * 0.75, 220),
+      behavior: "smooth",
+    });
+  };
 
   return (
     <section
@@ -104,6 +113,27 @@ export function FeaturedInGallery({
           </div>
           <div className={`${sideClass(rightCovers)} ptw-right`}>
             {rightCovers.map((cover, index) => thumbnail(cover, middle + index))}
+          </div>
+          <div className="ptw-other-shell" aria-label="Other featured covers">
+            <button
+              className="ptw-other-arrow"
+              type="button"
+              aria-label="Previous featured covers"
+              onClick={() => scrollOtherCovers(-1)}
+            >
+              ‹
+            </button>
+            <div className="ptw-other-strip" ref={otherCoversRef}>
+              {sides.map((cover, index) => thumbnail(cover, index))}
+            </div>
+            <button
+              className="ptw-other-arrow"
+              type="button"
+              aria-label="Next featured covers"
+              onClick={() => scrollOtherCovers(1)}
+            >
+              ›
+            </button>
           </div>
         </div>
       </div>
