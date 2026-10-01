@@ -465,6 +465,30 @@
     border-radius: 12px;
   }
 }
+@media (min-width: 700px) and (max-width: 900px) and (orientation: portrait) {
+  #gallery {
+    padding: 3rem 0 3.4rem;
+  }
+  .cg-header-shell {
+    min-height: 0;
+    gap: 0.85rem;
+  }
+  .cg-header {
+    margin-bottom: 0.5rem;
+    padding: 0 1.25rem;
+  }
+  .cg-title {
+    font-size: clamp(3.1rem, 7vw, 4.8rem);
+    margin-bottom: 0.65rem;
+  }
+  .cg-viewport {
+    width: min(100%, 92vw);
+    height: clamp(330px, 38svh, 430px);
+    min-height: 330px;
+    margin-top: 0.25rem;
+    perspective: 1300px;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .cg-card,
   .mag-access-modal,
