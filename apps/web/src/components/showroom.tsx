@@ -69,7 +69,19 @@ export function Showroom({
               section.title
             )}
           </h2>
-          <div className="showroom-divider" aria-hidden="true" />
+          <p className="showroom-copy">
+            {section.description || "Timeless craftsmanship. Lasting memories. Built to honor what matters most."}
+          </p>
+          <a className="showroom-cta" href={href}>
+            <span>{section.buttonLabel}</span>
+            <span className="showroom-cta-arrow" aria-hidden="true">
+              →
+            </span>
+          </a>
+        </div>
+      </div>
+      <div className="showroom-lower">
+        <div className="showroom-lower-inner">
           <div className="showroom-stats">
             {details.statistics.map((stat) => (
               <div className="showroom-stat" key={stat.id}>
@@ -78,28 +90,25 @@ export function Showroom({
               </div>
             ))}
           </div>
-          <div className="showroom-divider" aria-hidden="true" />
-          <h3 className="showroom-visit-title">{details.visitTitle}</h3>
-          <div className="showroom-details">
-            <p className="showroom-detail">
+          <div className="showroom-visit-card">
+            <div className="showroom-location-group">
               <DetailIcon kind="location" />
-              <span>{details.location}</span>
-            </p>
-            <p className="showroom-detail">
-              <DetailIcon kind="calendar" />
-              <span>{details.appointment}</span>
-            </p>
-            <p className="showroom-detail">
-              <DetailIcon kind="clock" />
-              <span>{details.hours}</span>
-            </p>
+              <div>
+                <h3 className="showroom-visit-title">{details.visitTitle}</h3>
+                <p className="showroom-location">{details.location}</p>
+              </div>
+            </div>
+            <div className="showroom-details">
+              <p className="showroom-detail">
+                <DetailIcon kind="calendar" />
+                <span>{details.appointment}</span>
+              </p>
+              <p className="showroom-detail">
+                <DetailIcon kind="clock" />
+                <span>{details.hours}</span>
+              </p>
+            </div>
           </div>
-          <a className="showroom-cta" href={href}>
-            <span>{section.buttonLabel}</span>
-            <span className="showroom-cta-arrow" aria-hidden="true">
-              →
-            </span>
-          </a>
         </div>
       </div>
     </section>

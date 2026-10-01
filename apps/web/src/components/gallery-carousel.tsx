@@ -25,7 +25,7 @@ export function GalleryCarousel({
   const visibleItems = useMemo(
     () =>
       useReducedMobileSet && items.length > 4
-        ? items.filter((_, index) => index % 2 === 0)
+        ? items.filter((_, index) => index % 3 !== 2)
         : items,
     [items, useReducedMobileSet],
   );
