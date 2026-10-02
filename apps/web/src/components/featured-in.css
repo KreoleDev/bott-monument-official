@@ -323,7 +323,10 @@
 }
 @media (max-width: 700px) {
   #press-clippings {
-    padding: 2.75rem 1rem 2.9rem;
+    padding: 2.75rem 1.25rem 2.9rem;
+  }
+  .press-clippings-inner {
+    padding: 0;
   }
   .press-clippings-header {
     margin-bottom: 1.5rem;
@@ -339,7 +342,7 @@
     width: min(78vw, 285px);
   }
   .ptw-caption {
-    max-width: 320px;
+    max-width: min(100%, 320px);
     text-align: center;
     justify-self: center;
   }

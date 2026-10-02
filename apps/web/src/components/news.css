@@ -413,7 +413,7 @@
 
 @media (max-width: 699px) {
   #work.creations-section {
-    padding: 1.55rem 0.85rem 2.05rem;
+    padding: 1.65rem 1.25rem 2.25rem;
   }
 
   #work .luxury-creations-layout {
@@ -460,7 +460,7 @@
 
   #work .work-press-panel {
     width: 100%;
-    padding: 0.82rem 0.74rem 0.88rem;
+    padding: 0.9rem 0.85rem 0.95rem;
     border-radius: 17px;
     background: rgba(var(--palette-news-surface-color-rgb, 58, 74, 87), 0.62);
     overflow: hidden;
@@ -521,11 +521,11 @@
   #work .wpp-stories-track {
     display: flex;
     gap: 0.55rem;
-    margin: 0 -0.74rem;
+    margin: 0 -0.85rem;
     overflow-x: auto;
     overscroll-behavior-x: contain;
-    padding: 0.08rem 0.74rem 0.36rem;
-    scroll-padding-inline: 0.74rem;
+    padding: 0.08rem 0.85rem 0.36rem;
+    scroll-padding-inline: 0.85rem;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
   }
