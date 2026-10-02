@@ -431,31 +431,31 @@
   #work .gallery-title {
     font-size: clamp(2.15rem, 10.5vw, 2.85rem);
     line-height: 0.9;
-    margin-bottom: 0.7rem;
+    margin-bottom: 1rem;
     text-align: left;
     letter-spacing: -0.025em;
   }
 
   #work .gallery-ornament {
     width: 112px;
-    margin: 0.55rem auto 0.8rem;
+    margin: 0.85rem auto 1.15rem;
   }
 
   #work .gallery-lines {
-    margin-bottom: 0.85rem;
+    margin-bottom: 1.35rem;
     padding-left: 0.95rem;
   }
 
   #work .gallery-lines p {
-    font-size: 0.72rem;
+    font-size: 0.76rem;
     letter-spacing: 0.13em;
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.48rem;
   }
 
   #work .gallery-desc {
-    font-size: 0.88rem;
-    line-height: 1.42;
-    margin-bottom: 0;
+    font-size: 0.94rem;
+    line-height: 1.48;
+    margin-bottom: 1.65rem;
   }
 
   #work .work-press-panel {
@@ -471,17 +471,17 @@
     grid-template-columns: minmax(0, 1fr) auto;
     gap: 0.45rem;
     align-items: end;
-    margin-bottom: 0.52rem;
+    margin-bottom: 0.65rem;
   }
 
   #work .wpp-eyebrow {
-    font-size: 0.47rem;
+    font-size: 0.5rem;
     letter-spacing: 0.22em;
     margin-bottom: 0.18rem;
   }
 
   #work .wpp-title {
-    font-size: 1.28rem;
+    font-size: 1.36rem;
     line-height: 1;
   }
 
@@ -511,7 +511,7 @@
   }
 
   #work .wpp-rule {
-    margin: 0.48rem 0;
+    margin: 0.58rem 0;
   }
 
   #work .wpp-rule-after {
@@ -569,19 +569,19 @@
   }
 
   #work .wpp-text {
-    padding: 0.62rem 0.7rem 0.68rem;
+    padding: 0.72rem 0.78rem 0.78rem;
   }
 
   #work .wpp-pub {
-    font-size: 0.48rem;
+    font-size: 0.52rem;
     letter-spacing: 0.17em;
     margin-bottom: 0.28rem;
   }
 
   #work .wpp-headline {
-    font-size: clamp(1rem, 4.9vw, 1.28rem);
+    font-size: clamp(1.08rem, 5.25vw, 1.38rem);
     line-height: 1.1;
-    margin-bottom: 0.34rem;
+    margin-bottom: 0.44rem;
   }
 
   #work .wpp-card-arrow {
@@ -592,7 +592,7 @@
   }
 
   #work .wpp-meta {
-    font-size: 0.55rem;
+    font-size: 0.6rem;
     letter-spacing: 0.06em;
   }
 
