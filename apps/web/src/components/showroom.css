@@ -247,6 +247,10 @@ body .showroom-panel {
   transform: translateX(5px);
 }
 
+.showroom-cta-desktop {
+  display: none;
+}
+
 @media (max-width: 1180px) {
   body #showroom {
     min-height: 100svh;
@@ -1465,15 +1469,16 @@ body .showroom-detail .showroom-icon {
 
 @media (min-width: 701px) and (max-width: 1180px) and (orientation: portrait) {
   body #showroom {
+    grid-template-columns: minmax(0, 1fr) min(42vw, 27rem) !important;
     height: clamp(620px, 70svh, 780px) !important;
     min-height: 620px !important;
     max-height: 780px !important;
+    padding-right: clamp(1.5rem, 4vw, 3rem) !important;
   }
 
   body .showroom-content,
   body .showroom-lower {
-    right: clamp(1.5rem, 4vw, 3rem) !important;
-    width: min(40%, 28rem) !important;
+    width: 100% !important;
   }
 }
 
@@ -1493,7 +1498,7 @@ body .showroom-detail .showroom-icon {
     width: 100% !important;
     height: var(--showroom-image-height) !important;
     max-height: none !important;
-    object-fit: cover !important;
+    object-fit: contain !important;
     object-position: center center !important;
     filter: none !important;
   }
@@ -1505,12 +1510,12 @@ body .showroom-detail .showroom-icon {
       linear-gradient(
         to bottom,
         rgba(var(--palette-showroom-overlay-color-rgb, 20, 12, 8), 0) 0%,
-        rgba(var(--palette-showroom-overlay-color-rgb, 20, 12, 8), 0.02) 44%,
-        rgba(var(--palette-showroom-overlay-color-rgb, 20, 12, 8), 0.18) 100%
+        rgba(var(--palette-showroom-overlay-color-rgb, 20, 12, 8), 0.01) 52%,
+        rgba(var(--palette-showroom-overlay-color-rgb, 20, 12, 8), 0.12) 100%
       ),
       linear-gradient(
         90deg,
-        rgba(var(--palette-showroom-overlay-color-rgb, 20, 12, 8), 0.22) 0%,
+        rgba(var(--palette-showroom-overlay-color-rgb, 20, 12, 8), 0.08) 0%,
         rgba(var(--palette-showroom-overlay-color-rgb, 20, 12, 8), 0) 100%
       ) !important;
   }
@@ -1518,10 +1523,10 @@ body .showroom-detail .showroom-icon {
   body .showroom-content {
     position: absolute !important;
     z-index: 3 !important;
-    top: calc(var(--showroom-image-height) * 0.48) !important;
+    top: calc(var(--showroom-image-height) - 6.6rem) !important;
     right: auto !important;
     bottom: auto !important;
-    left: 1rem !important;
+    left: 1.05rem !important;
     width: auto !important;
     height: auto !important;
     min-height: 0 !important;
@@ -1532,9 +1537,13 @@ body .showroom-detail .showroom-icon {
   }
 
   body .showroom-panel {
-    width: min(52vw, 205px) !important;
-    padding: 0 !important;
-    background: transparent !important;
+    width: min(64vw, 235px) !important;
+    padding: 0.58rem 0.68rem 0.68rem !important;
+    background: rgba(var(--palette-showroom-overlay-color-rgb, 20, 12, 8), 0.52) !important;
+    border: 1px solid rgba(var(--palette-showroom-accent-color-rgb, 215, 164, 60), 0.26) !important;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.24) !important;
+    backdrop-filter: blur(7px) saturate(1.08) !important;
+    -webkit-backdrop-filter: blur(7px) saturate(1.08) !important;
   }
 
   body .showroom-panel::before {
@@ -1543,20 +1552,20 @@ body .showroom-detail .showroom-icon {
   }
 
   body .showroom-kicker {
-    grid-template-columns: 28px auto 1fr !important;
-    gap: 0.35rem !important;
-    margin-bottom: 0.25rem !important;
+    grid-template-columns: 22px auto 1fr !important;
+    gap: 0.32rem !important;
+    margin-bottom: 0.28rem !important;
   }
 
   body .showroom-kicker p {
-    font-size: 0.34rem !important;
-    letter-spacing: 0.16em !important;
+    font-size: 0.32rem !important;
+    letter-spacing: 0.15em !important;
   }
 
   body .showroom-title {
-    font-size: clamp(1.18rem, 6.1vw, 1.55rem) !important;
+    font-size: clamp(1.22rem, 6.35vw, 1.62rem) !important;
     line-height: 0.92 !important;
-    margin-bottom: 0.36rem !important;
+    margin-bottom: 0.46rem !important;
     max-width: 100% !important;
     text-shadow: 0 2px 12px rgba(0, 0, 0, 0.55) !important;
   }
@@ -1566,12 +1575,20 @@ body .showroom-detail .showroom-icon {
   }
 
   body .showroom-cta {
-    width: min(50vw, 196px) !important;
-    min-height: 30px !important;
-    padding: 0 0.55rem !important;
-    font-size: 0.4rem !important;
-    letter-spacing: 0.11em !important;
+    width: 100% !important;
+    min-height: 31px !important;
+    padding: 0 0.58rem 0 0.65rem !important;
+    font-size: 0.39rem !important;
+    letter-spacing: 0.1em !important;
     gap: 0.45rem !important;
+  }
+
+  body .showroom-cta-mobile {
+    display: flex !important;
+  }
+
+  body .showroom-cta-desktop {
+    display: none !important;
   }
 
   body .showroom-cta-arrow {
@@ -1584,7 +1601,7 @@ body .showroom-detail .showroom-icon {
     inset: auto !important;
     width: 100% !important;
     margin: 0 !important;
-    padding: 0.78rem 1.15rem 1.25rem !important;
+    padding: 1.02rem 1.15rem 1.25rem !important;
     background:
       linear-gradient(
         to bottom,
@@ -1652,10 +1669,17 @@ body .showroom-detail .showroom-icon {
 @media (min-width: 701px) {
   body #showroom {
     position: relative !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) min(31vw, 31rem) !important;
+    grid-template-rows: auto auto !important;
+    align-content: center !important;
+    column-gap: clamp(2.5rem, 5vw, 6rem) !important;
+    row-gap: 0 !important;
     height: calc(100svh - var(--showroom-header-space, 86px)) !important;
     min-height: 620px !important;
     max-height: 980px !important;
-    padding: 0 !important;
+    padding: clamp(2rem, 4vh, 4rem) clamp(3.4rem, 5.4vw, 7rem) clamp(2rem, 4vh, 4rem)
+      clamp(2rem, 4vw, 5rem) !important;
     overflow: hidden !important;
     background: var(--palette-showroom-background-color, #2d211a) !important;
   }
@@ -1689,18 +1713,21 @@ body .showroom-detail .showroom-icon {
   }
 
   body .showroom-content {
-    position: absolute !important;
+    position: relative !important;
+    grid-column: 2 !important;
+    grid-row: 1 !important;
     z-index: 3 !important;
-    top: 50% !important;
-    right: clamp(3.4rem, 5.4vw, 7rem) !important;
+    top: auto !important;
+    right: auto !important;
     bottom: auto !important;
     left: auto !important;
-    width: min(31vw, 31rem) !important;
+    align-self: end !important;
+    width: 100% !important;
     height: auto !important;
     min-height: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
-    transform: translateY(-50%) !important;
+    transform: none !important;
     display: block !important;
     background: transparent !important;
   }
@@ -1709,7 +1736,7 @@ body .showroom-detail .showroom-icon {
     position: relative !important;
     isolation: isolate !important;
     width: 100% !important;
-    padding: clamp(1.25rem, 1.7vw, 2rem) clamp(1.25rem, 1.9vw, 2.25rem) !important;
+    padding: clamp(1.25rem, 1.7vw, 2rem) clamp(1.25rem, 1.9vw, 2.25rem) clamp(0.45rem, 0.7vw, 0.8rem) !important;
     background: transparent !important;
     border: 0 !important;
     box-shadow: none !important;
@@ -1750,34 +1777,44 @@ body .showroom-detail .showroom-icon {
 
   body .showroom-title {
     max-width: none !important;
-    margin: 0 0 clamp(0.65rem, 0.9vw, 1rem) !important;
+    margin: 0 0 clamp(0.55rem, 0.8vw, 0.9rem) !important;
     font-size: clamp(2.8rem, 4vw, 4.8rem) !important;
     line-height: 0.92 !important;
     letter-spacing: -0.025em !important;
   }
 
   body .showroom-copy {
-    display: block !important;
+    display: none !important;
     max-width: 24rem !important;
     margin: 0 0 clamp(0.9rem, 1.25vw, 1.35rem) !important;
     font-size: clamp(0.88rem, 1vw, 1.08rem) !important;
     line-height: 1.42 !important;
   }
 
-  body .showroom-cta {
+  body .showroom-cta-mobile {
+    display: none !important;
+  }
+
+  body .showroom-cta-desktop {
+    display: flex !important;
     width: 100% !important;
-    min-height: clamp(44px, 3.8vw, 58px) !important;
+    min-height: clamp(42px, 3.6vw, 56px) !important;
+    margin-top: clamp(0.85rem, 1.25vw, 1.25rem) !important;
     padding: 0 clamp(1.15rem, 1.6vw, 1.75rem) !important;
     font-size: clamp(0.58rem, 0.67vw, 0.76rem) !important;
     letter-spacing: 0.2em !important;
   }
 
   body .showroom-lower {
-    position: absolute !important;
+    position: relative !important;
+    grid-column: 2 !important;
+    grid-row: 2 !important;
     z-index: 3 !important;
-    right: clamp(3.4rem, 5.4vw, 7rem) !important;
-    bottom: clamp(2rem, 4vh, 3.5rem) !important;
-    width: min(31vw, 31rem) !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    align-self: start !important;
+    width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
     background: transparent !important;
@@ -1788,8 +1825,17 @@ body .showroom-detail .showroom-icon {
     margin: 0 !important;
   }
 
+  body .showroom-lower-inner::before,
+  body .showroom-lower-inner::after {
+    content: "" !important;
+    display: none !important;
+  }
+
   body .showroom-stats {
-    margin: 0 0 0.8rem !important;
+    margin: 0 0 clamp(0.75rem, 1vw, 1.05rem) !important;
+    padding: clamp(0.7rem, 0.95vw, 0.95rem) 0 clamp(0.65rem, 0.9vw, 0.9rem) !important;
+    border-top: 1px solid rgba(var(--palette-showroom-accent-color-rgb, 215, 164, 60), 0.82) !important;
+    border-bottom: 1px solid rgba(var(--palette-showroom-accent-color-rgb, 215, 164, 60), 0.82) !important;
   }
 
   body .showroom-stat {
@@ -1809,7 +1855,7 @@ body .showroom-detail .showroom-icon {
   body .showroom-visit-card {
     display: grid !important;
     grid-template-columns: 1fr !important;
-    gap: 0.6rem !important;
+    gap: 0.45rem !important;
     padding: 0 !important;
     border: 0 !important;
     border-radius: 0 !important;
@@ -1825,8 +1871,8 @@ body .showroom-detail .showroom-icon {
   }
 
   body .showroom-visit-title {
-    margin: 0 0 0.38rem !important;
-    font-size: clamp(1.9rem, 2.85vw, 3.15rem) !important;
+    margin: 0 0 0.42rem !important;
+    font-size: clamp(1.75rem, 2.55vw, 2.85rem) !important;
     line-height: 1 !important;
     white-space: nowrap !important;
   }
@@ -1837,7 +1883,7 @@ body .showroom-detail .showroom-icon {
   }
 
   body .showroom-details {
-    gap: 0.38rem !important;
+    gap: 0.3rem !important;
     margin: 0 !important;
     padding-left: 0 !important;
     border-left: 0 !important;
@@ -1845,8 +1891,8 @@ body .showroom-detail .showroom-icon {
 
   body .showroom-detail {
     grid-template-columns: 22px minmax(0, 1fr) !important;
-    gap: 0.62rem !important;
-    font-size: clamp(0.78rem, 0.88vw, 1rem) !important;
+    gap: 0.55rem !important;
+    font-size: clamp(0.72rem, 0.82vw, 0.92rem) !important;
     line-height: 1.32 !important;
   }
 
@@ -1855,5 +1901,35 @@ body .showroom-detail .showroom-icon {
     height: 20px !important;
     padding: 0 !important;
     background: transparent !important;
+  }
+}
+
+@media (min-width: 701px) and (max-width: 1180px) {
+  body #showroom {
+    grid-template-columns: minmax(0, 1fr) min(38vw, 27rem) !important;
+    min-height: 540px !important;
+    padding: clamp(1.5rem, 3vh, 3rem) clamp(1.5rem, 3vw, 3rem) clamp(1.5rem, 3vh, 3rem)
+      clamp(1.5rem, 3vw, 3rem) !important;
+  }
+
+  body .showroom-title {
+    font-size: clamp(2.25rem, 4.2vw, 3.55rem) !important;
+  }
+
+  body .showroom-copy {
+    font-size: clamp(0.82rem, 1.2vw, 1rem) !important;
+  }
+
+  body .showroom-lower {
+    margin-top: 0 !important;
+  }
+}
+
+@media (min-width: 701px) and (max-width: 1180px) and (orientation: portrait) {
+  body #showroom {
+    grid-template-columns: minmax(0, 1fr) min(42vw, 27rem) !important;
+    height: clamp(620px, 70svh, 780px) !important;
+    min-height: 620px !important;
+    max-height: 780px !important;
   }
 }

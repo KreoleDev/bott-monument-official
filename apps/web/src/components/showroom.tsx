@@ -72,7 +72,7 @@ export function Showroom({
           <p className="showroom-copy">
             {section.description || "Timeless craftsmanship. Lasting memories. Built to honor what matters most."}
           </p>
-          <a className="showroom-cta" href={href}>
+          <a className="showroom-cta showroom-cta-mobile" href={href}>
             <span>{section.buttonLabel}</span>
             <span className="showroom-cta-arrow" aria-hidden="true">
               →
@@ -109,6 +109,12 @@ export function Showroom({
               </p>
             </div>
           </div>
+          <a className="showroom-cta showroom-cta-desktop" href={href}>
+            <span>{section.buttonLabel}</span>
+            <span className="showroom-cta-arrow" aria-hidden="true">
+              →
+            </span>
+          </a>
         </div>
       </div>
     </section>
