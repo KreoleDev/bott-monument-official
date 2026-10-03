@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment, useRef, useState, type CSSProperties } from "react";
-import { pressDate, pressImageUrl, type PressItem } from "@/lib/news";
+import { pressDate, pressImageUrl, type PressItem } from "@/lib/news-shared";
 import type { SectionContent } from "@/lib/strapi";
 import "./news.css";
 import { localizedHref, localizedPath } from "@/lib/locale";

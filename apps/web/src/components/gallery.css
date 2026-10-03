@@ -70,6 +70,13 @@
   color: var(--palette-gallery-text-color, #ffffff);
 }
 
+.gallery-variant {
+  box-sizing: border-box;
+  max-width: var(--section-frame-max);
+  margin: 0 auto;
+  padding: 0 var(--section-frame-right) 0 var(--section-frame-left);
+}
+
 .mag-access-modal {
   position: fixed;
   inset: 0;
@@ -177,7 +184,7 @@
 
 .cg-header-shell {
   position: relative;
-  width: min(94vw, 1320px);
+  width: 100%;
   margin: 0 auto;
   min-height: max(7rem, 6vw);
 }
@@ -420,6 +427,9 @@
 @media (max-width: 900px) {
   #gallery {
     padding: 4.5rem 0 5.5rem;
+  }
+  .gallery-variant {
+    padding: 0;
   }
   .cg-header-shell {
     display: flex;

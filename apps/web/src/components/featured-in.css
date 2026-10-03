@@ -11,7 +11,9 @@
 
 .press-clippings-inner {
   width: 100%;
-  padding: 0 35px 0 38px;
+  max-width: var(--section-frame-max);
+  margin: 0 auto;
+  padding: 0 var(--section-frame-right) 0 var(--section-frame-left);
   box-sizing: border-box;
 }
 
@@ -66,7 +68,7 @@
   justify-content: center;
   gap: clamp(1.4rem, 3vw, 3.5rem);
   padding: 0 0 1rem;
-  max-width: 1500px;
+  max-width: 100%;
   margin: 0 auto;
 }
 
