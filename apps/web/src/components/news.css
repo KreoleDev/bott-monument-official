@@ -126,6 +126,10 @@
   grid-template-columns: 0.75fr 1.25fr;
   gap: max(3rem, 4vw);
   align-items: start;
+  box-sizing: border-box;
+  max-width: var(--section-frame-max);
+  margin: 0 auto;
+  padding: 0 var(--section-frame-right) 0 var(--section-frame-left);
   min-height: 540px;
 }
 
@@ -336,6 +340,7 @@
   #work .luxury-creations-layout {
     grid-template-columns: minmax(250px, 0.75fr) minmax(360px, 1.25fr);
     gap: 2rem;
+    padding: 0;
     min-height: auto;
     align-items: center;
   }
@@ -373,6 +378,7 @@
   #work .luxury-creations-layout {
     grid-template-columns: minmax(0, 1fr);
     gap: 1.5rem;
+    padding: 0;
     min-height: auto;
   }
   #work .creations-left {

@@ -28,8 +28,11 @@
 }
 
 .commission-wrap {
-  max-width: max(720px, 42vw);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--section-frame-max);
   margin: 0 auto;
+  padding: 0 var(--section-frame-left);
   text-align: center;
 }
 
@@ -406,6 +409,7 @@ textarea.cm-input {
   }
   .commission-wrap {
     max-width: 640px;
+    padding: 0;
   }
   .site-footer {
     padding: 3.5rem 2rem;
@@ -525,6 +529,10 @@ textarea.cm-input {
 @media (max-width: 699px) {
   #contact {
     padding: 2rem 1rem calc(2.35rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .commission-wrap {
+    padding: 0;
   }
 
   #contact::before {

@@ -73,6 +73,10 @@
   display: flex;
   justify-content: center;
   gap: max(1.5rem, 2vw);
+  box-sizing: border-box;
+  max-width: var(--section-frame-max);
+  margin: 0 auto;
+  padding: 0 var(--section-frame-left);
   max-height: var(--test-columns-height);
   overflow: hidden;
 }
@@ -253,6 +257,7 @@
   }
   .test-columns {
     --test-columns-height: 560px;
+    padding: 0;
   }
 }
 @media (max-width: 699px) {
@@ -261,6 +266,9 @@
   }
   .test-col {
     width: min(340px, 80vw);
+  }
+  .test-columns {
+    padding: 0;
   }
 }
 @media (prefers-reduced-motion: reduce) {
