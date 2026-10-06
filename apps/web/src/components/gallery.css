@@ -490,6 +490,8 @@
   .cg-header-shell {
     min-height: 0;
     gap: 0.85rem;
+    margin-left: auto;
+    margin-right: auto;
     margin-bottom: 0.5rem;
   }
   .cg-header {
@@ -499,6 +501,10 @@
   .cg-title {
     font-size: clamp(3.1rem, 7vw, 4.8rem);
     margin-bottom: 0.65rem;
+  }
+  .cg-access-trigger {
+    align-self: center;
+    justify-self: center;
   }
   .cg-viewport {
     width: min(100%, 92vw);
