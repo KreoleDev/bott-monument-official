@@ -14,6 +14,9 @@
   --gold-glow: rgba(201, 160, 80, 0.12);
   --bone: #f0ede8;
   --stone: #a89880;
+  --section-frame-max: 1400px;
+  --section-frame-left: clamp(2rem, 7.5vw, 8.5rem);
+  --section-frame-right: clamp(5rem, 13vw, 14.75rem);
 }
 
 @theme inline {
@@ -269,12 +272,12 @@ body[data-site-mode="secondary"] .site-nav.scrolled {
 
 .press-page-inner {
   position: relative;
-  max-width: max(1400px, 82vw);
+  max-width: var(--section-frame-max);
   margin: 0 auto;
 }
 
 .press-founder {
-  --founder-size: max(255px, 18.5vw);
+  --founder-size: clamp(255px, 18.5vw, 335px);
   position: absolute;
   top: 5.4rem;
   left: 8.5rem;
@@ -372,8 +375,8 @@ body[data-site-mode="secondary"] .site-nav.scrolled {
 }
 
 .press-page-head {
-  max-width: max(760px, 40vw);
-  margin: 0 auto 5rem 30%;
+  max-width: min(760px, 100%);
+  margin: 0 auto 5rem 35%;
   text-align: center;
 }
 

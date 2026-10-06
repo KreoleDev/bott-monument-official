@@ -1,39 +1,50 @@
 import { getCollection } from "./strapi-collection";
-import { getStrapiMediaUrl, type StrapiMedia } from "./strapi";
+import { DEFAULT_LOCALE } from "./locale";
+import { getStrapiMediaUrl } from "./strapi";
+import type { PressItem } from "./news-shared";
+export type { PressItem } from "./news-shared";
 
-export type PressItem = {
-  documentId: string;
-  title: string;
-  source: string;
-  date: string | null;
-  category: string | null;
-  url: string;
-  image: StrapiMedia | null;
-  featured: boolean;
-};
+const PRESS_ITEM_FIELDS =
+  "documentId title source date category url featured image { url alternativeText }";
+const PRESS_ITEM_SORT = ["sortOrder:asc", "date:desc", "documentId:asc"];
 
-export function pressImageUrl(item: PressItem) {
-  return getStrapiMediaUrl(item.image);
-}
-
-export function pressDate(date: string | null, locale = "en") {
-  if (!date) return null;
-  const value = new Date(`${date}T00:00:00Z`);
-  if (Number.isNaN(value.getTime())) return null;
-  return new Intl.DateTimeFormat(locale, {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    timeZone: "UTC",
-  }).format(value);
+function normalizePressImage(item: PressItem): PressItem {
+  const url = getStrapiMediaUrl(item.image);
+  return {
+    ...item,
+    image: item.image && url ? { ...item.image, url } : item.image,
+  };
 }
 
 export async function getPressItems(preview = false, locale = "en"): Promise<PressItem[]> {
-  return getCollection<PressItem>(
-    "pressItems_connection",
-    "documentId title source date category url featured image { url alternativeText }",
-    ["sortOrder:asc", "date:desc", "documentId:asc"],
-    preview,
-    locale,
+  const items = (
+    await getCollection<PressItem>(
+      "pressItems_connection",
+      PRESS_ITEM_FIELDS,
+      PRESS_ITEM_SORT,
+      preview,
+      locale,
+    )
+  ).map(normalizePressImage);
+  if (locale === DEFAULT_LOCALE || items.every((item) => item.image)) return items;
+
+  const defaultItems = (
+    await getCollection<PressItem>(
+      "pressItems_connection",
+      PRESS_ITEM_FIELDS,
+      PRESS_ITEM_SORT,
+      preview,
+      DEFAULT_LOCALE,
+    )
+  ).map(normalizePressImage);
+  const defaultImages = new Map(
+    defaultItems
+      .filter((item) => item.image)
+      .map((item) => [item.documentId, item.image] as const),
   );
+
+  return items.map((item) => ({
+    ...item,
+    image: item.image ?? defaultImages.get(item.documentId) ?? null,
+  }));
 }
