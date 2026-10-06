@@ -123,7 +123,7 @@
 
 #work .luxury-creations-layout {
   display: grid;
-  grid-template-columns: minmax(320px, 0.62fr) minmax(760px, 1.38fr);
+  grid-template-columns: minmax(280px, 0.52fr) minmax(0, 1fr);
   gap: max(3rem, 4.5vw);
   align-items: stretch;
   box-sizing: border-box;
@@ -140,12 +140,13 @@
 }
 
 #work .work-press-panel {
+  container-type: inline-size;
   padding: 0;
   display: flex;
   flex-direction: column;
   align-self: start;
   min-width: 0;
-  width: min(100%, 920px);
+  width: 100%;
   max-width: none;
   height: clamp(620px, 38vw, 740px);
   margin-left: auto;
@@ -220,7 +221,14 @@
   scrollbar-width: none;
 }
 
+@container (min-width: 860px) {
+  #work .wpp-article {
+    flex-basis: calc((100% - var(--wpp-card-gap)) / 2);
+  }
+}
+
 #work .wpp-article {
+  flex: 0 0 100%;
   scroll-snap-align: start;
   scroll-snap-stop: always;
   display: grid;

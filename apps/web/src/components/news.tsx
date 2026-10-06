@@ -35,18 +35,24 @@ export function News({ items, section, all = false, locale = "en" }: NewsProps) 
       ? localizedHref(locale, section.buttonHref)
       : localizedPath(locale, "/news");
   const allLabel = all ? "Back to Home" : section?.buttonLabel || "All Press Coverage";
-  const articleClassName =
-    "wpp-article shrink-0 grow-0 basis-full min-[1181px]:basis-[calc((100%-var(--wpp-card-gap))/2)]";
+  const articleClassName = "wpp-article";
 
   useEffect(() => {
-    const desktopQuery = window.matchMedia("(min-width: 1181px)");
+    const track = storyTrack.current;
+    if (!track) return;
+
     const syncCardsPerPage = () => {
-      setCardsPerPage(desktopQuery.matches ? 2 : 1);
+      setCardsPerPage(track.clientWidth >= 860 ? 2 : 1);
     };
 
     syncCardsPerPage();
-    desktopQuery.addEventListener("change", syncCardsPerPage);
-    return () => desktopQuery.removeEventListener("change", syncCardsPerPage);
+    const resizeObserver = new ResizeObserver(syncCardsPerPage);
+    resizeObserver.observe(track);
+    window.addEventListener("resize", syncCardsPerPage);
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", syncCardsPerPage);
+    };
   }, []);
 
   useEffect(() => {
