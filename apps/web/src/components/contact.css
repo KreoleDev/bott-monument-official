@@ -1,6 +1,6 @@
 #contact {
   background: var(--palette-contact-background, #2c3a46);
-  padding: max(6rem, 6vw) max(4rem, 4.23vw);
+  padding: max(6rem, 6vw) 0;
   position: relative;
 }
 
@@ -32,7 +32,7 @@
   width: 100%;
   max-width: var(--section-frame-max);
   margin: 0 auto;
-  padding: 0 var(--section-frame-left);
+  padding: 0 var(--section-frame-right) 0 var(--section-frame-left);
   text-align: center;
 }
 
@@ -392,7 +392,7 @@ textarea.cm-input {
 }
 @media (max-width: 900px) {
   #contact {
-    padding: 6rem 2rem;
+    padding: 6rem 0;
   }
   .site-footer {
     flex-direction: column;
@@ -405,11 +405,11 @@ textarea.cm-input {
 }
 @media (min-width: 700px) and (max-width: 1180px) {
   #contact {
-    padding: 5.5rem 2rem calc(6.5rem + env(safe-area-inset-bottom, 0px));
+    padding: 5.5rem 0 calc(6.5rem + env(safe-area-inset-bottom, 0px));
   }
   .commission-wrap {
     max-width: 640px;
-    padding: 0;
+    padding: 0 var(--section-frame-right) 0 var(--section-frame-left);
   }
   .site-footer {
     padding: 3.5rem 2rem;
@@ -417,7 +417,7 @@ textarea.cm-input {
 }
 @media (max-width: 699px) {
   #contact {
-    padding: 3.4rem 1.25rem calc(4.1rem + env(safe-area-inset-bottom, 0px));
+    padding: 3.4rem 0 calc(4.1rem + env(safe-area-inset-bottom, 0px));
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -528,11 +528,11 @@ textarea.cm-input {
 
 @media (max-width: 699px) {
   #contact {
-    padding: 2rem 1rem calc(2.35rem + env(safe-area-inset-bottom, 0px));
+    padding: 2rem 0 calc(2.35rem + env(safe-area-inset-bottom, 0px));
   }
 
   .commission-wrap {
-    padding: 0;
+    padding: 0 var(--section-frame-right) 0 var(--section-frame-left);
   }
 
   #contact::before {

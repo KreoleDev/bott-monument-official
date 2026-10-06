@@ -435,7 +435,7 @@
     padding: 4.5rem 0 5.5rem;
   }
   .gallery-variant {
-    padding: 0;
+    padding: 0 var(--section-frame-right) 0 var(--section-frame-left);
   }
   .cg-header-shell {
     display: flex;

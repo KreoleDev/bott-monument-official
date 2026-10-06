@@ -14,9 +14,9 @@
   --gold-glow: rgba(201, 160, 80, 0.12);
   --bone: #f0ede8;
   --stone: #a89880;
-  --section-frame-max: 1400px;
+  --section-frame-max: 1500px;
   --section-frame-left: clamp(2rem, 7.5vw, 8.5rem);
-  --section-frame-right: clamp(5rem, 13vw, 14.75rem);
+  --section-frame-right: var(--section-frame-left);
 }
 
 @theme inline {
