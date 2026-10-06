@@ -35,8 +35,7 @@
     "image": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"],
-      "pluginOptions": { "i18n": { "localized": true } }
+      "allowedTypes": ["images"]
     },
     "url": {
       "type": "string",
