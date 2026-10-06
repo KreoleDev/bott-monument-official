@@ -1,7 +1,7 @@
 #testimonials {
   position: relative;
   background: var(--palette-testimonials-background, #e5dbcb);
-  padding: max(6rem, 6vw) max(4rem, 5vw);
+  padding: max(6rem, 6vw) 0;
   overflow: hidden;
 }
 
@@ -76,7 +76,7 @@
   box-sizing: border-box;
   max-width: var(--section-frame-max);
   margin: 0 auto;
-  padding: 0 var(--section-frame-left);
+  padding: 0 var(--section-frame-right) 0 var(--section-frame-left);
   max-height: var(--test-columns-height);
   overflow: hidden;
 }
@@ -250,25 +250,25 @@
 }
 @media (min-width: 700px) and (max-width: 1180px) {
   #testimonials {
-    padding: 5.5rem 2rem;
+    padding: 5.5rem 0;
   }
   .test-col {
     width: min(330px, 42vw);
   }
   .test-columns {
     --test-columns-height: 560px;
-    padding: 0;
+    padding: 0 var(--section-frame-right) 0 var(--section-frame-left);
   }
 }
 @media (max-width: 699px) {
   #testimonials {
-    padding: 3rem 1rem;
+    padding: 3rem 0;
   }
   .test-col {
     width: min(340px, 80vw);
   }
   .test-columns {
-    padding: 0;
+    padding: 0 var(--section-frame-right) 0 var(--section-frame-left);
   }
 }
 @media (prefers-reduced-motion: reduce) {
