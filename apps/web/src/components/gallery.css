@@ -518,6 +518,8 @@
     min-height: 0;
     gap: 1rem;
     width: min(92vw, 420px);
+    margin-left: auto;
+    margin-right: auto;
     margin-bottom: 0;
   }
   .cg-header {
@@ -528,6 +530,10 @@
     font-size: clamp(2.45rem, 11vw, 3.35rem);
     line-height: 1;
     margin-bottom: 0.75rem;
+  }
+  .cg-access-trigger {
+    align-self: center;
+    justify-self: center;
   }
   .cg-viewport {
     height: clamp(245px, 34svh, 300px);
