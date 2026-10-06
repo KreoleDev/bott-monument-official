@@ -87,3 +87,45 @@ test("failed later collection page keeps complete prior result", async () => {
   fail = true;
   assert.equal((await api.getCollection("galleryItems_connection", "documentId", [])).length, 2);
 });
+
+test("localized press items fall back to default locale images", async () => {
+  const calls = [];
+  const api = loadTs("../src/lib/news.ts", {
+    env,
+    fetch: async (_url, options) => {
+      const { variables } = JSON.parse(options.body);
+      calls.push(variables.locale);
+      return {
+        ok: true,
+        json: async () => ({
+          data: {
+            pressItems_connection: {
+              nodes: [
+                {
+                  documentId: "story-1",
+                  title: variables.locale === "pt" ? "Titulo" : "Title",
+                  source: "Source",
+                  date: null,
+                  category: null,
+                  url: "https://example.com",
+                  featured: true,
+                  image:
+                    variables.locale === "pt"
+                      ? null
+                      : { url: "/uploads/story.jpg", alternativeText: "Story" },
+                },
+              ],
+              pageInfo: { pageCount: 1 },
+            },
+          },
+        }),
+      };
+    },
+  });
+
+  const items = await api.getPressItems(false, "pt");
+  assert.deepEqual(calls, ["pt", "en"]);
+  assert.equal(items[0].title, "Titulo");
+  assert.equal(items[0].image.url, "http://cms/uploads/story.jpg");
+  assert.equal(items[0].image.alternativeText, "Story");
+});

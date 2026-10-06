@@ -11,9 +11,9 @@
 
 .press-clippings-inner {
   width: 100%;
-  max-width: var(--section-frame-max);
+  max-width: min(100%, 1500px);
   margin: 0 auto;
-  padding: 0 var(--section-frame-right) 0 var(--section-frame-left);
+  padding: 0 clamp(1rem, 2.5vw, 2.5rem);
   box-sizing: border-box;
 }
 
@@ -60,13 +60,13 @@
 .ptw-wrap {
   display: grid;
   grid-template-columns:
-    minmax(210px, 300px)
-    minmax(230px, 320px)
-    minmax(170px, 220px)
-    minmax(210px, 300px);
+    minmax(220px, 305px)
+    minmax(260px, 340px)
+    minmax(240px, 300px)
+    minmax(220px, 305px);
   align-items: center;
   justify-content: center;
-  gap: clamp(1.4rem, 3vw, 3.5rem);
+  gap: clamp(1.75rem, 2.6vw, 3rem);
   padding: 0 0 1rem;
   max-width: 100%;
   margin: 0 auto;
@@ -125,7 +125,7 @@
 }
 
 .ptw-center-frame {
-  width: clamp(230px, 20vw, 320px);
+  width: min(100%, clamp(250px, 21vw, 340px));
   aspect-ratio: 11 / 14;
   border-radius: 10px;
   overflow: hidden;
@@ -159,7 +159,7 @@
 }
 
 .ptw-caption {
-  max-width: 220px;
+  max-width: 300px;
   text-align: left;
   transition: opacity 0.2s ease;
 }
@@ -229,11 +229,11 @@
 @media (max-width: 1200px) {
   .ptw-wrap {
     grid-template-columns:
-      minmax(170px, 250px)
+      minmax(150px, 230px)
       minmax(220px, 280px)
-      minmax(150px, 190px)
-      minmax(170px, 250px);
-    gap: 1.4rem;
+      minmax(210px, 260px)
+      minmax(150px, 230px);
+    gap: 1.6rem;
   }
   .ptw-side {
     grid-template-columns: minmax(82px, 118px);
@@ -243,10 +243,10 @@
     grid-template-columns: repeat(2, minmax(74px, 112px));
   }
   .ptw-center-frame {
-    width: min(24vw, 280px);
+    width: min(100%, 280px);
   }
   .ptw-caption {
-    max-width: 180px;
+    max-width: 260px;
   }
 }
 @media (max-width: 1000px) {
