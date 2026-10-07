@@ -41,16 +41,19 @@ export function News({ items, section, all = false, locale = "en" }: NewsProps) 
     const track = storyTrack.current;
     if (!track) return;
 
+    const desktopQuery = window.matchMedia("(min-width: 1181px)");
     const syncCardsPerPage = () => {
-      setCardsPerPage(track.clientWidth >= 860 ? 2 : 1);
+      setCardsPerPage(desktopQuery.matches ? 2 : 1);
     };
 
     syncCardsPerPage();
     const resizeObserver = new ResizeObserver(syncCardsPerPage);
     resizeObserver.observe(track);
+    desktopQuery.addEventListener("change", syncCardsPerPage);
     window.addEventListener("resize", syncCardsPerPage);
     return () => {
       resizeObserver.disconnect();
+      desktopQuery.removeEventListener("change", syncCardsPerPage);
       window.removeEventListener("resize", syncCardsPerPage);
     };
   }, []);
