@@ -8,6 +8,21 @@ import { localizedHref } from "@/lib/locale";
 import { startGalleryMotion } from "./gallery-motion";
 import "./gallery.css";
 
+function EmphasizedLastWord({ title }: { title: string | null }) {
+  const text = title?.trim();
+  if (!text) return null;
+  const match = text.match(/^(.*?)(\S+)(\s*)$/);
+  if (!match) return text;
+  const [, before, lastWord, trailingSpace] = match;
+  return (
+    <>
+      {before}
+      <em>{lastWord}</em>
+      {trailingSpace}
+    </>
+  );
+}
+
 export function GalleryCarousel({
   section,
   items,
@@ -88,13 +103,7 @@ export function GalleryCarousel({
         <div className="cg-header-shell">
           <div className="cg-header">
             <h2 className="cg-title" id="gallery-title">
-              {section.title === "A Gallery of Lasting Tributes" ? (
-                <>
-                  A Gallery of Lasting<em>Tributes</em>
-                </>
-              ) : (
-                section.title
-              )}
+              <EmphasizedLastWord title={section.title} />
             </h2>
           </div>
           {access && (
