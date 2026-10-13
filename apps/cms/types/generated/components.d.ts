@@ -6,34 +6,16 @@ export interface ContactDetails extends Struct.ComponentSchema {
     displayName: 'details';
   };
   attributes: {
-    counterText: Schema.Attribute.String;
     email: Schema.Attribute.String;
     emailPlaceholder: Schema.Attribute.String;
     inquiryLabel: Schema.Attribute.String;
-    inquiryTypes: Schema.Attribute.Text;
     messagePlaceholder: Schema.Attribute.Text;
     namePlaceholder: Schema.Attribute.String;
     note: Schema.Attribute.Text;
     phone: Schema.Attribute.String;
-    remainingCommissions: Schema.Attribute.Integer &
-      Schema.Attribute.SetMinMax<
-        {
-          max: 100;
-          min: 0;
-        },
-        number
-      >;
     studio: Schema.Attribute.String;
     successMessage: Schema.Attribute.Text;
     titleEmphasis: Schema.Attribute.String;
-    totalCommissions: Schema.Attribute.Integer &
-      Schema.Attribute.SetMinMax<
-        {
-          max: 100;
-          min: 0;
-        },
-        number
-      >;
   };
 }
 

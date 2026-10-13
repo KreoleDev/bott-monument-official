@@ -14,7 +14,6 @@ const entry = {
   result: {
     name: "<script>sample</script>",
     email: "visitor@example.invalid",
-    inquiryType: "Not sure yet",
     message: "Test <b>message</b>",
     documentId: "test",
   },

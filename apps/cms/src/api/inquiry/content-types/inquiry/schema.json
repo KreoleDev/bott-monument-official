@@ -21,7 +21,6 @@
     },
     "inquiryType": {
       "type": "string",
-      "required": true,
       "maxLength": 150
     },
     "message": {

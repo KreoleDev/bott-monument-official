@@ -1,10 +1,6 @@
 export type ContactDetails = {
   titleEmphasis: string;
-  counterText: string;
-  totalCommissions: number;
-  remainingCommissions: number;
   inquiryLabel: string;
-  inquiryTypes: string;
   namePlaceholder: string;
   emailPlaceholder: string;
   messagePlaceholder: string;

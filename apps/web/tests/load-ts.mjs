@@ -20,6 +20,9 @@ export function loadTs(
     fetch,
     AbortSignal,
     Buffer,
+    Headers,
+    Request,
+    Response,
     URL,
     console: { warn() {} },
     Map,
@@ -34,6 +37,8 @@ export function loadTs(
     const localRequire = (id) =>
       id === "next/cache"
         ? { unstable_cache: (fn) => fn }
+        : id.startsWith("@/")
+          ? load(path.resolve(fileURLToPath(new URL("../src", import.meta.url)), `${id.slice(2)}.ts`))
         : id.startsWith(".")
           ? load(path.resolve(path.dirname(filename), id + ".ts"))
           : require(id);

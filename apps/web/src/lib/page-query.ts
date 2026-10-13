@@ -29,9 +29,7 @@ description
 buttonLabel
 contact { id
 titleEmphasis
-counterText
 inquiryLabel
-inquiryTypes
 namePlaceholder
 emailPlaceholder
 messagePlaceholder
@@ -39,9 +37,7 @@ note
 successMessage
 phone
 studio
-email
-totalCommissions
-remainingCommissions }
+email }
 backgroundColor
 textColor
 }
