@@ -186,18 +186,18 @@ test("GraphQL exposes Page blocks as typed fragments and removes the retired col
     schema,
     parse(`query {
     pages(filters: { slug: { eq: "home" } }, status: PUBLISHED, locale: "en") {
-      hero { title video { url } } footer { brand }
+      hero { visible title video { url } } footer { brand }
       slug title seo { metaTitle metaDescription metaImage { url } }
       content {
         __typename
-        ... on ComponentPagesMarquee { items { label } }
-        ... on ComponentPagesFounder { personName quote }
-        ... on ComponentPagesNews { pressItems { documentId title } }
-        ... on ComponentPagesFeaturedIn { features { documentId } }
-        ... on ComponentPagesGallery { galleryItems { documentId } galleryAccess { title } }
-        ... on ComponentPagesShowroom { showroom { location } }
-        ... on ComponentPagesTestimonials { comments { documentId quote } }
-        ... on ComponentPagesContact { contact { inquiryLabel } }
+        ... on ComponentPagesMarquee { visible items { label } }
+        ... on ComponentPagesFounder { visible personName quote }
+        ... on ComponentPagesNews { visible pressItems { documentId title } }
+        ... on ComponentPagesFeaturedIn { visible features { documentId } }
+        ... on ComponentPagesGallery { visible galleryItems { documentId } galleryAccess { title } }
+        ... on ComponentPagesShowroom { visible showroom { location } }
+        ... on ComponentPagesTestimonials { visible comments { documentId quote } }
+        ... on ComponentPagesContact { visible contact { inquiryLabel } }
       }
     }
   }`),

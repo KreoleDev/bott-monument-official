@@ -4,6 +4,10 @@
     "displayName": "Marquee"
   },
   "attributes": {
+    "visible": {
+      "type": "boolean",
+      "default": true
+    },
     "backgroundColor": {
       "type": "string"
     },

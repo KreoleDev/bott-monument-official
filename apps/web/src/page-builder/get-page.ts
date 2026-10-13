@@ -36,7 +36,10 @@ export async function getPage({ preview = false, locale = DEFAULT_LOCALE }: GetP
 
   return {
     content: mapPageContent(home?.content || [], extras),
-    hero: home?.hero ? ({ ...home.hero, sectionKey: "hero" } as SectionContent) : null,
+    hero:
+      home?.hero && home.hero.visible !== false
+        ? ({ ...home.hero, sectionKey: "hero" } as SectionContent)
+        : null,
     footer: home?.footer
       ? { section: { sectionKey: "footer", footer: home.footer } as SectionContent, settings }
       : null,
@@ -47,6 +50,9 @@ export async function getPage({ preview = false, locale = DEFAULT_LOCALE }: GetP
       links: home?.header?.links,
     },
     settings,
-    hasSections: Boolean(home?.hero || home?.content.length),
+    hasSections: Boolean(
+      (home?.hero && home.hero.visible !== false) ||
+        home?.content.some((block) => block.visible !== false),
+    ),
   };
 }

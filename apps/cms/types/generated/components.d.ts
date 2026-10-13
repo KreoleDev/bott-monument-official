@@ -103,6 +103,7 @@ export interface PagesContact extends Struct.ComponentSchema {
     eyebrow: Schema.Attribute.String;
     textColor: Schema.Attribute.String;
     title: Schema.Attribute.String;
+    visible: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
   };
 }
 
@@ -118,6 +119,7 @@ export interface PagesFeaturedIn extends Struct.ComponentSchema {
     features: Schema.Attribute.Relation<'oneToMany', 'api::feature.feature'>;
     textColor: Schema.Attribute.String;
     title: Schema.Attribute.String;
+    visible: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
   };
 }
 
@@ -137,6 +139,7 @@ export interface PagesFounder extends Struct.ComponentSchema {
     signature: Schema.Attribute.String;
     textColor: Schema.Attribute.String;
     title: Schema.Attribute.String;
+    visible: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
   };
 }
 
@@ -157,6 +160,7 @@ export interface PagesGallery extends Struct.ComponentSchema {
     >;
     textColor: Schema.Attribute.String;
     title: Schema.Attribute.String;
+    visible: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
   };
 }
 
@@ -187,6 +191,7 @@ export interface PagesHero extends Struct.ComponentSchema {
     textColor: Schema.Attribute.String;
     title: Schema.Attribute.String;
     video: Schema.Attribute.Media<'videos'>;
+    visible: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
   };
 }
 
@@ -199,6 +204,7 @@ export interface PagesMarquee extends Struct.ComponentSchema {
     backgroundColor: Schema.Attribute.String;
     items: Schema.Attribute.Component<'marquee.item', true>;
     textColor: Schema.Attribute.String;
+    visible: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
   };
 }
 
@@ -220,6 +226,7 @@ export interface PagesNews extends Struct.ComponentSchema {
     quote: Schema.Attribute.Text;
     textColor: Schema.Attribute.String;
     title: Schema.Attribute.String;
+    visible: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
   };
 }
 
@@ -238,6 +245,7 @@ export interface PagesShowroom extends Struct.ComponentSchema {
     showroom: Schema.Attribute.Component<'showroom.details', false>;
     textColor: Schema.Attribute.String;
     title: Schema.Attribute.String;
+    visible: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
   };
 }
 
@@ -252,6 +260,7 @@ export interface PagesTestimonials extends Struct.ComponentSchema {
     description: Schema.Attribute.Text;
     textColor: Schema.Attribute.String;
     title: Schema.Attribute.String;
+    visible: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
   };
 }
 

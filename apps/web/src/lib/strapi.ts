@@ -48,6 +48,7 @@ export type SectionContent = {
   showroom: ShowroomDetails | null;
   galleryAccess: GalleryAccess | null;
   sectionKey: string;
+  visible: boolean | null;
   eyebrow: string | null;
   title: string | null;
   description: string | null;
