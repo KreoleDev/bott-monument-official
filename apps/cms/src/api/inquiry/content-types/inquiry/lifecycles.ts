@@ -3,7 +3,7 @@ export default {
     result: {
       name: string;
       email: string;
-      inquiryType: string;
+      inquiryType?: string | null;
       message?: string;
       documentId: string;
     };
@@ -15,7 +15,7 @@ export default {
     )
       return;
     const inquiry = event.result;
-    const text = `Name: ${inquiry.name}\nEmail: ${inquiry.email}\nInterest: ${inquiry.inquiryType}\n\n${inquiry.message || ""}\n\nEntry: ${inquiry.documentId}`;
+    const text = `Name: ${inquiry.name}\nEmail: ${inquiry.email}\n\n${inquiry.message || ""}\n\nEntry: ${inquiry.documentId}`;
     const html =
       "<pre>" + text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") + "</pre>";
     try {

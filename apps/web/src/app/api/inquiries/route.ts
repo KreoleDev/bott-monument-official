@@ -1,4 +1,3 @@
-import { getHomePage } from "@/lib/pages";
 import { DEFAULT_LOCALE, isLocaleCode } from "@/lib/locale";
 
 function getAllowedOrigins(request: Request) {
@@ -25,7 +24,7 @@ export async function POST(request: Request) {
     if (!body || typeof body !== "object")
       return Response.json({ error: "Invalid form" }, { status: 400 });
     if (body.website) return Response.json({ ok: true });
-    const { name, email, inquiryType, message = "" } = body;
+    const { name, email, message = "" } = body;
     const locale = typeof body.locale === "string" ? body.locale : DEFAULT_LOCALE;
     if (
       typeof name !== "string" ||
@@ -34,21 +33,11 @@ export async function POST(request: Request) {
       typeof email !== "string" ||
       email.length > 254 ||
       !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
-      typeof inquiryType !== "string" ||
-      inquiryType.length > 150 ||
       typeof message !== "string" ||
       message.length > 5000 ||
       !isLocaleCode(locale)
     )
       return Response.json({ error: "Invalid form" }, { status: 400 });
-    const page = await getHomePage(false, locale);
-    const options = (page?.content || [])
-      .filter((block) => block.__typename === "ComponentPagesContact")
-      .flatMap((block) => (block.contact?.inquiryTypes || "").split("\n"))
-      .map((option) => option.trim())
-      .filter(Boolean);
-    if (!options.includes(inquiryType))
-      return Response.json({ error: "Invalid inquiry type" }, { status: 400 });
     const url = process.env.STRAPI_URL?.replace(/\/$/, "");
     const token = process.env.STRAPI_INQUIRY_TOKEN;
     if (!url || !token) return Response.json({ error: "Service unavailable" }, { status: 503 });
@@ -62,7 +51,6 @@ export async function POST(request: Request) {
           data: {
             name: name.trim(),
             email: email.trim(),
-            inquiryType,
             message: message.trim(),
             submissionLocale: locale,
           },

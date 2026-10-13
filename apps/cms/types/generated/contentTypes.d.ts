@@ -669,7 +669,6 @@ export interface ApiInquiryInquiry extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     email: Schema.Attribute.Email & Schema.Attribute.Required;
     inquiryType: Schema.Attribute.String &
-      Schema.Attribute.Required &
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 150;
       }>;

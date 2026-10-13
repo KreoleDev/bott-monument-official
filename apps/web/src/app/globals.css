@@ -263,9 +263,14 @@ body[data-site-mode="secondary"] .site-nav.scrolled {
 }
 
 .press-page-gold-bg {
-  background:
-    radial-gradient(circle at 20% 78%, rgba(255, 252, 243, 0.78), transparent 34%),
-    linear-gradient(112deg, #f8f1e3 0%, #f2e6cb 58%, #e5d0a1 100%);
+  background: var(
+    --palette-founder-background,
+    var(
+      --section-founder-background,
+      radial-gradient(circle at 20% 78%, rgba(255, 252, 243, 0.78), transparent 34%),
+      linear-gradient(112deg, #f8f1e3 0%, #f2e6cb 58%, #e5d0a1 100%)
+    )
+  );
   background-size: auto;
   background-position: center;
   animation: none;

@@ -14,10 +14,6 @@ export function ContactForm({
   const [pending, setPending] = useState(false);
   const [feedback, setFeedback] = useState("");
   const inFlight = useRef(false);
-  const options = (details.inquiryTypes || "")
-    .split("\n")
-    .map((s) => s.trim())
-    .filter(Boolean);
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (inFlight.current) return;
@@ -46,21 +42,6 @@ export function ContactForm({
     <form className="commission-form" onSubmit={submit}>
       <fieldset disabled={pending}>
         <legend className="cm-label">{details.inquiryLabel}</legend>
-        <div className="cm-pills">
-          {options.map((option, i) => (
-            <label className="cm-pill" key={option}>
-              <input
-                className="sr-only"
-                type="radio"
-                name="inquiryType"
-                value={option}
-                defaultChecked={i === options.length - 1}
-                required
-              />
-              {option}
-            </label>
-          ))}
-        </div>
         <label className="sr-only" htmlFor="cmName">
           Your name
         </label>
