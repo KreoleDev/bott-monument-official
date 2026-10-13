@@ -37,39 +37,17 @@ export function Founder({ section }: FounderProps) {
           }
         >
           <div className="press-page-inner">
-            <div className="press-founder">
-              <div className="press-founder-frame">
-                <span className="press-founder-spotlight" />
-                <div className="press-founder-img">
-                  <Image
-                    src={imageUrl}
-                    alt={
-                      section?.image?.alternativeText ?? "Drew Bott, Founder and Master Craftsman"
-                    }
-                    width={1024}
-                    height={1024}
-                    priority={imageUrl.startsWith("http://") || imageUrl.startsWith("https://")}
-                  />
-                </div>
-              </div>
-              <p className="press-founder-name">
-                <strong>{section?.personName ?? "DREW BOTT"}</strong>
-                {section?.personRole ?? "Founder & Master Craftsman"}
-              </p>
-            </div>
-
             <div className="press-page-head">
               <p className="press-page-kicker">
                 {section?.eyebrow ?? "Founder · Craftsman · Visionary"}
               </p>
               <h2 id="founder-title" className="press-page-title">
-                {firstLine}
+                <span className="press-page-title-line">{firstLine}</span>
                 {secondLine ? (
-                  <>
-                    <br />
+                  <span className="press-page-title-line press-page-title-line--accent">
                     {prefix}
                     <em>{secondLine}</em>
-                  </>
+                  </span>
                 ) : null}
               </h2>
               <div className="press-page-divider" />
@@ -82,6 +60,28 @@ export function Founder({ section }: FounderProps) {
                   '"Every monument should feel as personal as the life it honors."'}
               </p>
               <p className="press-page-signature">{section?.signature ?? "Your signature"}</p>
+            </div>
+
+            <div className="press-founder">
+              <div className="press-founder-frame">
+                <span className="press-founder-spotlight" />
+                <div className="press-founder-img">
+                  <Image
+                    src={imageUrl}
+                    alt={
+                      section?.image?.alternativeText ?? "Drew Bott, Founder and Master Craftsman"
+                    }
+                    width={1200}
+                    height={1500}
+                    sizes="(max-width: 699px) 100vw, (max-width: 1180px) 42vw, 50vw"
+                    priority={imageUrl.startsWith("http://") || imageUrl.startsWith("https://")}
+                  />
+                </div>
+              </div>
+              <p className="press-founder-name">
+                <strong>{section?.personName ?? "DREW BOTT"}</strong>
+                {section?.personRole ?? "Founder & Master Craftsman"}
+              </p>
             </div>
           </div>
         </div>

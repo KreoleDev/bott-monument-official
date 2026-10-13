@@ -11,6 +11,7 @@ function isFragmentName(key: string): key is FragmentName {
 export function mapSections(sections: SectionContent[], extras: PageExtras): MappedFragment[] {
   return sections.flatMap((section) => {
     const key = section.sectionKey;
+    if (section.visible === false) return [];
     if (!isFragmentName(key) || CHROME_KEYS.has(key)) return [];
     const mapper = MAPPERS[key];
     return [

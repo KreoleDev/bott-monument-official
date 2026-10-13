@@ -32,6 +32,22 @@ test("maps registered sections in CMS order and skips unknown keys", () => {
   assert.equal(content[1].payload.items, extras.pressItems);
 });
 
+test("skips sections marked not visible", () => {
+  const { mapSections } = motor();
+  const content = mapSections(
+    [
+      { sectionKey: "founder", title: "Shown", visible: true },
+      { sectionKey: "gallery", title: "Hidden", visible: false },
+      { sectionKey: "contact", title: "Default visible" },
+    ],
+    extras,
+  );
+  assert.deepEqual(
+    content.map((item) => item.fragmentName),
+    ["founder", "contact"],
+  );
+});
+
 test("keeps footer as chrome instead of a main fragment", () => {
   const { mapSections, mapFooterChrome } = motor();
   const sections = [

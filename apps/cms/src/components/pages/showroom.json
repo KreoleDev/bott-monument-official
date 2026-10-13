@@ -4,6 +4,10 @@
     "displayName": "Showroom"
   },
   "attributes": {
+    "visible": {
+      "type": "boolean",
+      "default": true
+    },
     "eyebrow": {
       "type": "string"
     },

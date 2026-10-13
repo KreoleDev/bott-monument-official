@@ -59,9 +59,9 @@ on desktop and mobile.
 
 - [ ] Update founder quote exactly:
   `"I love to make art.  It just happens to go in a cemetery."`
-- [ ] Redesign founder section so text/lettering sits on the left and the
+- [x] Redesign founder section so text/lettering sits on the left and the
   owner's portrait fills the right side.
-- [ ] Make the portrait larger and crop responsively so the subject remains
+- [x] Make the portrait larger and crop responsively so the subject remains
   visible on desktop, tablet, and mobile.
 - [ ] Verify the section still works with the existing `pages.founder` CMS
   component and mapper.

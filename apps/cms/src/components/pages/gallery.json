@@ -4,6 +4,10 @@
     "displayName": "Gallery"
   },
   "attributes": {
+    "visible": {
+      "type": "boolean",
+      "default": true
+    },
     "title": {
       "type": "string"
     },

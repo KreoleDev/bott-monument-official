@@ -7,6 +7,7 @@ query HomePage($status: PublicationStatus!, $relationPage: Int!, $locale: I18NLo
 
 hero {
 id
+visible
 eyebrow
 title
 description
@@ -21,6 +22,7 @@ footer { brand copyright tagline taglineEmphasis facebookUrl instagramUrl youtub
  content { __typename
 ... on ComponentPagesContact {
 id
+visible
 eyebrow
 title
 description
@@ -45,6 +47,7 @@ textColor
 }
 ... on ComponentPagesFeaturedIn {
 id
+visible
 eyebrow
 title
 description
@@ -54,6 +57,7 @@ features_connection(pagination:{page:$relationPage,pageSize:100}) { nodes { docu
 }
 ... on ComponentPagesFounder {
 id
+visible
 eyebrow
 title
 description
@@ -67,6 +71,7 @@ textColor
 }
 ... on ComponentPagesGallery {
 id
+visible
 title
 description
 buttonLabel
@@ -85,6 +90,7 @@ galleryItems_connection(pagination:{page:$relationPage,pageSize:100}) { nodes { 
 }
 ... on ComponentPagesMarquee {
 id
+visible
 backgroundColor
 textColor
 items { id
@@ -92,6 +98,7 @@ label }
 }
 ... on ComponentPagesNews {
 id
+visible
 eyebrow
 title
 description
@@ -104,6 +111,7 @@ pressItems_connection(pagination:{page:$relationPage,pageSize:100}) { nodes { do
 }
 ... on ComponentPagesShowroom {
 id
+visible
 eyebrow
 title
 description
@@ -123,6 +131,7 @@ textColor
 }
 ... on ComponentPagesTestimonials {
 id
+visible
 title
 description
 backgroundColor
