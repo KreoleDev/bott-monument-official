@@ -10,6 +10,18 @@ test("missing configuration does not throw and rejects unsupported media URLs", 
     api.getStrapiMediaUrl({ url: "https://cdn.example/photo.jpg" }),
     "https://cdn.example/photo.jpg",
   );
+  assert.equal(
+    api.getStrapiMediaUrl({ url: "https://cdn.example/photo.jpg?width=600", updatedAt: "v1" }),
+    "https://cdn.example/photo.jpg?width=600&v=v1",
+  );
+});
+
+test("media URLs include Strapi versions when metadata changes", async () => {
+  const api = loadTs("../src/lib/strapi.ts", { env });
+  assert.equal(
+    api.getStrapiMediaUrl({ url: "/uploads/photo.jpg", hash: "abc" }),
+    "http://cms/uploads/photo.jpg?v=abc",
+  );
 });
 test("outage retains successful data but editorial deletion clears it", async () => {
   let mode = "success";

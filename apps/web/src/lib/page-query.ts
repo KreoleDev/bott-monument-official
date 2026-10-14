@@ -1,9 +1,9 @@
 export const HOME_PAGE_QUERY = `
 query HomePage($status: PublicationStatus!, $relationPage: Int!, $locale: I18NLocaleCode!) {
  pages(filters:{slug:{eq:"home"}},locale:$locale,status:$status,pagination:{limit:1}) {
- header { siteName logo { url alternativeText } links { id label href } }
+ header { siteName logo { url alternativeText hash updatedAt } links { id label href } }
  documentId title locale localizations { locale }
- seo { metaTitle metaDescription metaImage { url alternativeText } }
+ seo { metaTitle metaDescription metaImage { url alternativeText hash updatedAt } }
 
 hero {
 id
@@ -15,8 +15,8 @@ buttonLabel
 buttonHref
 backgroundColor
 textColor
-image { url alternativeText }
-video { url alternativeText }
+image { url alternativeText hash updatedAt }
+video { url alternativeText hash updatedAt }
 }
 footer { brand copyright tagline taglineEmphasis facebookUrl instagramUrl youtubeUrl }
  content { __typename
@@ -61,7 +61,7 @@ quote
 signature
 personName
 personRole
-image { url alternativeText }
+image { url alternativeText hash updatedAt }
 backgroundColor
 textColor
 }
@@ -111,7 +111,7 @@ visible
 eyebrow
 title
 description
-image { url alternativeText }
+image { url alternativeText hash updatedAt }
 showroom { id
 visitTitle
 location
