@@ -8,13 +8,14 @@ export type Feature = {
   detail: string | null;
   featured: boolean;
   sortOrder: number;
+  updatedAt: string | null;
   image: StrapiMedia | null;
 };
 
 export async function getFeatures(preview = false, locale = "en"): Promise<Feature[]> {
   return getCollection<Feature>(
     "features_connection",
-    "documentId title publication detail featured sortOrder image { url alternativeText hash updatedAt }",
+    "documentId title publication detail featured sortOrder updatedAt image { url alternativeText }",
     ["sortOrder:asc", "documentId:asc"],
     preview,
     locale,

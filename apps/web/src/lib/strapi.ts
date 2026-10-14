@@ -68,13 +68,13 @@ export type StrapiMedia = {
   updatedAt?: string | null;
 };
 
-export function getStrapiMediaUrl(media?: StrapiMedia | null) {
+export function getStrapiMediaUrl(media?: StrapiMedia | null, version?: string | null) {
   if (!media?.url) return null;
-  const version = media.updatedAt || media.hash;
+  const cacheVersion = version || media.updatedAt || media.hash;
   const withVersion = (value: string) => {
-    if (!version) return value;
+    if (!cacheVersion) return value;
     const url = new URL(value);
-    url.searchParams.set("v", version);
+    url.searchParams.set("v", cacheVersion);
     return url.toString();
   };
   if (/^https?:\/\//i.test(media.url)) return withVersion(media.url);
