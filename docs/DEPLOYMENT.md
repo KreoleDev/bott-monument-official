@@ -87,7 +87,7 @@ Variables, all server-only:
 | --- | --- |
 | `STRAPI_URL` | Public HTTPS URL of Strapi |
 | `STRAPI_API_TOKEN` | `web-readonly` |
-| `STRAPI_INQUIRY_TOKEN` | `web-inquiries` |
+| `STRAPI_INQUIRY_TOKEN` | `web-inquiries`, with Inquiry create and upload/media create permission for up to three images |
 | `STRAPI_PREVIEW_TOKEN` | Optional second read-only token for drafts |
 | `PREVIEW_SECRET`, `REVALIDATION_SECRET` | Same values as Strapi |
 | `MEDIA_ORIGINS` | Public bucket origin |
