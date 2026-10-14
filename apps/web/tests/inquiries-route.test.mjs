@@ -129,6 +129,40 @@ test("inquiry API rejects unsupported image uploads", async () => {
   assert.equal(response.status, 400);
 });
 
+test("inquiry API accepts images up to twenty megabytes", async () => {
+  const { POST } = loadTs("../src/app/api/inquiries/route.ts", {
+    env: { STRAPI_URL: "http://cms", STRAPI_INQUIRY_TOKEN: "submit-token" },
+    fetch: async (url) =>
+      url.endsWith("/api/upload")
+        ? {
+            ok: true,
+            json: async () => [{ id: 1 }],
+          }
+        : {
+            ok: true,
+            json: async () => ({ data: { createInquiry: { documentId: "inquiry-1" } } }),
+          },
+  });
+  const body = new FormData();
+  body.set("name", "Visitor");
+  body.set("email", "visitor@example.com");
+  body.set("message", "I have a large phone photo.");
+  body.set("locale", "en");
+  body.append(
+    "attachment",
+    new File([new Uint8Array(20 * 1024 * 1024)], "large.jpg", { type: "image/jpeg" }),
+  );
+
+  const response = await POST(
+    new Request("http://site.test/api/inquiries", {
+      method: "POST",
+      body,
+    }),
+  );
+
+  assert.equal(response.status, 201);
+});
+
 test("inquiry API accepts extension fallback when browser omits image MIME type", async () => {
   let upload;
   const { POST } = loadTs("../src/app/api/inquiries/route.ts", {

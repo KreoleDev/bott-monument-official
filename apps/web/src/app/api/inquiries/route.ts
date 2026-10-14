@@ -2,8 +2,9 @@ import { DEFAULT_LOCALE, isLocaleCode } from "@/lib/locale";
 
 const MAX_JSON_BYTES = 24000;
 const MAX_IMAGES = 3;
-const MAX_MULTIPART_BYTES = 32 * 1024 * 1024;
-const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
+const MAX_MULTIPART_BYTES = 64 * 1024 * 1024;
+const MAX_IMAGE_MB = 20;
+const MAX_IMAGE_BYTES = MAX_IMAGE_MB * 1024 * 1024;
 const ALLOWED_IMAGE_TYPES = new Set([
   "image/jpeg",
   "image/jpg",
@@ -152,7 +153,7 @@ export async function POST(request: Request) {
     if (attachments.length) {
       if (attachments.some((attachment) => attachment.size > MAX_IMAGE_BYTES))
         return Response.json(
-          { error: "Each image must be 10 MB or smaller." },
+          { error: `Each image must be ${MAX_IMAGE_MB} MB or smaller.` },
           { status: 400 },
         );
       if (

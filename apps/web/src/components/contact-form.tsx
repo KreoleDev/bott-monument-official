@@ -2,7 +2,7 @@
 import { useState, useRef, type ChangeEvent, type FormEvent } from "react";
 import type { ContactDetails } from "@/lib/strapi";
 
-const MAX_IMAGE_MB = 10;
+const MAX_IMAGE_MB = 20;
 const MAX_IMAGES = 3;
 
 export function ContactForm({
