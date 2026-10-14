@@ -12,7 +12,7 @@ export type GalleryItem = {
 export async function getGalleryItems(preview = false, locale = "en"): Promise<GalleryItem[]> {
   return getCollection<GalleryItem>(
     "galleryItems_connection",
-    "documentId title subtitle imagePosition sortOrder image { url alternativeText hash updatedAt }",
+    "documentId title subtitle imagePosition sortOrder image { url alternativeText }",
     ["sortOrder:asc", "documentId:asc"],
     preview,
     locale,

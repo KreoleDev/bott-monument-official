@@ -11,7 +11,7 @@ export function FeaturedIn({
 }) {
   if (!section) return null;
   const covers = features.flatMap((cover) => {
-    const src = getStrapiMediaUrl(cover.image);
+    const src = getStrapiMediaUrl(cover.image, cover.updatedAt);
     return src ? [{ ...cover, src }] : [];
   });
   if (!covers.length) return null;
