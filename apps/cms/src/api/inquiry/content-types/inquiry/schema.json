@@ -27,6 +27,11 @@
       "type": "text",
       "maxLength": 5000
     },
+    "attachment": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": ["images"]
+    },
     "submissionLocale": {
       "type": "string",
       "default": "en"

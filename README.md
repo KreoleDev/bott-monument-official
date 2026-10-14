@@ -98,7 +98,8 @@ Na primeira corrida, cria o utilizador admin. Depois:
 3. Token type: **Read-only**
 4. Duration: Unlimited (local)
 5. Copia o token para `apps/web/.env.local`
-6. Cria outro token **Custom**, `web-inquiries`, com apenas **Inquiry → create**.
+6. Cria outro token **Custom**, `web-inquiries`, com **Inquiry → create** e
+   upload/media create permission para até três anexos de imagem do formulário.
 7. Guarda esse segundo token em `STRAPI_INQUIRY_TOKEN`. Não concedas leitura, alteração ou eliminação de inquiries.
 
 ### 2. Next.js

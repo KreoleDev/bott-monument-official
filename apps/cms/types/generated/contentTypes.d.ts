@@ -664,6 +664,7 @@ export interface ApiInquiryInquiry extends Struct.CollectionTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
+    attachment: Schema.Attribute.Media<'images', true>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

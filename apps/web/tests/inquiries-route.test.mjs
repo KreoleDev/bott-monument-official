@@ -31,3 +31,89 @@ test("inquiry API accepts submissions without category choices", async () => {
   assert.equal(mutation.variables.data.inquiryType, undefined);
   assert.equal(mutation.variables.data.message, "Tell me about this person.");
 });
+
+test("inquiry API attaches up to three uploaded images to the Strapi inquiry", async () => {
+  let upload;
+  const { POST } = loadTs("../src/app/api/inquiries/route.ts", {
+    env: { STRAPI_URL: "http://cms", STRAPI_INQUIRY_TOKEN: "submit-token" },
+    fetch: async (_url, options) => {
+      upload = options.body;
+      return {
+        ok: true,
+        json: async () => ({ data: { documentId: "inquiry-1" } }),
+      };
+    },
+  });
+  const body = new FormData();
+  body.set("name", "Visitor");
+  body.set("email", "visitor@example.com");
+  body.set("message", "I have a reference photo.");
+  body.set("locale", "en");
+  body.append("attachment", new File(["fake image"], "memory-1.jpg", { type: "image/jpeg" }));
+  body.append("attachment", new File(["fake image"], "memory-2.png", { type: "image/png" }));
+  body.append("attachment", new File(["fake image"], "memory-3.webp", { type: "image/webp" }));
+
+  const response = await POST(
+    new Request("http://site.test/api/inquiries", {
+      method: "POST",
+      body,
+    }),
+  );
+
+  assert.equal(response.status, 201);
+  assert.equal(JSON.parse(upload.get("data")).message, "I have a reference photo.");
+  assert.deepEqual(
+    upload.getAll("files.attachment").map((file) => file.name),
+    ["memory-1.jpg", "memory-2.png", "memory-3.webp"],
+  );
+});
+
+test("inquiry API rejects more than three image uploads", async () => {
+  const { POST } = loadTs("../src/app/api/inquiries/route.ts", {
+    env: { STRAPI_URL: "http://cms", STRAPI_INQUIRY_TOKEN: "submit-token" },
+    fetch: async () => {
+      throw new Error("Unexpected fetch");
+    },
+  });
+  const body = new FormData();
+  body.set("name", "Visitor");
+  body.set("email", "visitor@example.com");
+  body.set("message", "I have several photos.");
+  body.set("locale", "en");
+  for (const name of ["one.jpg", "two.jpg", "three.jpg", "four.jpg"]) {
+    body.append("attachment", new File(["fake image"], name, { type: "image/jpeg" }));
+  }
+
+  const response = await POST(
+    new Request("http://site.test/api/inquiries", {
+      method: "POST",
+      body,
+    }),
+  );
+
+  assert.equal(response.status, 400);
+});
+
+test("inquiry API rejects unsupported image uploads", async () => {
+  const { POST } = loadTs("../src/app/api/inquiries/route.ts", {
+    env: { STRAPI_URL: "http://cms", STRAPI_INQUIRY_TOKEN: "submit-token" },
+    fetch: async () => {
+      throw new Error("Unexpected fetch");
+    },
+  });
+  const body = new FormData();
+  body.set("name", "Visitor");
+  body.set("email", "visitor@example.com");
+  body.set("message", "I have a file.");
+  body.set("locale", "en");
+  body.set("attachment", new File(["<svg />"], "unsafe.svg", { type: "image/svg+xml" }));
+
+  const response = await POST(
+    new Request("http://site.test/api/inquiries", {
+      method: "POST",
+      body,
+    }),
+  );
+
+  assert.equal(response.status, 400);
+});

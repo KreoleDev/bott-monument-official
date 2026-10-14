@@ -1,6 +1,9 @@
 "use client";
-import { useState, useRef, type FormEvent } from "react";
+import { useState, useRef, type ChangeEvent, type FormEvent } from "react";
 import type { ContactDetails } from "@/lib/strapi";
+
+const MAX_IMAGE_MB = 5;
+const MAX_IMAGES = 3;
 
 export function ContactForm({
   details,
@@ -13,7 +16,16 @@ export function ContactForm({
 }) {
   const [pending, setPending] = useState(false);
   const [feedback, setFeedback] = useState("");
+  const [images, setImages] = useState<File[]>([]);
   const inFlight = useRef(false);
+  function selectImage(event: ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(event.currentTarget.files || []);
+    setImages((current) => [...current, ...files].slice(0, MAX_IMAGES));
+    event.currentTarget.value = "";
+  }
+  function removeImage(index: number) {
+    setImages((current) => current.filter((_, itemIndex) => itemIndex !== index));
+  }
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (inFlight.current) return;
@@ -21,15 +33,19 @@ export function ContactForm({
     setPending(true);
     setFeedback("");
     const form = event.currentTarget;
-    const data = { ...Object.fromEntries(new FormData(form)), locale };
+    const data = new FormData(form);
+    data.set("locale", locale);
+    for (const image of images) {
+      data.append("attachment", image, image.name);
+    }
     try {
       const response = await fetch("/api/inquiries", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: data,
       });
       if (!response.ok) throw new Error("Could not save your message. Please try again.");
       form.reset();
+      setImages([]);
       setFeedback(details.successMessage || "Thank you. Your inquiry has been received.");
     } catch {
       setFeedback("Could not save your message. Please try again.");
@@ -77,6 +93,37 @@ export function ContactForm({
           placeholder={details.messagePlaceholder}
           maxLength={5000}
         />
+        <label className="cm-upload" htmlFor="cmImage">
+          <span className="cm-upload-main">
+            <span className="cm-upload-title">Add an image</span>
+            <span className="cm-upload-sub">
+              {images.length
+                ? `${images.length} of ${MAX_IMAGES} images selected`
+                : `Optional JPG, PNG, WebP, GIF, or HEIC. Up to ${MAX_IMAGES} images, ${MAX_IMAGE_MB} MB each`}
+            </span>
+          </span>
+          <span className="cm-upload-action">Choose files</span>
+          <input
+            type="file"
+            className="sr-only"
+            id="cmImage"
+            accept="image/jpeg,image/png,image/webp,image/gif,image/heic,image/heif"
+            multiple
+            onChange={selectImage}
+          />
+        </label>
+        {images.length > 0 && (
+          <ul className="cm-upload-list" aria-label="Selected images">
+            {images.map((image, index) => (
+              <li className="cm-upload-item" key={`${image.name}-${image.lastModified}-${index}`}>
+                <span>{image.name}</span>
+                <button type="button" onClick={() => removeImage(index)}>
+                  Remove
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
         <div hidden aria-hidden="true">
           <label>
             Website
