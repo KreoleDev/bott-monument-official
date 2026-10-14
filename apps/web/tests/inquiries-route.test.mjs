@@ -34,13 +34,23 @@ test("inquiry API accepts submissions without category choices", async () => {
 
 test("inquiry API attaches up to three uploaded images to the Strapi inquiry", async () => {
   let upload;
+  let mutation;
+  const calls = [];
   const { POST } = loadTs("../src/app/api/inquiries/route.ts", {
     env: { STRAPI_URL: "http://cms", STRAPI_INQUIRY_TOKEN: "submit-token" },
-    fetch: async (_url, options) => {
-      upload = options.body;
+    fetch: async (url, options) => {
+      calls.push(url);
+      if (url.endsWith("/api/upload")) {
+        upload = options.body;
+        return {
+          ok: true,
+          json: async () => [{ id: 1 }, { id: 2 }, { id: 3 }],
+        };
+      }
+      mutation = JSON.parse(options.body);
       return {
         ok: true,
-        json: async () => ({ data: { documentId: "inquiry-1" } }),
+        json: async () => ({ data: { createInquiry: { documentId: "inquiry-1" } } }),
       };
     },
   });
@@ -61,9 +71,10 @@ test("inquiry API attaches up to three uploaded images to the Strapi inquiry", a
   );
 
   assert.equal(response.status, 201);
-  assert.equal(JSON.parse(upload.get("data")).message, "I have a reference photo.");
+  assert.deepEqual(calls, ["http://cms/api/upload", "http://cms/graphql"]);
+  assert.deepEqual(mutation.variables.data.attachment, ["1", "2", "3"]);
   assert.deepEqual(
-    upload.getAll("files.attachment").map((file) => file.name),
+    upload.getAll("files").map((file) => file.name),
     ["memory-1.jpg", "memory-2.png", "memory-3.webp"],
   );
 });
@@ -116,4 +127,76 @@ test("inquiry API rejects unsupported image uploads", async () => {
   );
 
   assert.equal(response.status, 400);
+});
+
+test("inquiry API accepts extension fallback when browser omits image MIME type", async () => {
+  let upload;
+  const { POST } = loadTs("../src/app/api/inquiries/route.ts", {
+    env: { STRAPI_URL: "http://cms", STRAPI_INQUIRY_TOKEN: "submit-token" },
+    fetch: async (url, options) => {
+      if (url.endsWith("/api/upload")) {
+        upload = options.body;
+        return {
+          ok: true,
+          json: async () => [{ id: 1 }],
+        };
+      }
+      return {
+        ok: true,
+        json: async () => ({ data: { createInquiry: { documentId: "inquiry-1" } } }),
+      };
+    },
+  });
+  const body = new FormData();
+  body.set("name", "Visitor");
+  body.set("email", "visitor@example.com");
+  body.set("message", "Browser did not send MIME.");
+  body.set("locale", "en");
+  body.append("attachment", new File(["fake image"], "memory.jpg", { type: "" }));
+
+  const response = await POST(
+    new Request("http://site.test/api/inquiries", {
+      method: "POST",
+      body,
+    }),
+  );
+
+  assert.equal(response.status, 201);
+  assert.equal(upload.get("files").name, "memory.jpg");
+});
+
+test("inquiry API creates the inquiry with uploaded image ids", async () => {
+  let mutation;
+  const { POST } = loadTs("../src/app/api/inquiries/route.ts", {
+    env: { STRAPI_URL: "http://cms", STRAPI_INQUIRY_TOKEN: "submit-token" },
+    fetch: async (url, options) => {
+      if (url.endsWith("/api/upload")) {
+        return {
+          ok: true,
+          json: async () => [{ id: 1 }],
+        };
+      }
+      mutation = JSON.parse(options.body);
+      return {
+        ok: true,
+        json: async () => ({ data: { createInquiry: { documentId: "inquiry-1" } } }),
+      };
+    },
+  });
+  const body = new FormData();
+  body.set("name", "Visitor");
+  body.set("email", "visitor@example.com");
+  body.set("message", "REST response shape.");
+  body.set("locale", "en");
+  body.append("attachment", new File(["fake image"], "memory.jpg", { type: "image/jpeg" }));
+
+  const response = await POST(
+    new Request("http://site.test/api/inquiries", {
+      method: "POST",
+      body,
+    }),
+  );
+
+  assert.equal(response.status, 201);
+  assert.deepEqual(mutation.variables.data.attachment, ["1"]);
 });

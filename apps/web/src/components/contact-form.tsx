@@ -2,7 +2,7 @@
 import { useState, useRef, type ChangeEvent, type FormEvent } from "react";
 import type { ContactDetails } from "@/lib/strapi";
 
-const MAX_IMAGE_MB = 5;
+const MAX_IMAGE_MB = 10;
 const MAX_IMAGES = 3;
 
 export function ContactForm({
@@ -43,12 +43,17 @@ export function ContactForm({
         method: "POST",
         body: data,
       });
-      if (!response.ok) throw new Error("Could not save your message. Please try again.");
+      if (!response.ok) {
+        const result = await response.json().catch(() => null);
+        throw new Error(result?.error || "Could not save your message. Please try again.");
+      }
       form.reset();
       setImages([]);
       setFeedback(details.successMessage || "Thank you. Your inquiry has been received.");
-    } catch {
-      setFeedback("Could not save your message. Please try again.");
+    } catch (error) {
+      setFeedback(
+        error instanceof Error ? error.message : "Could not save your message. Please try again.",
+      );
     } finally {
       inFlight.current = false;
       setPending(false);

@@ -2,16 +2,20 @@ import { DEFAULT_LOCALE, isLocaleCode } from "@/lib/locale";
 
 const MAX_JSON_BYTES = 24000;
 const MAX_IMAGES = 3;
-const MAX_MULTIPART_BYTES = 16 * 1024 * 1024;
-const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+const MAX_MULTIPART_BYTES = 32 * 1024 * 1024;
+const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 const ALLOWED_IMAGE_TYPES = new Set([
   "image/jpeg",
+  "image/jpg",
+  "image/pjpeg",
   "image/png",
+  "image/x-png",
   "image/webp",
   "image/gif",
   "image/heic",
   "image/heif",
 ]);
+const ALLOWED_IMAGE_EXTENSIONS = new Set(["jpg", "jpeg", "png", "webp", "gif", "heic", "heif"]);
 
 function isFormDataBody(value: unknown): value is FormData {
   return (
@@ -33,6 +37,37 @@ function isUploadedFile(value: unknown): value is File {
   );
 }
 
+function getFileExtension(file: File) {
+  return file.name.split(".").pop()?.toLowerCase() || "";
+}
+
+function isAllowedImage(file: File) {
+  if (ALLOWED_IMAGE_TYPES.has(file.type)) return true;
+  return (!file.type || file.type === "application/octet-stream") &&
+    ALLOWED_IMAGE_EXTENSIONS.has(getFileExtension(file));
+}
+
+function getStrapiError(result: unknown) {
+  if (!result || typeof result !== "object") return null;
+  const error = (result as { error?: unknown }).error;
+  if (error && typeof error === "object") {
+    const message = (error as { message?: unknown }).message;
+    if (typeof message === "string" && message) return message;
+  }
+  const errors = (result as { errors?: unknown }).errors;
+  if (Array.isArray(errors)) {
+    const messages = errors
+      .map((item) =>
+        item && typeof item === "object" && typeof (item as { message?: unknown }).message === "string"
+          ? (item as { message: string }).message
+          : null,
+      )
+      .filter(Boolean);
+    if (messages.length) return messages.join("; ");
+  }
+  return null;
+}
+
 function getAllowedOrigins(request: Request) {
   const headers = request.headers;
   const origins = new Set([new URL(request.url).origin]);
@@ -40,6 +75,21 @@ function getAllowedOrigins(request: Request) {
   const forwardedProto = headers.get("x-forwarded-proto") || "https";
   if (forwardedHost) origins.add(`${forwardedProto}://${forwardedHost}`);
   return origins;
+}
+
+async function createInquiry(url: string, token: string, data: Record<string, string | string[]>) {
+  const response = await fetch(`${url}/graphql`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      query:
+        "mutation SubmitInquiry($data: InquiryInput!) { createInquiry(data: $data) { documentId } }",
+      variables: { data },
+    }),
+    cache: "no-store",
+    signal: AbortSignal.timeout(15000),
+  });
+  return { response, result: await response.json() };
 }
 
 export async function POST(request: Request) {
@@ -100,50 +150,75 @@ export async function POST(request: Request) {
     if (attachments.length > MAX_IMAGES)
       return Response.json({ error: "Too many images" }, { status: 400 });
     if (attachments.length) {
+      if (attachments.some((attachment) => attachment.size > MAX_IMAGE_BYTES))
+        return Response.json(
+          { error: "Each image must be 10 MB or smaller." },
+          { status: 400 },
+        );
       if (
         attachments.some(
           (attachment) =>
             !isUploadedFile(attachment) ||
-            attachment.size > MAX_IMAGE_BYTES ||
-            !ALLOWED_IMAGE_TYPES.has(attachment.type),
+            !isAllowedImage(attachment),
         )
       )
-        return Response.json({ error: "Invalid image" }, { status: 400 });
+        return Response.json(
+          { error: "Images must be JPG, PNG, WebP, GIF, HEIC, or HEIF." },
+          { status: 400 },
+        );
       const payload = new FormData();
-      payload.append("data", JSON.stringify(data));
       for (const attachment of attachments) {
-        payload.append("files.attachment", attachment, attachment.name);
+        payload.append("files", attachment, attachment.name);
       }
-      const response = await fetch(`${url}/api/inquiries`, {
+      const uploadResponse = await fetch(`${url}/api/upload`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: payload,
         cache: "no-store",
         signal: AbortSignal.timeout(20000),
       });
-      const result = await response.json();
-      if (!response.ok || !result.data?.documentId)
-        return Response.json({ error: "Unable to save inquiry" }, { status: 502 });
+      const uploadResult = await uploadResponse.json();
+      if (!uploadResponse.ok || !Array.isArray(uploadResult)) {
+        const error = getStrapiError(uploadResult) || "Unable to save image";
+        if (process.env.NODE_ENV !== "production")
+          console.warn("Strapi inquiry upload failed", uploadResult);
+        return Response.json({ error }, { status: 502 });
+      }
+      const attachmentIds = uploadResult
+        .map((item) => {
+          if (!item || typeof item !== "object") return null;
+          const id = (item as { id?: unknown }).id;
+          return typeof id === "number" || typeof id === "string" ? String(id) : null;
+        })
+        .filter((id): id is string => Boolean(id));
+      if (attachmentIds.length !== attachments.length) {
+        if (process.env.NODE_ENV !== "production")
+          console.warn("Strapi inquiry upload returned unexpected files", uploadResult);
+        return Response.json({ error: "Unable to save image" }, { status: 502 });
+      }
+      const { response: createResponse, result: createResult } = await createInquiry(
+        url,
+        token,
+        { ...data, attachment: attachmentIds },
+      );
+      if (
+        !createResponse.ok ||
+        createResult.errors?.length ||
+        !createResult.data?.createInquiry?.documentId
+      ) {
+        const error = getStrapiError(createResult) || "Unable to save inquiry";
+        if (process.env.NODE_ENV !== "production")
+          console.warn("Strapi inquiry create failed", createResult);
+        return Response.json({ error }, { status: 502 });
+      }
       return Response.json({ ok: true }, { status: 201 });
     }
-    const response = await fetch(`${url}/graphql`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        query:
-          "mutation SubmitInquiry($data: InquiryInput!) { createInquiry(data: $data) { documentId } }",
-        variables: {
-          data: {
-            ...data,
-          },
-        },
-      }),
-      cache: "no-store",
-      signal: AbortSignal.timeout(15000),
-    });
-    const result = await response.json();
-    if (!response.ok || result.errors?.length || !result.data?.createInquiry?.documentId)
-      return Response.json({ error: "Unable to save inquiry" }, { status: 502 });
+    const { response, result } = await createInquiry(url, token, data);
+    if (!response.ok || result.errors?.length || !result.data?.createInquiry?.documentId) {
+      const error = getStrapiError(result) || "Unable to save inquiry";
+      if (process.env.NODE_ENV !== "production") console.warn("Strapi inquiry create failed", result);
+      return Response.json({ error }, { status: 502 });
+    }
     return Response.json({ ok: true }, { status: 201 });
   } catch (error) {
     return Response.json(
