@@ -5,7 +5,7 @@ import type { PressItem } from "./news-shared";
 export type { PressItem } from "./news-shared";
 
 const PRESS_ITEM_FIELDS =
-  "documentId title source date category url featured image { url alternativeText }";
+  "documentId title source date category url featured image { url alternativeText hash updatedAt }";
 const PRESS_ITEM_SORT = ["sortOrder:asc", "date:desc", "documentId:asc"];
 
 function normalizePressImage(item: PressItem): PressItem {

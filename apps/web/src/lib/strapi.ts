@@ -64,12 +64,21 @@ export type SectionContent = {
 export type StrapiMedia = {
   url: string;
   alternativeText: string | null;
+  hash?: string | null;
+  updatedAt?: string | null;
 };
 
 export function getStrapiMediaUrl(media?: StrapiMedia | null) {
   if (!media?.url) return null;
-  if (/^https?:\/\//i.test(media.url)) return media.url;
-  const url = process.env.STRAPI_URL?.replace(/\/$/, "");
-  if (!url || !media.url.startsWith("/") || media.url.startsWith("//")) return null;
-  return `${url}${media.url}`;
+  const version = media.updatedAt || media.hash;
+  const withVersion = (value: string) => {
+    if (!version) return value;
+    const url = new URL(value);
+    url.searchParams.set("v", version);
+    return url.toString();
+  };
+  if (/^https?:\/\//i.test(media.url)) return withVersion(media.url);
+  const origin = process.env.STRAPI_URL?.replace(/\/$/, "");
+  if (!origin || !media.url.startsWith("/") || media.url.startsWith("//")) return null;
+  return withVersion(`${origin}${media.url}`);
 }
