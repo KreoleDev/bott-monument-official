@@ -23,6 +23,16 @@ export function Founder({ section }: FounderProps) {
   const title = section?.title ?? defaultTitle;
   const { firstLine, secondLine, prefix } = splitTitle(title);
   const imageUrl = getStrapiMediaUrl(section?.image) ?? "/profile_2.png";
+  const founderBackground = section?.backgroundColor;
+  const founderGradient = founderBackground?.match(
+    /^linear-gradient\(\s*([-\d.]+deg)\s*,\s*(#[\da-f]{3,8})\s*,\s*(#[\da-f]{3,8})\s*,\s*(#[\da-f]{3,8})\s*\)$/i,
+  );
+  const directionalGradients = founderGradient
+    ? {
+        tablet: `linear-gradient(270deg, ${founderGradient[3]} 0%, ${founderGradient[2]} 62%, ${founderGradient[2]} 100%)`,
+        mobile: `linear-gradient(0deg, color-mix(in srgb, ${founderGradient[3]} 30%, ${founderGradient[2]}), ${founderGradient[2]} 38%, ${founderGradient[2]} 100%)`,
+      }
+    : undefined;
 
   return (
     <section id="founder" className="page2-wrap" aria-labelledby="founder-title">
@@ -31,7 +41,9 @@ export function Founder({ section }: FounderProps) {
           className="press-page press-page-gold-bg"
           style={
             {
-              "--section-founder-background": section?.backgroundColor || undefined,
+              "--section-founder-background": founderBackground || undefined,
+              "--founder-tablet-background": directionalGradients?.tablet,
+              "--founder-mobile-background": directionalGradients?.mobile,
               "--section-founder-text": section?.textColor || undefined,
             } as CSSProperties
           }
