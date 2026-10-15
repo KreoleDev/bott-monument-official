@@ -700,6 +700,121 @@ body .showroom-details {
   }
 }
 
+/* Final phone-only showroom composition. Keep this last so legacy mobile
+   overrides above cannot change the approved stacked layout. */
+@media (max-width: 700px) {
+  body #showroom,
+  body .showroom-content,
+  body .showroom-lower {
+    background: #d8e1e4 !important;
+  }
+
+  body .showroom-bg {
+    width: 100% !important;
+    height: auto !important;
+    object-fit: cover !important;
+    object-position: center !important;
+  }
+
+  body .showroom-content {
+    padding: clamp(2rem, 5vw, 3.25rem) clamp(1.45rem, 4.5vw, 2.9rem) 0 !important;
+  }
+
+  body .showroom-kicker {
+    grid-template-columns: minmax(3rem, 1fr) auto minmax(3rem, 1fr) !important;
+    gap: clamp(0.55rem, 1.6vw, 1rem) !important;
+    margin: 0 0 clamp(1.25rem, 3vw, 2rem) !important;
+  }
+
+  body .showroom-kicker p {
+    font-size: clamp(0.66rem, 1.8vw, 0.88rem) !important;
+    letter-spacing: 0.26em !important;
+  }
+
+  body .showroom-title {
+    max-width: 12ch !important;
+    margin: 0 !important;
+    color: #1c1812 !important;
+    font-size: clamp(3.45rem, 10.6vw, 6rem) !important;
+    font-weight: 500 !important;
+    line-height: 0.9 !important;
+    letter-spacing: -0.035em !important;
+    text-align: left !important;
+    text-shadow: 0 7px 13px rgba(24, 20, 16, 0.16) !important;
+  }
+
+  body .showroom-lower {
+    padding: clamp(4rem, 10vw, 6.25rem) clamp(1.45rem, 4.5vw, 2.9rem) clamp(2.5rem, 6vw, 3.75rem) !important;
+  }
+
+  body .showroom-stats {
+    display: none !important;
+  }
+
+  body .showroom-visit-card {
+    display: grid !important;
+    gap: clamp(1.45rem, 4vw, 2.25rem) !important;
+    margin: 0 0 clamp(2rem, 5vw, 3rem) !important;
+    padding: 0 !important;
+  }
+
+  body .showroom-location-group,
+  body .showroom-detail {
+    display: grid !important;
+    grid-template-columns: clamp(2.6rem, 7vw, 4.25rem) minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: clamp(0.9rem, 2.6vw, 1.7rem) !important;
+  }
+
+  body .showroom-location-group > .showroom-icon,
+  body .showroom-detail .showroom-icon {
+    width: clamp(1.7rem, 4.5vw, 2.65rem) !important;
+    height: clamp(1.7rem, 4.5vw, 2.65rem) !important;
+    margin: 0 auto !important;
+    color: var(--palette-showroom-accent-color, #d5a43c) !important;
+  }
+
+  body .showroom-visit-title {
+    margin: 0 0 0.28rem !important;
+    color: #1c1812 !important;
+    font-size: clamp(2.05rem, 6.25vw, 3.8rem) !important;
+    font-weight: 500 !important;
+    line-height: 0.98 !important;
+    white-space: normal !important;
+  }
+
+  body .showroom-location,
+  body .showroom-detail {
+    color: #1c1812 !important;
+    font-family: var(--font-display) !important;
+    font-size: clamp(1.18rem, 3.35vw, 2rem) !important;
+    font-weight: 400 !important;
+    line-height: 1.1 !important;
+  }
+
+  body .showroom-location {
+    margin: 0 !important;
+  }
+
+  body .showroom-details {
+    display: grid !important;
+    gap: clamp(1.45rem, 4vw, 2.25rem) !important;
+    margin: 0 !important;
+  }
+
+  body .showroom-cta-desktop {
+    min-height: clamp(4rem, 8vw, 5.6rem) !important;
+    margin: 0 !important;
+    padding: 0 clamp(1.4rem, 3.2vw, 2rem) !important;
+    font-size: clamp(0.7rem, 1.8vw, 0.95rem) !important;
+    letter-spacing: 0.26em !important;
+  }
+
+  body .showroom-cta-arrow {
+    font-size: clamp(1.8rem, 4.5vw, 2.5rem) !important;
+  }
+}
+
 @media (max-width: 700px) {
   :root {
     --showroom-header-space: 70px;
@@ -1605,8 +1720,6 @@ body .showroom-detail .showroom-icon {
   body .showroom-stats {
     margin: 0 0 1.05rem !important;
     padding: 0.88rem 0 0.76rem !important;
-    border-top: 1px solid rgba(var(--palette-showroom-accent-color-rgb, 215, 164, 60), 0.78) !important;
-    border-bottom: 1px solid rgba(var(--palette-showroom-accent-color-rgb, 215, 164, 60), 0.78) !important;
   }
 
   body .showroom-stat-value {
@@ -1835,8 +1948,6 @@ body .showroom-detail .showroom-icon {
   body .showroom-stats {
     margin: 0 0 clamp(0.75rem, 1vw, 1.05rem) !important;
     padding: clamp(0.7rem, 0.95vw, 0.95rem) 0 clamp(0.65rem, 0.9vw, 0.9rem) !important;
-    border-top: 1px solid rgba(var(--palette-showroom-accent-color-rgb, 215, 164, 60), 0.82) !important;
-    border-bottom: 1px solid rgba(var(--palette-showroom-accent-color-rgb, 215, 164, 60), 0.82) !important;
   }
 
   body .showroom-stat {
@@ -1934,5 +2045,215 @@ body .showroom-detail .showroom-icon {
     height: auto !important;
     min-height: 0 !important;
     max-height: none !important;
+  }
+}
+
+/* Phone showroom: final approved stacked composition. */
+@media (max-width: 700px) {
+  body #showroom,
+  body .showroom-content,
+  body .showroom-lower { background: #d8e1e4 !important; }
+  body .showroom-bg { width: 100% !important; height: auto !important; object-fit: cover !important; object-position: center !important; }
+  body .showroom-content { padding: clamp(2rem, 5vw, 3.25rem) clamp(1.45rem, 4.5vw, 2.9rem) 0 !important; }
+  body .showroom-kicker { grid-template-columns: minmax(3rem, 1fr) auto minmax(3rem, 1fr) !important; gap: clamp(.55rem, 1.6vw, 1rem) !important; margin: 0 0 clamp(1.25rem, 3vw, 2rem) !important; }
+  body .showroom-kicker p { font-size: clamp(.66rem, 1.8vw, .88rem) !important; letter-spacing: .26em !important; }
+  body .showroom-title { max-width: 12ch !important; margin: 0 !important; color: #1c1812 !important; font-size: clamp(3.45rem, 10.6vw, 6rem) !important; font-weight: 500 !important; line-height: .9 !important; letter-spacing: -.035em !important; text-align: left !important; text-shadow: 0 7px 13px rgba(24,20,16,.16) !important; }
+  body .showroom-lower { padding: clamp(4rem, 10vw, 6.25rem) clamp(1.45rem, 4.5vw, 2.9rem) clamp(2.5rem, 6vw, 3.75rem) !important; }
+  body .showroom-stats { display: none !important; }
+  body .showroom-visit-card { display: grid !important; gap: clamp(1.45rem, 4vw, 2.25rem) !important; margin: 0 0 clamp(2rem, 5vw, 3rem) !important; padding: 0 !important; }
+  body .showroom-location-group, body .showroom-detail { display: grid !important; grid-template-columns: clamp(2.6rem, 7vw, 4.25rem) minmax(0, 1fr) !important; align-items: center !important; gap: clamp(.9rem, 2.6vw, 1.7rem) !important; }
+  body .showroom-location-group > .showroom-icon, body .showroom-detail .showroom-icon { width: clamp(1.7rem, 4.5vw, 2.65rem) !important; height: clamp(1.7rem, 4.5vw, 2.65rem) !important; margin: 0 auto !important; color: var(--palette-showroom-accent-color, #d5a43c) !important; }
+  body .showroom-visit-title { margin: 0 0 .28rem !important; color: #1c1812 !important; font-size: clamp(2.05rem, 6.25vw, 3.8rem) !important; font-weight: 500 !important; line-height: .98 !important; white-space: normal !important; }
+  body .showroom-location, body .showroom-detail { color: #1c1812 !important; font-family: var(--font-display) !important; font-size: clamp(1.18rem, 3.35vw, 2rem) !important; font-weight: 400 !important; line-height: 1.1 !important; }
+  body .showroom-location { margin: 0 !important; }
+  body .showroom-details { display: grid !important; gap: clamp(1.45rem, 4vw, 2.25rem) !important; margin: 0 !important; }
+  body .showroom-cta-desktop { min-height: clamp(4rem, 8vw, 5.6rem) !important; margin: 0 !important; padding: 0 clamp(1.4rem, 3.2vw, 2rem) !important; font-size: clamp(.7rem, 1.8vw, .95rem) !important; letter-spacing: .26em !important; }
+  body .showroom-cta-arrow { font-size: clamp(1.8rem, 4.5vw, 2.5rem) !important; }
+}
+
+/* Phone reference typography: editorial serif scale and hierarchy. */
+@media (max-width: 700px) {
+  body .showroom-kicker p {
+    font-family: var(--font-utility) !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.28em !important;
+  }
+
+  body .showroom-title {
+    font-family: var(--font-display) !important;
+    font-size: clamp(3.7rem, 12.2vw, 6.3rem) !important;
+    font-weight: 500 !important;
+    line-height: 0.84 !important;
+    letter-spacing: -0.045em !important;
+    text-shadow: 0 5px 12px rgba(28, 24, 18, 0.14) !important;
+  }
+
+  body .showroom-visit-title {
+    font-family: var(--font-display) !important;
+    font-size: clamp(2.15rem, 6.8vw, 3.9rem) !important;
+    font-weight: 500 !important;
+    letter-spacing: -0.025em !important;
+  }
+
+  body .showroom-location,
+  body .showroom-detail {
+    font-family: var(--font-display) !important;
+    font-size: clamp(1.22rem, 3.55vw, 2.05rem) !important;
+    line-height: 1.12 !important;
+  }
+}
+
+/* Phone showroom reference: white surface, centered type, and information cards. */
+@media (max-width: 700px) {
+  body #showroom,
+  body .showroom-content,
+  body .showroom-lower {
+    background: #f5f5f3 !important;
+  }
+
+  body .showroom-content {
+    padding: clamp(2.3rem, 7vw, 3.5rem) clamp(1.35rem, 6.8vw, 2.8rem) 0 !important;
+    background-image: radial-gradient(rgba(170, 170, 165, 0.1) 0.7px, transparent 0.7px) !important;
+    background-size: 7px 7px !important;
+  }
+
+  body .showroom-kicker {
+    margin-bottom: clamp(1.1rem, 3.5vw, 1.7rem) !important;
+  }
+
+  body .showroom-title {
+    max-width: none !important;
+    font-size: clamp(3.4rem, 12vw, 5.7rem) !important;
+    line-height: 0.88 !important;
+    text-align: center !important;
+    text-shadow: none !important;
+  }
+
+  body .showroom-lower {
+    padding: clamp(1.8rem, 5vw, 2.8rem) clamp(1.35rem, 6.8vw, 2.8rem) clamp(2rem, 6vw, 3.2rem) !important;
+    background-image: radial-gradient(rgba(170, 170, 165, 0.1) 0.7px, transparent 0.7px) !important;
+    background-size: 7px 7px !important;
+  }
+
+  body .showroom-visit-card {
+    gap: 0 !important;
+    margin-bottom: clamp(1.4rem, 4vw, 2rem) !important;
+  }
+
+  body .showroom-location-group,
+  body .showroom-detail {
+    grid-template-columns: clamp(3.9rem, 16vw, 5.2rem) minmax(0, 1fr) !important;
+    gap: clamp(0.8rem, 3vw, 1.3rem) !important;
+    padding: clamp(1rem, 3vw, 1.4rem) !important;
+    border: 1px solid rgba(191, 156, 89, 0.3) !important;
+    border-radius: 1.15rem !important;
+    background: rgba(255, 255, 252, 0.82) !important;
+    box-shadow: 0 3px 8px rgba(80, 70, 50, 0.08) !important;
+  }
+
+  body .showroom-location-group {
+    margin-bottom: clamp(0.7rem, 2.4vw, 1rem) !important;
+  }
+
+  body .showroom-location-group > .showroom-icon,
+  body .showroom-detail .showroom-icon {
+    width: clamp(2.8rem, 11vw, 4.1rem) !important;
+    height: clamp(2.8rem, 11vw, 4.1rem) !important;
+    padding: 0.65rem !important;
+    border-radius: 50% !important;
+    background: #f8e8bf !important;
+    color: #bd8616 !important;
+  }
+
+  body .showroom-visit-title {
+    font-size: clamp(1.75rem, 6.2vw, 2.65rem) !important;
+    line-height: 1 !important;
+  }
+
+  body .showroom-location,
+  body .showroom-detail {
+    font-size: clamp(1rem, 3.6vw, 1.55rem) !important;
+    line-height: 1.1 !important;
+  }
+
+  body .showroom-details {
+    gap: clamp(0.7rem, 2.4vw, 1rem) !important;
+  }
+
+  body .showroom-detail-title,
+  body .showroom-detail-subtitle {
+    display: block !important;
+  }
+
+  body .showroom-detail-title {
+    font-size: clamp(1.55rem, 5.4vw, 2.35rem) !important;
+    line-height: 1.02 !important;
+  }
+
+  body .showroom-detail-subtitle {
+    margin-top: 0.25rem !important;
+    font-size: clamp(0.98rem, 3.25vw, 1.45rem) !important;
+    line-height: 1.1 !important;
+  }
+}
+
+/* Phone sizing correction: keep the entire reference composition in view. */
+@media (max-width: 700px) {
+  body .showroom-content {
+    padding-left: clamp(2rem, 10vw, 4.5rem) !important;
+    padding-right: clamp(2rem, 10vw, 4.5rem) !important;
+    padding-top: clamp(1.8rem, 5vw, 2.6rem) !important;
+  }
+
+  body .showroom-title {
+    font-size: clamp(2.8rem, 8vw, 4.65rem) !important;
+    line-height: 0.96 !important;
+    letter-spacing: -0.03em !important;
+  }
+
+  body .showroom-lower {
+    padding: clamp(1.5rem, 4vw, 2.2rem) clamp(2rem, 10vw, 4.5rem) clamp(1.8rem, 5vw, 2.8rem) !important;
+  }
+
+  body .showroom-location-group,
+  body .showroom-detail {
+    grid-template-columns: clamp(3rem, 12vw, 4rem) minmax(0, 1fr) !important;
+    padding: clamp(0.8rem, 2.5vw, 1.1rem) !important;
+  }
+
+  body .showroom-location-group > .showroom-icon,
+  body .showroom-detail .showroom-icon {
+    width: clamp(2.35rem, 9vw, 3.25rem) !important;
+    height: clamp(2.35rem, 9vw, 3.25rem) !important;
+    padding: 0.5rem !important;
+  }
+
+  body .showroom-visit-title {
+    font-size: clamp(1.45rem, 4.8vw, 2.25rem) !important;
+  }
+
+  body .showroom-location,
+  body .showroom-detail {
+    font-size: clamp(0.9rem, 2.8vw, 1.25rem) !important;
+  }
+
+  body .showroom-detail-title {
+    font-size: clamp(1.22rem, 4.1vw, 1.9rem) !important;
+  }
+
+  body .showroom-detail-subtitle {
+    font-size: clamp(0.78rem, 2.5vw, 1.1rem) !important;
+  }
+
+  body .showroom-cta-desktop {
+    min-height: clamp(3.35rem, 7vw, 4.4rem) !important;
+    font-size: clamp(0.58rem, 1.55vw, 0.78rem) !important;
+  }
+
+  body .showroom-title {
+    display: block !important;
+    overflow: visible !important;
+    line-height: 1.08 !important;
+    padding-bottom: 0.12em !important;
   }
 }
