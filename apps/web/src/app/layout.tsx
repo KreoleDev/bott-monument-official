@@ -1,11 +1,18 @@
 import { draftMode, headers } from "next/headers";
 import { paletteStyle, headerScrollRules, paletteSiteMode } from "@/lib/color-palette";
 import { PaletteSync } from "@/components/palette-sync";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { getHomePage } from "@/lib/pages";
 import { getSiteSettings } from "@/lib/site-settings";
 import { getStrapiMediaUrl } from "@/lib/strapi";
 import "./globals.css";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export async function generateMetadata(): Promise<Metadata> {
   const preview = (await draftMode()).isEnabled;
   const locale = (await headers()).get("x-site-locale") || "en";
