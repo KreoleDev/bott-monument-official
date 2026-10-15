@@ -55,7 +55,12 @@ export default {
    * This gives you an opportunity to set up your data model,
    * run jobs, or perform some special logic.
    */
-  bootstrap({ strapi }: { strapi: Core.Strapi }) {
+  async bootstrap({ strapi }: { strapi: Core.Strapi }) {
+    await strapi.db.query("api::inquiry.inquiry").updateMany({
+      where: { responseStatus: { $null: true } },
+      data: { responseStatus: "new" },
+    });
+
     strapi.db.lifecycles.subscribe({
       models: revalidatedModels,
       afterCreate() {

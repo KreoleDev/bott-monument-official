@@ -3,7 +3,6 @@ export default {
     result: {
       name: string;
       email: string;
-      inquiryType?: string | null;
       message?: string;
       documentId: string;
     };

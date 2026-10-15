@@ -93,6 +93,29 @@ async function createInquiry(url: string, token: string, data: Record<string, st
   return { response, result: await response.json() };
 }
 
+async function verifyTurnstile(responseToken: string, expectedHostname: string) {
+  const secret = process.env.TURNSTILE_SECRET_KEY;
+  if (!secret) return { configured: false, valid: false };
+
+  const body = new URLSearchParams({ secret, response: responseToken });
+  const response = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body,
+    cache: "no-store",
+    signal: AbortSignal.timeout(10000),
+  });
+  if (!response.ok) throw new Error("Turnstile verification unavailable");
+  const result = await response.json();
+  return {
+    configured: true,
+    valid:
+      result.success === true &&
+      result.action === "inquiry" &&
+      result.hostname === expectedHostname,
+  };
+}
+
 export async function POST(request: Request) {
   const origin = request.headers.get("origin");
   if (origin && !getAllowedOrigins(request).has(origin))
@@ -117,6 +140,15 @@ export async function POST(request: Request) {
     const getValue = (key: string) =>
       isFormBody ? body.get(key) : (body as Record<string, unknown>)[key];
     if (getValue("website")) return Response.json({ ok: true });
+    const turnstileToken = getValue("cf-turnstile-response");
+    if (typeof turnstileToken !== "string" || !turnstileToken)
+      return Response.json({ error: "Please complete the spam check and try again." }, { status: 400 });
+    const originHostname = origin ? new URL(origin).hostname : new URL(request.url).hostname;
+    const turnstile = await verifyTurnstile(turnstileToken, originHostname);
+    if (!turnstile.configured)
+      return Response.json({ error: "Spam protection is not configured." }, { status: 503 });
+    if (!turnstile.valid)
+      return Response.json({ error: "Spam check failed. Please try again." }, { status: 400 });
     const name = getValue("name");
     const email = getValue("email");
     const message = getValue("message") || "";
@@ -142,6 +174,7 @@ export async function POST(request: Request) {
       email: email.trim(),
       message: message.trim(),
       submissionLocale: locale,
+      responseStatus: "new",
     };
     const attachments = isFormBody
       ? body
