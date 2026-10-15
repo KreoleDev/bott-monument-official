@@ -19,10 +19,6 @@
       "type": "email",
       "required": true
     },
-    "inquiryType": {
-      "type": "string",
-      "maxLength": 150
-    },
     "message": {
       "type": "text",
       "maxLength": 5000
@@ -36,7 +32,7 @@
       "type": "string",
       "default": "en"
     },
-    "status": {
+    "responseStatus": {
       "type": "enumeration",
       "enum": ["new", "reviewed", "replied"],
       "default": "new"

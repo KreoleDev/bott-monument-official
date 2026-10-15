@@ -1,9 +1,32 @@
 "use client";
 import { useState, useRef, type ChangeEvent, type FormEvent } from "react";
+import Script from "next/script";
 import type { ContactDetails } from "@/lib/strapi";
 
 const MAX_IMAGE_MB = 20;
 const MAX_IMAGES = 3;
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+
+type TurnstileApi = {
+  render: (
+    container: HTMLElement,
+    options: {
+      sitekey: string;
+      theme: "auto";
+      action: string;
+      callback: () => void;
+      "expired-callback": () => void;
+      "error-callback": () => void;
+    },
+  ) => string;
+  reset: (widgetId?: string) => void;
+};
+
+declare global {
+  interface Window {
+    turnstile?: TurnstileApi;
+  }
+}
 
 export function ContactForm({
   details,
@@ -15,9 +38,24 @@ export function ContactForm({
   locale: string;
 }) {
   const [pending, setPending] = useState(false);
+  const [captchaVerified, setCaptchaVerified] = useState(false);
   const [feedback, setFeedback] = useState("");
   const [images, setImages] = useState<File[]>([]);
   const inFlight = useRef(false);
+  const turnstileContainer = useRef<HTMLDivElement>(null);
+  const turnstileWidgetId = useRef<string | undefined>(undefined);
+  function renderTurnstile() {
+    if (!TURNSTILE_SITE_KEY || !turnstileContainer.current || !window.turnstile) return;
+    turnstileContainer.current.replaceChildren();
+    turnstileWidgetId.current = window.turnstile.render(turnstileContainer.current, {
+      sitekey: TURNSTILE_SITE_KEY,
+      theme: "dark",
+      action: "inquiry",
+      callback: () => setCaptchaVerified(true),
+      "expired-callback": () => setCaptchaVerified(false),
+      "error-callback": () => setCaptchaVerified(false),
+    });
+  }
   function selectImage(event: ChangeEvent<HTMLInputElement>) {
     const files = Array.from(event.currentTarget.files || []);
     setImages((current) => [...current, ...files].slice(0, MAX_IMAGES));
@@ -55,6 +93,8 @@ export function ContactForm({
         error instanceof Error ? error.message : "Could not save your message. Please try again.",
       );
     } finally {
+      if (turnstileWidgetId.current) window.turnstile?.reset(turnstileWidgetId.current);
+      setCaptchaVerified(false);
       inFlight.current = false;
       setPending(false);
     }
@@ -135,7 +175,20 @@ export function ContactForm({
             <input name="website" tabIndex={-1} autoComplete="off" />
           </label>
         </div>
-        <button type="submit" className="cm-submit" disabled={pending}>
+        {TURNSTILE_SITE_KEY && (
+          <>
+            <Script
+              src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+              strategy="afterInteractive"
+              onReady={renderTurnstile}
+            />
+            <div className="cm-turnstile-shell" aria-label="Spam protection">
+              <span className="cm-turnstile-label">Security check</span>
+              <div ref={turnstileContainer} className="cm-turnstile" />
+            </div>
+          </>
+        )}
+        <button type="submit" className="cm-submit" disabled={pending || !captchaVerified}>
           {pending ? "Sending…" : buttonLabel}
         </button>
       </fieldset>
