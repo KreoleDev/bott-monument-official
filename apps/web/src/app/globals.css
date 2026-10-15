@@ -652,85 +652,175 @@ body[data-site-mode="secondary"] .site-nav.scrolled {
   }
 }
 
-@media (min-width: 700px) and (max-width: 1180px) and (orientation: portrait) {
+@media (min-width: 700px) and (orientation: portrait) {
   .press-page-inner {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: minmax(0, 58%) minmax(0, 42%);
     height: auto;
-    min-height: calc(100svh - var(--site-header-height-compact));
-    gap: 0;
-    align-items: stretch;
-    max-width: none;
+    min-height: max(680px, calc(100svh - var(--site-header-height-compact)));
   }
 
   .press-founder {
-    min-height: clamp(420px, 58vw, 560px);
+    position: absolute;
+    inset: 0 0 0 auto;
+    width: 62%;
+    min-height: 0;
+    height: auto;
+    aspect-ratio: auto;
     margin: 0;
   }
 
-  .press-founder-name {
-    text-align: right;
-  }
-
   .press-page-head {
-    max-width: 700px;
-    margin: 0 auto;
-    padding: 5rem 2rem 4rem;
-    text-align: center;
-  }
-
-  .press-page-divider {
-    margin-right: auto;
-    margin-left: auto;
-  }
-
-  .press-page-story {
-    max-width: 660px;
-    margin-right: auto;
-    margin-left: auto;
-  }
-
-  .press-page-signature {
-    margin-right: auto;
-    margin-left: auto;
-  }
-}
-
-@media (max-width: 699px) {
-  .press-page-inner {
-    display: flex;
-    flex-direction: column;
-    height: auto;
-    min-height: calc(100svh - var(--site-header-height-mobile));
-    gap: 0;
-    max-width: 100%;
-  }
-
-  .press-founder {
     position: relative;
-    min-height: clamp(360px, 108vw, 520px);
-    top: auto;
-    left: auto;
+    grid-column: 1 / -1;
+    grid-row: 1;
+    width: 58%;
+    max-width: 760px;
     margin: 0;
-  }
-
-  .press-page-head {
-    max-width: 100%;
-    margin: 0;
-    padding: 4rem 1.5rem 3rem;
+    padding: 3rem clamp(1.5rem, 4vw, 3rem);
     text-align: left;
   }
 
+  .press-page-inner::before {
+    background: linear-gradient(
+      90deg,
+      #f8f1e3 0%,
+      #f6eddb 38%,
+      rgba(246, 237, 219, 0.94) 47%,
+      rgba(246, 237, 219, 0.58) 58%,
+      rgba(246, 237, 219, 0.08) 76%,
+      transparent 82%
+    );
+  }
+
+  .press-founder-frame::before {
+    display: none;
+  }
+
+  .press-page-kicker {
+    font-size: clamp(1rem, 1.8vw, 1.35rem);
+    margin-bottom: 1rem;
+  }
+
   .press-page-title {
-    font-size: clamp(2.55rem, 12vw, 4rem);
+    font-size: clamp(1.8rem, 3.7vw, 2.8rem);
+    line-height: 1.02;
+    margin-bottom: 1.25rem;
   }
 
   .press-page-title-line {
     white-space: normal;
   }
 
+  .press-page-divider {
+    margin: 0 0 1.25rem;
+  }
+
   .press-page-story {
-    max-width: 100%;
+    font-size: clamp(0.95rem, 1.6vw, 1.2rem);
+    line-height: 1.42;
+    margin: 0 0 1.25rem;
+  }
+
+  .press-page-quote {
+    font-size: clamp(1rem, 1.65vw, 1.25rem);
+    line-height: 1.35;
+  }
+
+  .press-page-signature {
+    font-size: clamp(0.9rem, 1.4vw, 1.1rem);
+  }
+}
+
+@media (max-width: 699px) {
+  .press-page-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: clamp(380px, 108vw, 470px) auto;
+    height: auto;
+    min-height: 0;
+  }
+
+  .press-founder {
+    position: relative;
+    inset: auto;
+    grid-column: 1;
+    grid-row: 1;
+    width: 100%;
+    min-height: 0;
+    height: 100%;
+    aspect-ratio: auto;
+    margin: 0;
+  }
+
+  .press-page-head {
+    position: relative;
+    grid-column: 1;
+    grid-row: 2;
+    width: 100%;
+    max-width: none;
+    margin: -1rem 0 0;
+    padding: 0.75rem 1.25rem 3rem;
+    text-align: center;
+  }
+
+  .press-page-inner::before {
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      transparent 57%,
+      rgba(248, 241, 227, 0.28) 70%,
+      rgba(248, 241, 227, 0.9) 87%,
+      #f8f1e3 100%
+    );
+    background-size: 100% clamp(380px, 108vw, 470px);
+    background-repeat: no-repeat;
+  }
+
+  .press-founder-frame::before {
+    display: none;
+  }
+
+  .press-page-kicker {
+    font-size: clamp(0.82rem, 3.8vw, 1rem);
+    line-height: 1.2;
+    margin-bottom: 0.9rem;
+  }
+
+  .press-page-title {
+    font-size: clamp(1.65rem, 7.2vw, 2.15rem);
+    line-height: 1.02;
+    margin-bottom: 1rem;
+  }
+
+  .press-page-title-line {
+    white-space: normal;
+  }
+
+  .press-page-divider {
+    width: 56px;
+    margin: 0 auto 1rem;
+  }
+
+  .press-page-story {
+    font-size: clamp(0.84rem, 3.6vw, 0.98rem);
+    line-height: 1.38;
+    margin: 0 0 1rem;
+  }
+
+  .press-page-quote {
+    font-size: clamp(0.88rem, 3.8vw, 1.05rem);
+    line-height: 1.3;
+  }
+
+  .press-page-signature {
+    margin-top: 0.65rem;
+    font-size: 0.9rem;
+    padding-bottom: 0.6rem;
+  }
+
+  .press-founder-img img {
+    object-position: center 24%;
   }
 
   .press-founder-name {
@@ -750,6 +840,64 @@ body[data-site-mode="secondary"] .site-nav.scrolled {
 .nav-menu-toggle {
   display: none;
 }
+
+/* Portrait tablets can report a wider CSS viewport than the tablet breakpoint. */
+@media (min-width: 700px) and (orientation: portrait) {
+  .site-nav,
+  .site-nav.scrolled {
+    padding: calc(1rem + env(safe-area-inset-top, 0px)) clamp(1.25rem, 4vw, 2.5rem) 0.9rem;
+    background: var(--palette-header-background, var(--primary-header-gradient));
+  }
+
+  .nav-logo img {
+    height: 48px !important;
+  }
+
+  .nav-menu-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--bone);
+    border: 1px solid var(--gold-dim);
+    border-radius: 4px;
+    padding: 0.6rem 0.85rem;
+    font-family: var(--font-utility);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .site-nav .nav-links {
+    display: flex;
+    position: static;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    flex-direction: row;
+    gap: clamp(0.55rem, 1.4vw, 1.2rem);
+  }
+
+  .site-nav .nav-links.is-open {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .site-nav .nav-links a {
+    display: block;
+    padding: 0.4rem 0;
+    font-size: clamp(0.55rem, 0.85vw, 0.72rem);
+    letter-spacing: 0.1em;
+  }
+
+  .nav-menu-toggle {
+    padding: 0.5rem 0.7rem;
+    font-size: 0.65rem;
+  }
+
+}
+
 @media (max-width: 699px) {
   .site-nav,
   .site-nav.scrolled {
