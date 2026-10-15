@@ -398,7 +398,7 @@ body[data-site-mode="secondary"] .site-nav.scrolled {
 
 .press-page-title {
   font-family: var(--font-display);
-  font-weight: 600;
+  font-weight: 300;
   font-size: clamp(2.8rem, 3.35vw, 4rem);
   line-height: 0.98;
   color: var(
@@ -416,7 +416,7 @@ body[data-site-mode="secondary"] .site-nav.scrolled {
 .press-page-title em {
   font-style: italic;
   color: var(--palette-founder-accent-color, #b8872c);
-  font-weight: 600;
+  font-weight: 300;
 }
 
 .press-page-divider {
