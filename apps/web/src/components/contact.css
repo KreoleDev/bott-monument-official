@@ -630,6 +630,31 @@ textarea.cm-input {
 
 @media (max-width: 699px) {
   #contact {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: clip;
+  }
+
+  .commission-wrap,
+  .commission-form {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .cm-pill,
+  .cm-input,
+  .cm-upload,
+  .cm-submit {
+    box-sizing: border-box;
+    max-width: 100%;
+  }
+
+  .cm-input,
+  .cm-upload {
+    width: 100%;
+  }
+
+  #contact {
     padding: 2rem 0 calc(2.35rem + env(safe-area-inset-bottom, 0px));
   }
 
