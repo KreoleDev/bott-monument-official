@@ -99,14 +99,19 @@ export function Showroom({
               </div>
             </div>
             <div className="showroom-details">
-              <p className="showroom-detail">
+              <div className="showroom-detail">
                 <DetailIcon kind="calendar" />
-                <span>{details.appointment}</span>
-              </p>
-              <p className="showroom-detail">
+                <div>
+                  <span className="showroom-detail-title">{details.appointment}</span>
+                  <span className="showroom-detail-subtitle">Schedule a time that works for you</span>
+                </div>
+              </div>
+              <div className="showroom-detail">
                 <DetailIcon kind="clock" />
-                <span>{details.hours}</span>
-              </p>
+                <div>
+                  <span className="showroom-detail-title">{details.hours}</span>
+                </div>
+              </div>
             </div>
           </div>
           <a className="showroom-cta showroom-cta-desktop" href={href}>
