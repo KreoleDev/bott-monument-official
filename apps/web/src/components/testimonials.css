@@ -123,7 +123,8 @@
   flex-shrink: 0;
   overflow: hidden;
 
-  touch-action: pan-y;
+  /* Vertical touch movement is handled by the column's touch listeners, not the page. */
+  touch-action: pan-x;
   overscroll-behavior: auto;
 
   user-select: none;
