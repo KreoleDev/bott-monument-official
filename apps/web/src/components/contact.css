@@ -641,6 +641,16 @@ textarea.cm-input {
     max-width: 100%;
   }
 
+  .commission-wrap {
+    width: 100%;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  .commission-form {
+    width: 100%;
+  }
+
   .cm-pill,
   .cm-input,
   .cm-upload,
@@ -652,6 +662,16 @@ textarea.cm-input {
   .cm-input,
   .cm-upload {
     width: 100%;
+  }
+
+  .cm-turnstile-shell,
+  .cm-turnstile {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .cm-turnstile iframe {
+    max-width: 100%;
   }
 
   #contact {

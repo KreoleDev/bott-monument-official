@@ -100,15 +100,15 @@ export function ContactForm({
     }
   }
   return (
-    <form className="commission-form" onSubmit={submit}>
-      <fieldset disabled={pending}>
+    <form className="commission-form w-full min-w-0 max-w-full" onSubmit={submit}>
+      <fieldset className="m-0 w-full min-w-0 max-w-full border-0 p-0" disabled={pending}>
         <legend className="cm-label">{details.inquiryLabel}</legend>
         <label className="sr-only" htmlFor="cmName">
           Your name
         </label>
         <input
           name="name"
-          className="cm-input"
+          className="cm-input block w-full min-w-0 max-w-full box-border"
           id="cmName"
           placeholder={details.namePlaceholder}
           required
@@ -121,7 +121,7 @@ export function ContactForm({
         <input
           name="email"
           type="email"
-          className="cm-input"
+          className="cm-input block w-full min-w-0 max-w-full box-border"
           id="cmEmail"
           placeholder={details.emailPlaceholder}
           required
@@ -133,12 +133,12 @@ export function ContactForm({
         </label>
         <textarea
           name="message"
-          className="cm-input"
+          className="cm-input block w-full min-w-0 max-w-full box-border"
           id="cmMessage"
           placeholder={details.messagePlaceholder}
           maxLength={5000}
         />
-        <label className="cm-upload" htmlFor="cmImage">
+        <label className="cm-upload block w-full min-w-0 max-w-full box-border" htmlFor="cmImage">
           <span className="cm-upload-main">
             <span className="cm-upload-title">Add an image</span>
             <span className="cm-upload-sub">
@@ -182,7 +182,7 @@ export function ContactForm({
               strategy="afterInteractive"
               onReady={renderTurnstile}
             />
-            <div className="cm-turnstile-shell" aria-label="Spam protection">
+            <div className="cm-turnstile-shell w-full min-w-0 max-w-full box-border overflow-hidden" aria-label="Spam protection">
               <span className="cm-turnstile-label">Security check</span>
               <div ref={turnstileContainer} className="cm-turnstile" />
             </div>

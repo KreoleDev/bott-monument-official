@@ -64,12 +64,10 @@ export function Founder({ section }: FounderProps) {
               </h2>
               <div className="press-page-divider" />
               <p className="press-page-story">
-                {section?.description ??
-                  "Drew Bott's work has earned recognition across North America for exceptional design, craftsmanship, and artistry in stone. His monuments are not only built with precision — they are created with meaning, memory, and dignity."}
+                {section?.description }
               </p>
               <p className="press-page-quote">
-                {section?.quote ??
-                  '"Every monument should feel as personal as the life it honors."'}
+                {section?.quote}
               </p>
               <p className="press-page-signature">{section?.signature ?? "Your signature"}</p>
             </div>
@@ -81,7 +79,7 @@ export function Founder({ section }: FounderProps) {
                   <Image
                     src={imageUrl}
                     alt={
-                      section?.image?.alternativeText ?? "Drew Bott, Founder and Master Craftsman"
+                      section?.image?.alternativeText ?? ""
                     }
                     width={1200}
                     height={1500}
@@ -91,8 +89,8 @@ export function Founder({ section }: FounderProps) {
                 </div>
               </div>
               <p className="press-founder-name">
-                <strong>{section?.personName ?? "DREW BOTT"}</strong>
-                {section?.personRole ?? "Founder & Master Craftsman"}
+                <strong>{section?.personName ?? ""}</strong>
+                {section?.personRole ?? ""}
               </p>
             </div>
           </div>
