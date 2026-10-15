@@ -12,7 +12,7 @@ type TurnstileApi = {
     container: HTMLElement,
     options: {
       sitekey: string;
-      theme: "auto";
+      theme: "auto" | "light" | "dark";
       action: string;
       callback: () => void;
       "expired-callback": () => void;
