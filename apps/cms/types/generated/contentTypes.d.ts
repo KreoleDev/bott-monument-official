@@ -669,10 +669,6 @@ export interface ApiInquiryInquiry extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     email: Schema.Attribute.Email & Schema.Attribute.Required;
-    inquiryType: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 150;
-      }>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -689,7 +685,9 @@ export interface ApiInquiryInquiry extends Struct.CollectionTypeSchema {
         maxLength: 150;
       }>;
     publishedAt: Schema.Attribute.DateTime;
-    status: Schema.Attribute.Enumeration<['new', 'reviewed', 'replied']> &
+    responseStatus: Schema.Attribute.Enumeration<
+      ['new', 'reviewed', 'replied']
+    > &
       Schema.Attribute.DefaultTo<'new'>;
     submissionLocale: Schema.Attribute.String &
       Schema.Attribute.DefaultTo<'en'>;

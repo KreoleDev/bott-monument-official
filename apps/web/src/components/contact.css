@@ -208,6 +208,31 @@ textarea.cm-input {
   list-style: none;
 }
 
+.cm-turnstile-shell {
+  display: grid;
+  justify-items: center;
+  gap: 0.35rem;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 0 1.2rem;
+  padding: 0.75rem 1rem 0.6rem;
+  border: 1px solid rgba(var(--palette-contact-border-color-rgb, 76, 93, 107), 0.72);
+  border-radius: 10px;
+  background: rgba(var(--palette-contact-surface-color-rgb, 58, 74, 87), 0.38);
+}
+
+.cm-turnstile-label {
+  color: rgba(var(--palette-contact-text-color-rgb, 234, 230, 222), 0.62);
+  font-family: var(--font-utility);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.cm-turnstile {
+  min-height: 65px;
+}
+
 .cm-upload-item {
   display: flex;
   align-items: center;
