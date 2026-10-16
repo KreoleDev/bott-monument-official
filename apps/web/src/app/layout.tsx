@@ -2,31 +2,10 @@ import { draftMode, headers } from "next/headers";
 import { paletteStyle, headerScrollRules, paletteSiteMode } from "@/lib/color-palette";
 import { PaletteSync } from "@/components/palette-sync";
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Montserrat, Alex_Brush } from "next/font/google";
 import { getHomePage } from "@/lib/pages";
 import { getSiteSettings } from "@/lib/site-settings";
 import { getStrapiMediaUrl } from "@/lib/strapi";
 import "./globals.css";
-
-const display = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["300", "400", "600"],
-  style: ["normal", "italic"],
-  display: "swap",
-  variable: "--font-cormorant",
-});
-const utility = Montserrat({
-  subsets: ["latin"],
-  weight: ["200", "300", "400", "500", "600", "700"],
-  display: "swap",
-  variable: "--font-montserrat",
-});
-const script = Alex_Brush({
-  subsets: ["latin"],
-  weight: "400",
-  display: "swap",
-  variable: "--font-alex-brush",
-});
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -72,7 +51,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang={locale}
-      className={`h-full antialiased ${display.variable} ${utility.variable} ${script.variable}`}
+      className="h-full antialiased"
     >
       <body
         className="min-h-full flex flex-col"
