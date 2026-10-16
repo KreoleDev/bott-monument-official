@@ -30,7 +30,15 @@ export function FeaturedInGallery({
       key={cover.documentId}
       type="button"
       className={`ptw-cover${selected.documentId === cover.documentId ? " ptw-active" : ""}`}
-      style={{ "--rot": `${[-4, -3, -2, -3, -4, -5][index % 6]}deg` } as CSSProperties}
+      style={
+        {
+          "--rot": `${[-4, -3, -2, -3, -4, -5][index % 6]}deg`,
+          "--cover-ratio":
+            cover.image?.width && cover.image?.height
+              ? `${cover.image.width} / ${cover.image.height}`
+              : undefined,
+        } as CSSProperties
+      }
       aria-label={`View ${cover.title}`}
       aria-pressed={selected.documentId === cover.documentId}
       onClick={() => setSelectedId(cover.documentId)}
@@ -87,13 +95,21 @@ export function FeaturedInGallery({
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Open full image: ${selected.title}`}
+            style={
+              {
+                "--cover-ratio":
+                  selected.image?.width && selected.image?.height
+                    ? `${selected.image.width} / ${selected.image.height}`
+                    : undefined,
+              } as CSSProperties
+            }
           >
             <Image
               key={selected.documentId}
               src={selected.src}
               alt={selected.image?.alternativeText || selected.title}
-              width={600}
-              height={800}
+              width={selected.image?.width || 600}
+              height={selected.image?.height || 800}
             />
           </a>
           <div className="ptw-caption" aria-live="polite" aria-atomic="true">

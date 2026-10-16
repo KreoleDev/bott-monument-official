@@ -96,7 +96,7 @@
   border-radius: 8px;
   overflow: hidden;
   width: 100%;
-  aspect-ratio: 11 / 14;
+  aspect-ratio: var(--cover-ratio, 11 / 14);
   box-shadow: 0 16px 32px -10px rgba(0, 0, 0, 0.3);
   transform: rotate(var(--rot, 0deg));
   transition:
@@ -108,7 +108,8 @@
 .ptw-cover img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  /* Preserve the complete cover artwork inside the frame. */
+  object-fit: contain;
   display: block;
   object-position: top;
 }
@@ -126,7 +127,7 @@
 
 .ptw-center-frame {
   width: min(100%, clamp(250px, 21vw, 340px));
-  aspect-ratio: 11 / 14;
+  aspect-ratio: var(--cover-ratio, 11 / 14);
   border-radius: 10px;
   overflow: hidden;
   border: 7px solid var(--palette-featured-in-surface-color, #fff);
@@ -153,7 +154,8 @@
 .ptw-center-frame img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  /* Preserve the complete cover artwork inside the frame. */
+  object-fit: contain;
   display: block;
   object-position: top;
 }

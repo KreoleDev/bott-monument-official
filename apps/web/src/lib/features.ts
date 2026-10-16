@@ -15,7 +15,7 @@ export type Feature = {
 export async function getFeatures(preview = false, locale = "en"): Promise<Feature[]> {
   return getCollection<Feature>(
     "features_connection",
-    "documentId title publication detail featured sortOrder updatedAt image { url alternativeText }",
+    "documentId title publication detail featured sortOrder updatedAt image { url alternativeText width height }",
     ["sortOrder:asc", "documentId:asc"],
     preview,
     locale,
