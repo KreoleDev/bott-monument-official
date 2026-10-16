@@ -64,6 +64,8 @@ export type SectionContent = {
 export type StrapiMedia = {
   url: string;
   alternativeText: string | null;
+  width?: number | null;
+  height?: number | null;
   hash?: string | null;
   updatedAt?: string | null;
 };
