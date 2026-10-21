@@ -4,8 +4,8 @@ import Image from "next/image";
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import type { SectionContent } from "@/lib/strapi";
 import type { GalleryItem } from "@/lib/gallery";
-import { localizedHref } from "@/lib/locale";
 import { startGalleryMotion } from "./gallery-motion";
+import { GalleryAccessForm } from "./gallery-access-form";
 import "./gallery.css";
 
 function EmphasizedLastWord({ title }: { title: string | null }) {
@@ -36,6 +36,7 @@ export function GalleryCarousel({
   const dialog = useRef<HTMLDialogElement>(null);
   const savedOverflow = useRef<string | null>(null);
   const [useReducedMobileSet, setUseReducedMobileSet] = useState(false);
+  const [accessOpen, setAccessOpen] = useState(false);
   const access = section.galleryAccess;
   const visibleItems = useMemo(
     () =>
@@ -70,6 +71,7 @@ export function GalleryCarousel({
     savedOverflow.current = document.body.style.overflow;
     dialog.current.showModal();
     document.body.style.overflow = "hidden";
+    setAccessOpen(true);
   }
   function restoreScroll() {
     if (savedOverflow.current !== null) {
@@ -80,13 +82,8 @@ export function GalleryCarousel({
   function closeAccess() {
     dialog.current?.close();
     restoreScroll();
+    setAccessOpen(false);
   }
-  const requestHref = localizedHref(
-    locale,
-    access?.requestHref && /^(#[\w-]+|\/(?!\/))/.test(access.requestHref)
-      ? access.requestHref
-      : "#contact",
-  );
 
   return (
     <section
@@ -190,14 +187,14 @@ export function GalleryCarousel({
             <p className="mag-access-copy" id="magAccessCopy">
               {access.description}
             </p>
-            <div className="mag-access-actions">
-              <a className="mag-access-primary" href={requestHref} onClick={closeAccess}>
-                {access.requestLabel}
-              </a>
-              <button className="mag-access-secondary" type="button" onClick={closeAccess}>
-                {access.dismissLabel}
-              </button>
-            </div>
+            {accessOpen && (
+              <GalleryAccessForm
+                locale={locale}
+                submitLabel={access.requestLabel || undefined}
+                dismissLabel={access.dismissLabel || undefined}
+                onClose={closeAccess}
+              />
+            )}
           </div>
         </dialog>
       )}

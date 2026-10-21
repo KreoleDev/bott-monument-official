@@ -141,14 +141,19 @@ export async function POST(request: Request) {
       isFormBody ? body.get(key) : (body as Record<string, unknown>)[key];
     if (getValue("website")) return Response.json({ ok: true });
     const turnstileToken = getValue("cf-turnstile-response");
-    if (typeof turnstileToken !== "string" || !turnstileToken)
-      return Response.json({ error: "Please complete the spam check and try again." }, { status: 400 });
-    const originHostname = origin ? new URL(origin).hostname : new URL(request.url).hostname;
-    const turnstile = await verifyTurnstile(turnstileToken, originHostname);
-    if (!turnstile.configured)
-      return Response.json({ error: "Spam protection is not configured." }, { status: 503 });
-    if (!turnstile.valid)
-      return Response.json({ error: "Spam check failed. Please try again." }, { status: 400 });
+    const localTurnstileBypass =
+      process.env.NODE_ENV === "development" &&
+      process.env.NEXT_PUBLIC_LOCAL_TURNSTILE_BYPASS === "true";
+    if (!localTurnstileBypass) {
+      if (typeof turnstileToken !== "string" || !turnstileToken)
+        return Response.json({ error: "Please complete the spam check and try again." }, { status: 400 });
+      const originHostname = origin ? new URL(origin).hostname : new URL(request.url).hostname;
+      const turnstile = await verifyTurnstile(turnstileToken, originHostname);
+      if (!turnstile.configured)
+        return Response.json({ error: "Spam protection is not configured." }, { status: 503 });
+      if (!turnstile.valid)
+        return Response.json({ error: "Spam check failed. Please try again." }, { status: 400 });
+    }
     const name = getValue("name");
     const email = getValue("email");
     const message = getValue("message") || "";

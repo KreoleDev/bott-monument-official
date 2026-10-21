@@ -465,3 +465,12 @@ fecha inicialmente os cartões fixos e SEO. A lista intermédia usa os controlos
 nativos do Strapi. A configuração Vite reutiliza dois renderizadores internos
 do Strapi 5.53; ao atualizar Strapi, verifique o build e a abertura/edição dos
 cartões, permissões, media e relações. Não há alterações em `node_modules`.
+
+### Aprovação de acesso à galeria
+
+Em cada Inquiry, o switch **Access approved** envia um link de sete dias para a
+rota localizada `/[locale]/private-gallery`. Desativar o switch revoga o link.
+As imagens são geridas na coleção **Private Gallery** do Strapi e continuam a
+usar a Media Library local. Esta versão destina-se apenas a desenvolvimento:
+os ficheiros podem ser acedidos diretamente pelas respetivas URLs. A proteção
+dos ficheiros e dos links deve ser configurada antes de publicar em produção.

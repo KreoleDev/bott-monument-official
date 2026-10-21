@@ -1,0 +1,70 @@
+.private-gallery-page {
+  min-height: 100vh;
+  padding: clamp(2rem, 7vw, 6rem) clamp(1rem, 6vw, 5rem);
+  background: #11110f;
+  color: #f4efe5;
+}
+
+.private-gallery-header {
+  max-width: 72rem;
+  margin: 0 auto 3rem;
+}
+
+.private-gallery-header > p {
+  color: #c9a050;
+  font-size: 0.72rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.private-gallery-header h1 {
+  margin: 0.75rem 0 0;
+  font-family: var(--font-display, Georgia, serif);
+  font-size: clamp(2.75rem, 7vw, 5.5rem);
+  font-weight: 400;
+}
+
+.private-gallery-message {
+  max-width: 72rem;
+  margin: 0 auto;
+  color: #d2c9bb;
+}
+
+.private-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+  gap: 1.5rem;
+  max-width: 90rem;
+  margin: 0 auto;
+}
+
+.private-gallery-grid figure {
+  margin: 0;
+  overflow: hidden;
+  background: #1b1a17;
+}
+
+.private-gallery-grid img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.private-gallery-grid figcaption {
+  padding: 1rem 1.15rem 1.25rem;
+}
+
+.private-gallery-grid h2 {
+  margin: 0;
+  color: #d9b66b;
+  font-family: var(--font-display, Georgia, serif);
+  font-size: 1.35rem;
+  font-weight: 400;
+}
+
+.private-gallery-grid figcaption p {
+  margin: 0.5rem 0 0;
+  color: #d2c9bb;
+  line-height: 1.65;
+}

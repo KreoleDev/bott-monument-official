@@ -663,6 +663,12 @@ export interface ApiInquiryInquiry extends Struct.CollectionTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
+    accessApproved: Schema.Attribute.Boolean &
+      Schema.Attribute.Configurable &
+      Schema.Attribute.DefaultTo<false>;
+    accessNotificationSentAt: Schema.Attribute.DateTime;
+    accessTokenExpiresAt: Schema.Attribute.DateTime & Schema.Attribute.Private;
+    accessTokenHash: Schema.Attribute.String & Schema.Attribute.Private;
     attachment: Schema.Attribute.Media<'images', true>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -834,6 +840,45 @@ export interface ApiPressItemPressItem extends Struct.CollectionTypeSchema {
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     url: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface ApiPrivateGalleryItemPrivateGalleryItem
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'private_gallery_items';
+  info: {
+    displayName: 'Private Gallery';
+    pluralName: 'private-gallery-items';
+    singularName: 'private-gallery-item';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    caption: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 1000;
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    image: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::private-gallery-item.private-gallery-item'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 200;
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
   };
 }
 
@@ -1387,6 +1432,7 @@ declare module '@strapi/strapi' {
       'api::inquiry.inquiry': ApiInquiryInquiry;
       'api::page.page': ApiPagePage;
       'api::press-item.press-item': ApiPressItemPressItem;
+      'api::private-gallery-item.private-gallery-item': ApiPrivateGalleryItemPrivateGalleryItem;
       'api::site-setting.site-setting': ApiSiteSettingSiteSetting;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;

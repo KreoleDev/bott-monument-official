@@ -1,0 +1,33 @@
+{
+  "kind": "collectionType",
+  "collectionName": "private_gallery_items",
+  "info": {
+    "singularName": "private-gallery-item",
+    "pluralName": "private-gallery-items",
+    "displayName": "Private Gallery"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "maxLength": 200
+    },
+    "caption": {
+      "type": "text",
+      "maxLength": 1000
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": ["images"]
+    },
+    "sortOrder": {
+      "type": "integer",
+      "default": 0
+    }
+  }
+}
