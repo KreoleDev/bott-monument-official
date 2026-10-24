@@ -35,7 +35,6 @@ const copy = {
     emailPlaceholder: "Your email address",
     send: "Send request",
     dismiss: "Maybe later",
-    success: "Thank you. Your request has been sent.",
     error: "Could not send your request. Please try again.",
     security: "Security check",
   },
@@ -46,7 +45,6 @@ const copy = {
     emailPlaceholder: "O teu endereço de email",
     send: "Enviar pedido",
     dismiss: "Talvez depois",
-    success: "Obrigado. O teu pedido foi enviado.",
     error: "Não foi possível enviar o pedido. Tenta novamente.",
     security: "Verificação de segurança",
   },
@@ -57,11 +55,13 @@ export function GalleryAccessForm({
   submitLabel,
   dismissLabel,
   onClose,
+  onSuccess,
 }: {
   locale: string;
   submitLabel?: string;
   dismissLabel?: string;
   onClose: () => void;
+  onSuccess: () => void;
 }) {
   const text = locale.toLowerCase().startsWith("pt") ? copy.pt : copy.en;
   const [pending, setPending] = useState(false);
@@ -92,19 +92,14 @@ export function GalleryAccessForm({
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (inFlight.current || sent) return;
+    if (inFlight.current || sent || (!captchaVerified && !LOCAL_TURNSTILE_BYPASS)) return;
     inFlight.current = true;
     setPending(true);
     setFeedback("");
     const form = event.currentTarget;
     const data = new FormData(form);
     data.set("locale", locale);
-    data.set(
-      "message",
-      locale.toLowerCase().startsWith("pt")
-        ? "Pedido de acesso à galeria privada."
-        : "Private gallery access request.",
-    );
+    data.set("requestType", "gallery-access");
 
     try {
       const response = await fetch("/api/inquiries", { method: "POST", body: data });
@@ -114,7 +109,7 @@ export function GalleryAccessForm({
       }
       form.reset();
       setSent(true);
-      setFeedback(text.success);
+      onSuccess();
     } catch (error) {
       setFeedback(error instanceof Error ? error.message : text.error);
     } finally {
@@ -168,7 +163,7 @@ export function GalleryAccessForm({
             <button
               className="mag-access-primary"
               type="submit"
-              disabled={pending || sent || (!captchaVerified && !LOCAL_TURNSTILE_BYPASS)}
+              disabled={pending || sent || !captchaVerified}
             >
               {pending ? (locale.toLowerCase().startsWith("pt") ? "A enviar…" : "Sending…") : submitLabel || text.send}
             </button>

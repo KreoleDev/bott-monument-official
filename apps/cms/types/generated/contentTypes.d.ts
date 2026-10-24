@@ -599,6 +599,48 @@ export interface ApiFeatureFeature extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiGalleryAccessGalleryAccess
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'gallery_accesses';
+  info: {
+    displayName: 'Gallery Access';
+    pluralName: 'gallery-accesses';
+    singularName: 'gallery-access';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    accessActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    accessNotificationSentAt: Schema.Attribute.DateTime &
+      Schema.Attribute.Private;
+    accessTokenExpiresAt: Schema.Attribute.DateTime & Schema.Attribute.Private;
+    accessTokenHash: Schema.Attribute.String & Schema.Attribute.Private;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    email: Schema.Attribute.Email & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::gallery-access.gallery-access'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 150;
+      }>;
+    publishedAt: Schema.Attribute.DateTime;
+    submissionLocale: Schema.Attribute.String &
+      Schema.Attribute.Private &
+      Schema.Attribute.DefaultTo<'en'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiGalleryItemGalleryItem extends Struct.CollectionTypeSchema {
   collectionName: 'gallery_items';
   info: {
@@ -663,12 +705,6 @@ export interface ApiInquiryInquiry extends Struct.CollectionTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
-    accessApproved: Schema.Attribute.Boolean &
-      Schema.Attribute.Configurable &
-      Schema.Attribute.DefaultTo<false>;
-    accessNotificationSentAt: Schema.Attribute.DateTime;
-    accessTokenExpiresAt: Schema.Attribute.DateTime & Schema.Attribute.Private;
-    accessTokenHash: Schema.Attribute.String & Schema.Attribute.Private;
     attachment: Schema.Attribute.Media<'images', true>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -705,7 +741,7 @@ export interface ApiInquiryInquiry extends Struct.CollectionTypeSchema {
 export interface ApiPagePage extends Struct.CollectionTypeSchema {
   collectionName: 'pages';
   info: {
-    description: 'Hero and Footer are fixed fields. Arrange the middle sections in content.';
+    description: 'Page chrome, gallery access settings and middle sections.';
     displayName: 'Page';
     pluralName: 'pages';
     singularName: 'page';
@@ -759,6 +795,12 @@ export interface ApiPagePage extends Struct.CollectionTypeSchema {
       }>;
     locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::page.page'>;
+    privateGallery: Schema.Attribute.Component<'pages.private-gallery', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<'shared.seo', false> &
       Schema.Attribute.SetPluginOptions<{
@@ -843,11 +885,50 @@ export interface ApiPressItemPressItem extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiPrivateGalleryCategoryPrivateGalleryCategory
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'private_gallery_categories';
+  info: {
+    displayName: 'Gallery Category';
+    pluralName: 'private-gallery-categories';
+    singularName: 'private-gallery-category';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    images: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::private-gallery-item.private-gallery-item'
+    >;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::private-gallery-category.private-gallery-category'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 80;
+      }>;
+    publishedAt: Schema.Attribute.DateTime;
+    sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiPrivateGalleryItemPrivateGalleryItem
   extends Struct.CollectionTypeSchema {
   collectionName: 'private_gallery_items';
   info: {
-    displayName: 'Private Gallery';
+    displayName: 'Gallery Image';
     pluralName: 'private-gallery-items';
     singularName: 'private-gallery-item';
   };
@@ -859,6 +940,11 @@ export interface ApiPrivateGalleryItemPrivateGalleryItem
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 1000;
       }>;
+    category: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::private-gallery-category.private-gallery-category'
+    > &
+      Schema.Attribute.Required;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1428,10 +1514,12 @@ declare module '@strapi/strapi' {
       'api::color-palette.color-palette': ApiColorPaletteColorPalette;
       'api::comment.comment': ApiCommentComment;
       'api::feature.feature': ApiFeatureFeature;
+      'api::gallery-access.gallery-access': ApiGalleryAccessGalleryAccess;
       'api::gallery-item.gallery-item': ApiGalleryItemGalleryItem;
       'api::inquiry.inquiry': ApiInquiryInquiry;
       'api::page.page': ApiPagePage;
       'api::press-item.press-item': ApiPressItemPressItem;
+      'api::private-gallery-category.private-gallery-category': ApiPrivateGalleryCategoryPrivateGalleryCategory;
       'api::private-gallery-item.private-gallery-item': ApiPrivateGalleryItemPrivateGalleryItem;
       'api::site-setting.site-setting': ApiSiteSettingSiteSetting;
       'plugin::content-releases.release': PluginContentReleasesRelease;

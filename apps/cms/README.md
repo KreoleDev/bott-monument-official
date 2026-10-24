@@ -27,6 +27,15 @@ Normal startup does not seed content automatically.
 - Footer: fixed after the main content.
 - SEO: title, description and social image; Home SEO also provides site-wide defaults.
 
+Create a second Page titled `Gallery` with slug `private-gallery`. Its **Gallery
+page** field group controls every access-page label/message and its background,
+text, surface, border, accent and button colors. Header, footer and SEO fields
+work like the Home page. Add localized copies in Portuguese when desired and
+publish the page for the public route. Manage protected photos in the single
+**Private Gallery** collection: upload each image from your computer, add its
+title and caption, and choose or create a category in the same entry. The private
+gallery page groups photos by category.
+
 Cards start collapsed. Publish changes for public visitors; use Preview for drafts.
 Press Item, Features, Gallery and Comments remain independent item collections.
 Inquiries stores private form submissions. Site Settings holds social links, public URL and active Color Palette.

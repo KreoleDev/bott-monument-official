@@ -492,6 +492,65 @@ textarea.cm-input {
   margin-top: 1rem;
   color: var(--palette-contact-text-color, #eae6de);
 }
+
+.cm-success-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: min(92vw, 520px);
+  max-width: 520px;
+  max-height: min(85vh, 720px);
+  margin: 0;
+  padding: 2.5rem 2rem 2rem;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(28, 24, 18, 0.14);
+  border-radius: 16px;
+  background: var(--palette-contact-surface-color, #3a4a57);
+  color: var(--palette-contact-surface-text-color, var(--palette-contact-text-color, #eae6de));
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.3);
+}
+
+.cm-success-dialog::backdrop {
+  background: rgba(10, 8, 6, 0.72);
+}
+
+.cm-success-close {
+  position: absolute;
+  top: 0.9rem;
+  right: 1rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 1.7rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.cm-success-kicker {
+  margin: 0 0 0.8rem;
+  color: var(--palette-contact-accent-color, #c6a968);
+  font: 600 0.7rem var(--font-utility);
+  letter-spacing: 0.16em;
+}
+
+.cm-success-dialog h3 {
+  margin: 0 2rem 0.8rem 0;
+  font: 300 clamp(1.8rem, 4vw, 2.5rem) / 1.05 var(--font-display);
+}
+
+.cm-success-copy {
+  margin: 0 0 1.5rem;
+  font: 1rem / 1.65 var(--font-display);
+}
+
+.cm-success-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cm-success-actions .cm-submit {
+  margin: 0;
+}
 @media (max-width: 900px) {
   #contact {
     padding: 6rem 0;

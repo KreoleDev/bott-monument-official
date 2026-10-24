@@ -460,6 +460,11 @@
   transform: none;
 }
 
+.mag-access-success-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
 /* Keep native-dialog focus, Escape and modal behavior with the design's overlay. */
 #gallery .cg-title {
   color: var(

@@ -1,4 +1,5 @@
 import type { Core } from "@strapi/strapi";
+import { seedPrivateGalleryCategories } from "./seeds/private-gallery-categories";
 
 const revalidatedModels = [
   "api::color-palette.color-palette",
@@ -56,6 +57,8 @@ export default {
    * run jobs, or perform some special logic.
    */
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {
+    await seedPrivateGalleryCategories(strapi);
+
     await strapi.db.query("api::inquiry.inquiry").updateMany({
       where: { responseStatus: { $null: true } },
       data: { responseStatus: "new" },

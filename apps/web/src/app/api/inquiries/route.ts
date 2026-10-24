@@ -93,6 +93,20 @@ async function createInquiry(url: string, token: string, data: Record<string, st
   return { response, result: await response.json() };
 }
 
+async function createGalleryAccess(url: string, token: string, data: Record<string, string>) {
+  const response = await fetch(`${url}/graphql`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      query: "mutation SubmitGalleryAccess($data: GalleryAccessInput!) { createGalleryAccess(data: $data) { documentId } }",
+      variables: { data },
+    }),
+    cache: "no-store",
+    signal: AbortSignal.timeout(15000),
+  });
+  return { response, result: await response.json() };
+}
+
 async function verifyTurnstile(responseToken: string, expectedHostname: string) {
   const secret = process.env.TURNSTILE_SECRET_KEY;
   if (!secret) return { configured: false, valid: false };
@@ -181,6 +195,17 @@ export async function POST(request: Request) {
       submissionLocale: locale,
       responseStatus: "new",
     };
+    if (getValue("requestType") === "gallery-access") {
+      const { response, result } = await createGalleryAccess(url, token, {
+        name: name.trim(), email: email.trim(),
+      });
+      if (!response.ok || result.errors?.length || !result.data?.createGalleryAccess?.documentId) {
+        const error = getStrapiError(result) || "Unable to save gallery access request";
+        if (process.env.NODE_ENV !== "production") console.warn("Strapi gallery access create failed", result);
+        return Response.json({ error }, { status: 502 });
+      }
+      return Response.json({ ok: true }, { status: 201 });
+    }
     const attachments = isFormBody
       ? body
           .getAll("attachment")

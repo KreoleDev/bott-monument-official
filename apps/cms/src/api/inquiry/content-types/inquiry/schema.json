@@ -36,22 +36,6 @@
       "type": "enumeration",
       "enum": ["new", "reviewed", "replied"],
       "default": "new"
-    },
-    "accessApproved": {
-      "type": "boolean",
-      "default": false,
-      "configurable": true
-    },
-    "accessNotificationSentAt": {
-      "type": "datetime"
-    },
-    "accessTokenHash": {
-      "type": "string",
-      "private": true
-    },
-    "accessTokenExpiresAt": {
-      "type": "datetime",
-      "private": true
     }
   }
 }

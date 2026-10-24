@@ -37,11 +37,19 @@ export function ContactForm({
   buttonLabel: string;
   locale: string;
 }) {
+  const isPortuguese = locale.toLowerCase().startsWith("pt");
   const [pending, setPending] = useState(false);
   const [captchaVerified, setCaptchaVerified] = useState(false);
   const [feedback, setFeedback] = useState("");
+  const [submitted, setSubmitted] = useState(false);
   const [images, setImages] = useState<File[]>([]);
   const inFlight = useRef(false);
+  const successDialog = useRef<HTMLDialogElement>(null);
+  const successMessage =
+    details.successMessage ||
+    (isPortuguese
+      ? "Obrigado. Recebemos a tua mensagem."
+      : "Thank you. Your inquiry has been received.");
   const turnstileContainer = useRef<HTMLDivElement>(null);
   const turnstileWidgetId = useRef<string | undefined>(undefined);
   function renderTurnstile() {
@@ -87,7 +95,9 @@ export function ContactForm({
       }
       form.reset();
       setImages([]);
-      setFeedback(details.successMessage || "Thank you. Your inquiry has been received.");
+      setSubmitted(true);
+      setFeedback("");
+      successDialog.current?.showModal();
     } catch (error) {
       setFeedback(
         error instanceof Error ? error.message : "Could not save your message. Please try again.",
@@ -100,102 +110,145 @@ export function ContactForm({
     }
   }
   return (
-    <form className="commission-form w-full min-w-0 max-w-full" onSubmit={submit}>
-      <fieldset className="m-0 w-full min-w-0 max-w-full border-0 p-0" disabled={pending}>
-        <legend className="cm-label">{details.inquiryLabel}</legend>
-        <label className="sr-only" htmlFor="cmName">
-          Your name
-        </label>
-        <input
-          name="name"
-          className="cm-input block w-full min-w-0 max-w-full box-border"
-          id="cmName"
-          placeholder={details.namePlaceholder}
-          required
-          maxLength={150}
-          autoComplete="name"
-        />
-        <label className="sr-only" htmlFor="cmEmail">
-          Email address
-        </label>
-        <input
-          name="email"
-          type="email"
-          className="cm-input block w-full min-w-0 max-w-full box-border"
-          id="cmEmail"
-          placeholder={details.emailPlaceholder}
-          required
-          maxLength={254}
-          autoComplete="email"
-        />
-        <label className="sr-only" htmlFor="cmMessage">
-          Your message
-        </label>
-        <textarea
-          name="message"
-          className="cm-input block w-full min-w-0 max-w-full box-border"
-          id="cmMessage"
-          placeholder={details.messagePlaceholder}
-          maxLength={5000}
-        />
-        <label className="cm-upload block w-full min-w-0 max-w-full box-border" htmlFor="cmImage">
-          <span className="cm-upload-main">
-            <span className="cm-upload-title">Add an image</span>
-            <span className="cm-upload-sub">
-              {images.length
-                ? `${images.length} of ${MAX_IMAGES} images selected`
-                : `Optional JPG, PNG, WebP, GIF, or HEIC. Up to ${MAX_IMAGES} images, ${MAX_IMAGE_MB} MB each`}
-            </span>
-          </span>
-          <span className="cm-upload-action">Choose files</span>
-          <input
-            type="file"
-            className="sr-only"
-            id="cmImage"
-            accept="image/jpeg,image/png,image/webp,image/gif,image/heic,image/heif"
-            multiple
-            onChange={selectImage}
-          />
-        </label>
-        {images.length > 0 && (
-          <ul className="cm-upload-list" aria-label="Selected images">
-            {images.map((image, index) => (
-              <li className="cm-upload-item" key={`${image.name}-${image.lastModified}-${index}`}>
-                <span>{image.name}</span>
-                <button type="button" onClick={() => removeImage(index)}>
-                  Remove
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-        <div hidden aria-hidden="true">
-          <label>
-            Website
-            <input name="website" tabIndex={-1} autoComplete="off" />
+    <>
+      <form className="commission-form w-full min-w-0 max-w-full" onSubmit={submit}>
+        <fieldset
+          className="m-0 w-full min-w-0 max-w-full border-0 p-0"
+          disabled={pending || submitted}
+        >
+          <legend className="cm-label">{details.inquiryLabel}</legend>
+          <label className="sr-only" htmlFor="cmName">
+            Your name
           </label>
-        </div>
-        {TURNSTILE_SITE_KEY && (
-          <>
-            <Script
-              src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
-              strategy="afterInteractive"
-              onReady={renderTurnstile}
+          <input
+            name="name"
+            className="cm-input block w-full min-w-0 max-w-full box-border"
+            id="cmName"
+            placeholder={details.namePlaceholder}
+            required
+            maxLength={150}
+            autoComplete="name"
+          />
+          <label className="sr-only" htmlFor="cmEmail">
+            Email address
+          </label>
+          <input
+            name="email"
+            type="email"
+            className="cm-input block w-full min-w-0 max-w-full box-border"
+            id="cmEmail"
+            placeholder={details.emailPlaceholder}
+            required
+            maxLength={254}
+            autoComplete="email"
+          />
+          <label className="sr-only" htmlFor="cmMessage">
+            Your message
+          </label>
+          <textarea
+            name="message"
+            className="cm-input block w-full min-w-0 max-w-full box-border"
+            id="cmMessage"
+            placeholder={details.messagePlaceholder}
+            maxLength={5000}
+          />
+          <label className="cm-upload block w-full min-w-0 max-w-full box-border" htmlFor="cmImage">
+            <span className="cm-upload-main">
+              <span className="cm-upload-title">Add an image</span>
+              <span className="cm-upload-sub">
+                {images.length
+                  ? `${images.length} of ${MAX_IMAGES} images selected`
+                  : `Optional JPG, PNG, WebP, GIF, or HEIC. Up to ${MAX_IMAGES} images, ${MAX_IMAGE_MB} MB each`}
+              </span>
+            </span>
+            <span className="cm-upload-action">Choose files</span>
+            <input
+              type="file"
+              className="sr-only"
+              id="cmImage"
+              accept="image/jpeg,image/png,image/webp,image/gif,image/heic,image/heif"
+              multiple
+              onChange={selectImage}
             />
-            <div className="cm-turnstile-shell w-full min-w-0 max-w-full box-border overflow-hidden" aria-label="Spam protection">
-              <span className="cm-turnstile-label">Security check</span>
-              <div ref={turnstileContainer} className="cm-turnstile" />
-            </div>
-          </>
-        )}
-        <button type="submit" className="cm-submit" disabled={pending || !captchaVerified}>
-          {pending ? "Sending…" : buttonLabel}
+          </label>
+          {images.length > 0 && (
+            <ul className="cm-upload-list" aria-label="Selected images">
+              {images.map((image, index) => (
+                <li className="cm-upload-item" key={`${image.name}-${image.lastModified}-${index}`}>
+                  <span>{image.name}</span>
+                  <button type="button" onClick={() => removeImage(index)}>
+                    Remove
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+          <div hidden aria-hidden="true">
+            <label>
+              Website
+              <input name="website" tabIndex={-1} autoComplete="off" />
+            </label>
+          </div>
+          {TURNSTILE_SITE_KEY && (
+            <>
+              <Script
+                src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+                strategy="afterInteractive"
+                onReady={renderTurnstile}
+              />
+              <div
+                className="cm-turnstile-shell w-full min-w-0 max-w-full box-border overflow-hidden"
+                aria-label="Spam protection"
+              >
+                <span className="cm-turnstile-label">Security check</span>
+                <div ref={turnstileContainer} className="cm-turnstile" />
+              </div>
+            </>
+          )}
+          <button
+            type="submit"
+            className="cm-submit"
+            disabled={pending || submitted || !captchaVerified}
+          >
+            {pending ? "Sending…" : buttonLabel}
+          </button>
+        </fieldset>
+        <p className="cm-status" role="status" aria-live="polite">
+          {feedback}
+        </p>
+        <p className="cm-note">{details.note}</p>
+      </form>
+      <dialog
+        className="cm-success-dialog"
+        ref={successDialog}
+        aria-labelledby="cmSuccessTitle"
+        aria-describedby="cmSuccessCopy"
+      >
+        <button
+          className="cm-success-close"
+          type="button"
+          aria-label="Close success message"
+          onClick={() => successDialog.current?.close()}
+        >
+          ×
         </button>
-      </fieldset>
-      <p className="cm-status" role="status" aria-live="polite">
-        {feedback}
-      </p>
-      <p className="cm-note">{details.note}</p>
-    </form>
+        <p className="cm-success-kicker">
+          {isPortuguese ? "MENSAGEM RECEBIDA" : "MESSAGE RECEIVED"}
+        </p>
+        <h3 id="cmSuccessTitle">{isPortuguese ? "Mensagem enviada" : "Message sent"}</h3>
+        <p className="cm-success-copy" id="cmSuccessCopy">
+          {successMessage}
+        </p>
+        <div className="cm-success-actions">
+          <button
+            className="cm-submit"
+            type="button"
+            onClick={() => successDialog.current?.close()}
+          >
+            {isPortuguese ? "Fechar" : "Close"}
+          </button>
+        </div>
+      </dialog>
+    </>
   );
 }
