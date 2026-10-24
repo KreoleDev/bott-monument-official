@@ -4,7 +4,7 @@
   "info": {
     "singularName": "private-gallery-item",
     "pluralName": "private-gallery-items",
-    "displayName": "Gallery Image"
+    "displayName": "Private Gallery Image"
   },
   "options": {
     "draftAndPublish": true
@@ -19,12 +19,10 @@
       "type": "text",
       "maxLength": 1000
     },
-    "image": {
-      "type": "media",
-      "multiple": false,
-      "required": true,
-      "allowedTypes": ["images"],
-      "description": "Upload an image file from your computer. It will be stored in the Strapi media library."
+    "photos": {
+      "type": "customField",
+      "customField": "global::private-gallery-photos",
+      "description": "Photos uploaded directly from your computer to private storage. These files never appear in the shared Media Library or Public Gallery."
     },
     "category": {
       "type": "relation",

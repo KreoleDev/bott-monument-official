@@ -6,5 +6,11 @@ export default {
       handler: "private-gallery.access",
       config: { auth: false },
     },
+    {
+      method: "GET",
+      path: "/private-gallery/photos/:id",
+      handler: "private-gallery.photo",
+      config: { auth: false },
+    },
   ],
 };

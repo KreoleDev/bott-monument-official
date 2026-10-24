@@ -3,7 +3,7 @@ type PrivateImage = {
   caption: string;
   category: string;
   sortOrder: number;
-  image: { url: string; alternativeText: string | null };
+  images: { url: string; alternativeText: string | null; width?: number | null; height?: number | null }[];
 };
 
 function allowedOrigins(request: Request) {
@@ -43,16 +43,25 @@ export async function POST(request: Request) {
     });
     if (!response.ok) return Response.json({ error: "Gallery not found" }, { status: 404 });
 
-    const result = (await response.json()) as { images?: PrivateImage[] };
+    const result = (await response.json()) as {
+      images?: Array<PrivateImage | (Omit<PrivateImage, "images"> & { image?: PrivateImage["images"][number] })>;
+    };
     const cmsOrigin = new URL(cmsUrl).origin;
     const images = Array.isArray(result.images)
       ? result.images.flatMap((item) => {
-          if (typeof item?.image?.url !== "string") return [];
-          let imageUrl = item.image.url;
-          if (imageUrl.startsWith("/")) imageUrl = `${cmsOrigin}${imageUrl}`;
-          if (!/^https:\/\//i.test(imageUrl) && !/^http:\/\/localhost(?::\d+)?\//i.test(imageUrl))
-            return [];
-          return [{ ...item, image: { ...item.image, url: imageUrl } }];
+          const photos = "images" in item && Array.isArray(item.images)
+            ? item.images
+            : "image" in item && item.image
+              ? [item.image]
+              : [];
+          const safePhotos = photos.flatMap((photo) => {
+            if (typeof photo?.url !== "string") return [];
+            let imageUrl = photo.url;
+            if (imageUrl.startsWith("/")) imageUrl = `${cmsOrigin}${imageUrl}`;
+            if (!/^https:\/\//i.test(imageUrl) && !/^http:\/\/localhost(?::\d+)?\//i.test(imageUrl)) return [];
+            return [{ ...photo, url: imageUrl }];
+          });
+          return safePhotos.length ? [{ ...item, images: safePhotos }] : [];
         })
       : [];
 

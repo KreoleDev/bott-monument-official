@@ -126,10 +126,33 @@ function FixedPageField(props: Record<string, unknown>) {
 export default {
   register(app: StrapiApp) {
     app.addFields({ type: "component", Component: FixedPageField });
+    app.customFields.register({
+      name: "private-gallery-photos",
+      type: "json",
+      intlLabel: { id: "private-gallery.photos.label", defaultMessage: "Private photos" },
+      intlDescription: { id: "private-gallery.photos.description", defaultMessage: "Upload private gallery photos directly from your computer." },
+      components: { Input: async () => import("./private-gallery-photos-input") },
+    });
     app.registerHook(
       "Admin/CM/pages/EditView/mutate-edit-view-layout",
       (context: { layout: EditLayout; model?: string; uid?: string }) => {
         const fields = context.layout.layout.flat(2);
+        const privateGalleryCategoryLayout =
+          fields.some((field) => field.name === "images") &&
+          fields.some((field) => field.name === "sortOrder") &&
+          fields.some((field) => field.name === "name") &&
+          !fields.some((field) => field.name === "photos");
+        if (privateGalleryCategoryLayout) {
+          return {
+            ...context,
+            layout: {
+              ...context.layout,
+              layout: context.layout.layout
+                .map((panel) => panel.map((row) => row.filter((field) => field.name !== "images")).filter((row) => row.length))
+                .filter((panel) => panel.length),
+            },
+          };
+        }
         const galleryAccessLayout = fields.some((field) => field.name === "accessTokenHash");
         if (galleryAccessLayout) {
           const visibleFields = new Set([
@@ -164,26 +187,30 @@ export default {
         }
         const privateGalleryImageLayout =
           fields.some((field) => field.name === "caption") &&
-          fields.some((field) => field.name === "image") &&
+          fields.some((field) => field.name === "photos") &&
           fields.some((field) => field.name === "category") &&
           fields.some((field) => field.name === "sortOrder");
         if (privateGalleryImageLayout) {
           const labels: Record<string, string> = {
             title: "Image title",
-            caption: "Image caption",
-            image: "Upload image from your computer",
+            caption: "Image description",
+            photos: "Private photos · Upload from your computer",
             sortOrder: "Display order",
             category: "Category",
           };
+          const privateGalleryRows = [["title", "sortOrder"], ["caption"], ["category"], ["photos"]]
+            .map((row) =>
+              row.flatMap((name) => {
+                const field = fields.find((item) => item.name === name);
+                return field ? [{ ...field, size: row.length === 1 ? 12 : 6, label: labels[name] || field.label }] : [];
+              }),
+            )
+            .filter((row) => row.length);
           return {
             ...context,
             layout: {
               ...context.layout,
-              layout: context.layout.layout.map((panel) =>
-                panel.map((row) =>
-                  row.map((field) => ({ ...field, label: labels[field.name] || field.label })),
-                ),
-              ),
+              layout: [privateGalleryRows],
             },
           };
         }

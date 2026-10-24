@@ -644,7 +644,7 @@ export interface ApiGalleryAccessGalleryAccess
 export interface ApiGalleryItemGalleryItem extends Struct.CollectionTypeSchema {
   collectionName: 'gallery_items';
   info: {
-    displayName: 'Gallery';
+    displayName: 'Public Gallery';
     pluralName: 'gallery-items';
     singularName: 'gallery-item';
   };
@@ -889,7 +889,7 @@ export interface ApiPrivateGalleryCategoryPrivateGalleryCategory
   extends Struct.CollectionTypeSchema {
   collectionName: 'private_gallery_categories';
   info: {
-    displayName: 'Gallery Category';
+    displayName: 'Private Gallery Category';
     pluralName: 'private-gallery-categories';
     singularName: 'private-gallery-category';
   };
@@ -928,7 +928,7 @@ export interface ApiPrivateGalleryItemPrivateGalleryItem
   extends Struct.CollectionTypeSchema {
   collectionName: 'private_gallery_items';
   info: {
-    displayName: 'Gallery Image';
+    displayName: 'Private Gallery Image';
     pluralName: 'private-gallery-items';
     singularName: 'private-gallery-item';
   };
@@ -948,13 +948,14 @@ export interface ApiPrivateGalleryItemPrivateGalleryItem
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    image: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::private-gallery-item.private-gallery-item'
     > &
       Schema.Attribute.Private;
+    photos: Schema.Attribute.JSON &
+      Schema.Attribute.CustomField<'global::private-gallery-photos'>;
     publishedAt: Schema.Attribute.DateTime;
     sortOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     title: Schema.Attribute.String &

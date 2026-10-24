@@ -12,7 +12,7 @@ type PrivateImage = {
   category: string;
   categorySortOrder: number;
   sortOrder: number;
-  image: StrapiMedia;
+  images: StrapiMedia[];
 };
 
 const copy = {
@@ -100,6 +100,7 @@ export function PrivateGalleryGate({
   const [pending, setPending] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
+  const [selectedPhoto, setSelectedPhoto] = useState(0);
   const categories = useMemo(() => {
     if (!images) return [];
     const names = new Map<string, { name: string; sortOrder: number }>();
@@ -121,6 +122,7 @@ export function PrivateGalleryGate({
     () => images?.filter((image) => selectedCategory === "all" || image.category?.trim().toLocaleLowerCase() === selectedCategory) || [],
     [images, selectedCategory],
   );
+  const activePhotoCount = selectedImage === null ? 0 : visibleImages[selectedImage]?.images.length || 0;
 
   useEffect(() => {
     if (selectedImage === null) return;
@@ -129,10 +131,10 @@ export function PrivateGalleryGate({
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") setSelectedImage(null);
       if (event.key === "ArrowLeft") {
-        setSelectedImage((index) => index === null ? null : (index + visibleImages.length - 1) % visibleImages.length);
+        setSelectedPhoto((index) => (index + activePhotoCount - 1) % activePhotoCount);
       }
       if (event.key === "ArrowRight") {
-        setSelectedImage((index) => index === null ? null : (index + 1) % visibleImages.length);
+        setSelectedPhoto((index) => (index + 1) % activePhotoCount);
       }
     };
     window.addEventListener("keydown", onKeyDown);
@@ -140,7 +142,7 @@ export function PrivateGalleryGate({
       window.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = savedOverflow;
     };
-  }, [selectedImage, visibleImages.length]);
+  }, [selectedImage, activePhotoCount]);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -220,20 +222,20 @@ export function PrivateGalleryGate({
             <>
               {categories.length > 0 && (
                 <nav className="private-gallery-categories" aria-label="Gallery categories">
-                  <button className={selectedCategory === "all" ? "is-active" : ""} type="button" aria-pressed={selectedCategory === "all"} onClick={() => { setSelectedCategory("all"); setSelectedImage(null); }}>{text.all}</button>
+                  <button className={selectedCategory === "all" ? "is-active" : ""} type="button" aria-pressed={selectedCategory === "all"} onClick={() => { setSelectedCategory("all"); setSelectedImage(null); setSelectedPhoto(0); }}>{text.all}</button>
                   {categories.map((category) => (
-                    <button key={category.id} className={selectedCategory === category.id ? "is-active" : ""} type="button" aria-pressed={selectedCategory === category.id} onClick={() => { setSelectedCategory(category.id); setSelectedImage(null); }}>{category.name}</button>
+                    <button key={category.id} className={selectedCategory === category.id ? "is-active" : ""} type="button" aria-pressed={selectedCategory === category.id} onClick={() => { setSelectedCategory(category.id); setSelectedImage(null); setSelectedPhoto(0); }}>{category.name}</button>
                   ))}
                 </nav>
               )}
               <div className="private-gallery-grid">
                 {visibleImages.map((item, index) => (
-                  <button className="private-gallery-card" key={`${item.sortOrder}-${item.title}-${index}`} type="button" onClick={() => setSelectedImage(index)} aria-label={`${item.title}. ${item.category}`}>
+                  <button className="private-gallery-card" key={`${item.sortOrder}-${item.title}-${index}`} type="button" onClick={() => { setSelectedImage(index); setSelectedPhoto(0); }} aria-label={`${item.title}. ${item.category}`}>
                     <Image
-                      src={item.image.url}
-                      alt={item.image.alternativeText || item.title}
-                      width={item.image.width || 1200}
-                      height={item.image.height || 900}
+                      src={item.images[0].url}
+                      alt={item.images[0].alternativeText || item.title}
+                      width={item.images[0].width || 1200}
+                      height={item.images[0].height || 900}
                       loading="lazy"
                     />
                     <span className="private-gallery-card-copy">
@@ -246,25 +248,25 @@ export function PrivateGalleryGate({
                   </button>
                 ))}
               </div>
-              {selectedImage !== null && visibleImages[selectedImage] && (
+              {selectedImage !== null && visibleImages[selectedImage] && visibleImages[selectedImage].images[selectedPhoto] && (
                 <div className="private-gallery-lightbox" role="dialog" aria-modal="true" aria-label={visibleImages[selectedImage].title} onClick={() => setSelectedImage(null)}>
                   <button className="private-gallery-lightbox-close" type="button" aria-label={text.close} onClick={() => setSelectedImage(null)}>×</button>
                   <div className="private-gallery-lightbox-panel" onClick={(event) => event.stopPropagation()}>
                     <div className="private-gallery-lightbox-visual">
-                      <Image src={visibleImages[selectedImage].image.url} alt={visibleImages[selectedImage].image.alternativeText || visibleImages[selectedImage].title} width={visibleImages[selectedImage].image.width || 1600} height={visibleImages[selectedImage].image.height || 1200} priority />
-                      {visibleImages.length > 1 && (
+                      <Image src={visibleImages[selectedImage].images[selectedPhoto].url} alt={visibleImages[selectedImage].images[selectedPhoto].alternativeText || visibleImages[selectedImage].title} width={visibleImages[selectedImage].images[selectedPhoto].width || 1600} height={visibleImages[selectedImage].images[selectedPhoto].height || 1200} priority />
+                      {visibleImages[selectedImage].images.length > 1 && (
                         <>
-                          <button className="private-gallery-lightbox-prev" type="button" aria-label={text.previous} onClick={() => setSelectedImage((selectedImage + visibleImages.length - 1) % visibleImages.length)}>‹</button>
-                          <button className="private-gallery-lightbox-next" type="button" aria-label={text.next} onClick={() => setSelectedImage((selectedImage + 1) % visibleImages.length)}>›</button>
-                          <nav className="private-gallery-thumbnails" aria-label={text.galleryHeading}>
-                            {visibleImages.map((image, index) => (
-                              <button key={`${image.sortOrder}-${image.title}-${index}`} type="button" className={index === selectedImage ? "is-active" : ""} aria-label={image.title} aria-current={index === selectedImage ? "true" : undefined} onClick={() => setSelectedImage(index)}>
-                                <Image src={image.image.url} alt="" width={84} height={60} />
-                              </button>
-                            ))}
-                          </nav>
+                          <button className="private-gallery-lightbox-prev" type="button" aria-label={text.previous} onClick={() => setSelectedPhoto((selectedPhoto + visibleImages[selectedImage].images.length - 1) % visibleImages[selectedImage].images.length)}>‹</button>
+                          <button className="private-gallery-lightbox-next" type="button" aria-label={text.next} onClick={() => setSelectedPhoto((selectedPhoto + 1) % visibleImages[selectedImage].images.length)}>›</button>
                         </>
                       )}
+                      <nav className="private-gallery-thumbnails" aria-label={text.galleryHeading}>
+                        {visibleImages[selectedImage].images.map((photo, index) => (
+                          <button key={`${visibleImages[selectedImage].title}-${photo.url}-${index}`} type="button" className={index === selectedPhoto ? "is-active" : ""} aria-label={`${visibleImages[selectedImage].title} — ${index + 1}`} aria-current={index === selectedPhoto ? "true" : undefined} onClick={() => setSelectedPhoto(index)}>
+                            <Image src={photo.url} alt="" width={84} height={60} />
+                          </button>
+                        ))}
+                      </nav>
                     </div>
                     <aside className="private-gallery-lightbox-details">
                       <h2>{visibleImages[selectedImage].title}</h2>

@@ -399,6 +399,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1.5fr) minmax(19rem, 1fr);
   width: min(100%, 78rem);
+  height: min(82svh, 54rem);
   max-height: min(82svh, 54rem);
   overflow: hidden;
   border-radius: 10px;
@@ -410,8 +411,10 @@
   position: relative;
   display: grid;
   min-width: 0;
-  min-height: 24rem;
+  min-height: 0;
+  height: 100%;
   grid-template-rows: minmax(0, 1fr) auto;
+  overflow: hidden;
   background: #1e1d1b;
 }
 
@@ -655,6 +658,7 @@
     display: flex;
     width: min(100%, 32rem);
     max-height: calc(100svh - 1.5rem);
+    height: auto;
     flex-direction: column;
     overflow-y: auto;
     border-radius: 8px;
@@ -662,6 +666,7 @@
 
   .private-gallery-lightbox-visual {
     min-height: 0;
+    height: auto;
     grid-template-rows: minmax(0, 1fr) auto;
   }
 

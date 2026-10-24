@@ -1,5 +1,6 @@
 import type { Core } from "@strapi/strapi";
 import { seedPrivateGalleryCategories } from "./seeds/private-gallery-categories";
+import privateGalleryController from "./api/private-gallery/controllers/private-gallery";
 
 const revalidatedModels = [
   "api::color-palette.color-palette",
@@ -47,7 +48,29 @@ export default {
    *
    * This gives you an opportunity to extend code.
    */
-  register(/* { strapi }: { strapi: Core.Strapi } */) {},
+  register({ strapi }: { strapi: Core.Strapi }) {
+    strapi.customFields.register({
+      name: "private-gallery-photos",
+      type: "json",
+    });
+    strapi.server.routes({
+      type: "admin",
+      prefix: "/private-gallery",
+      routes: [{
+        method: "POST",
+        path: "/upload",
+        handler: async (ctx: any) => privateGalleryController.upload(ctx),
+        config: { policies: ["admin::isAuthenticatedAdmin"] },
+        info: { pluginName: "admin" },
+      }, {
+        method: "GET",
+        path: "/photo/:id",
+        handler: async (ctx: any) => privateGalleryController.adminPhoto(ctx),
+        config: { policies: ["admin::isAuthenticatedAdmin"] },
+        info: { pluginName: "admin" },
+      }],
+    });
+  },
 
   /**
    * An asynchronous bootstrap function that runs before

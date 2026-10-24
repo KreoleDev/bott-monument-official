@@ -4,7 +4,7 @@
   "info": {
     "singularName": "private-gallery-category",
     "pluralName": "private-gallery-categories",
-    "displayName": "Gallery Category"
+    "displayName": "Private Gallery Category"
   },
   "options": { "draftAndPublish": true },
   "attributes": {
