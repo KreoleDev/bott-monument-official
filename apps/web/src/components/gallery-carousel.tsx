@@ -4,8 +4,8 @@ import Image from "next/image";
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import type { SectionContent } from "@/lib/strapi";
 import type { GalleryItem } from "@/lib/gallery";
-import { localizedHref } from "@/lib/locale";
 import { startGalleryMotion } from "./gallery-motion";
+import { GalleryAccessForm } from "./gallery-access-form";
 import "./gallery.css";
 
 function EmphasizedLastWord({ title }: { title: string | null }) {
@@ -34,14 +34,15 @@ export function GalleryCarousel({
 }) {
   const viewport = useRef<HTMLDivElement>(null);
   const dialog = useRef<HTMLDialogElement>(null);
+  const successDialog = useRef<HTMLDialogElement>(null);
+  const transitioningToSuccess = useRef(false);
   const savedOverflow = useRef<string | null>(null);
   const [useReducedMobileSet, setUseReducedMobileSet] = useState(false);
+  const [accessOpen, setAccessOpen] = useState(false);
   const access = section.galleryAccess;
   const visibleItems = useMemo(
     () =>
-      useReducedMobileSet && items.length > 4
-        ? items.filter((_, index) => index % 3 !== 2)
-        : items,
+      useReducedMobileSet && items.length > 4 ? items.filter((_, index) => index % 3 !== 2) : items,
     [items, useReducedMobileSet],
   );
 
@@ -70,6 +71,7 @@ export function GalleryCarousel({
     savedOverflow.current = document.body.style.overflow;
     dialog.current.showModal();
     document.body.style.overflow = "hidden";
+    setAccessOpen(true);
   }
   function restoreScroll() {
     if (savedOverflow.current !== null) {
@@ -77,16 +79,30 @@ export function GalleryCarousel({
       savedOverflow.current = null;
     }
   }
+  function handleAccessDialogClose() {
+    if (transitioningToSuccess.current) {
+      transitioningToSuccess.current = false;
+      setAccessOpen(false);
+      successDialog.current?.showModal();
+      document.body.style.overflow = "hidden";
+      return;
+    }
+    restoreScroll();
+    setAccessOpen(false);
+  }
   function closeAccess() {
     dialog.current?.close();
     restoreScroll();
+    setAccessOpen(false);
   }
-  const requestHref = localizedHref(
-    locale,
-    access?.requestHref && /^(#[\w-]+|\/(?!\/))/.test(access.requestHref)
-      ? access.requestHref
-      : "#contact",
-  );
+  function showSuccess() {
+    transitioningToSuccess.current = true;
+    dialog.current?.close();
+  }
+  function closeSuccess() {
+    successDialog.current?.close();
+    restoreScroll();
+  }
 
   return (
     <section
@@ -169,7 +185,7 @@ export function GalleryCarousel({
           className="mag-access-modal"
           aria-labelledby="magAccessTitle"
           aria-describedby="magAccessCopy"
-          onClose={restoreScroll}
+          onClose={handleAccessDialogClose}
           onClick={(e) => {
             if (e.target === e.currentTarget) closeAccess();
           }}
@@ -190,17 +206,55 @@ export function GalleryCarousel({
             <p className="mag-access-copy" id="magAccessCopy">
               {access.description}
             </p>
-            <div className="mag-access-actions">
-              <a className="mag-access-primary" href={requestHref} onClick={closeAccess}>
-                {access.requestLabel}
-              </a>
-              <button className="mag-access-secondary" type="button" onClick={closeAccess}>
-                {access.dismissLabel}
-              </button>
-            </div>
+            {accessOpen && (
+              <GalleryAccessForm
+                locale={locale}
+                submitLabel={access.requestLabel || undefined}
+                dismissLabel={access.dismissLabel || undefined}
+                onClose={closeAccess}
+                onSuccess={showSuccess}
+              />
+            )}
           </div>
         </dialog>
       )}
+      <dialog
+        ref={successDialog}
+        className="mag-access-modal mag-access-success-modal"
+        aria-labelledby="magAccessSuccessTitle"
+        aria-describedby="magAccessSuccessCopy"
+        onClose={restoreScroll}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) closeSuccess();
+        }}
+      >
+        <div className="mag-access-card">
+          <button
+            className="mag-access-close"
+            type="button"
+            aria-label="Close"
+            onClick={closeSuccess}
+          >
+            ✕
+          </button>
+          <p className="mag-access-kicker">
+            {locale.toLowerCase().startsWith("pt") ? "PEDIDO RECEBIDO" : "REQUEST RECEIVED"}
+          </p>
+          <h3 className="mag-access-title" id="magAccessSuccessTitle">
+            {locale.toLowerCase().startsWith("pt") ? "Pedido enviado" : "Request submitted"}
+          </h3>
+          <p className="mag-access-copy" id="magAccessSuccessCopy">
+            {locale.toLowerCase().startsWith("pt")
+              ? "O teu pedido foi submetido. Vais receber um email com um link quando for aprovado."
+              : "Your request was submitted. You will receive an email with a link when it is approved."}
+          </p>
+          <div className="mag-access-success-actions">
+            <button className="mag-access-primary" type="button" onClick={closeSuccess}>
+              {locale.toLowerCase().startsWith("pt") ? "Fechar" : "Close"}
+            </button>
+          </div>
+        </div>
+      </dialog>
     </section>
   );
 }

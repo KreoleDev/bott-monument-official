@@ -153,6 +153,70 @@
   margin-bottom: 1.7rem;
 }
 
+.mag-access-form fieldset {
+  display: grid;
+  gap: 0.65rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.mag-access-form label,
+.mag-access-security > span {
+  font-family: var(--font-utility);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--palette-gallery-surface-text-color, #3e3428);
+}
+
+.mag-access-form input:not([type="hidden"]) {
+  width: 100%;
+  min-height: 48px;
+  box-sizing: border-box;
+  margin-bottom: 0.55rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid rgba(var(--palette-gallery-surface-text-color-rgb, 28, 24, 18), 0.24);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.48);
+  color: var(--palette-gallery-surface-text-color, #1c1812);
+  font: inherit;
+}
+
+.mag-access-form input:focus-visible {
+  outline: 2px solid var(--palette-gallery-accent-color, #8a6b2e);
+  outline-offset: 2px;
+}
+
+.mag-access-security {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0.2rem 0 0.55rem;
+}
+
+.mag-access-security > div {
+  min-height: 0;
+}
+
+.mag-access-honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.mag-access-status {
+  min-height: 1.4em;
+  margin: 0.8rem 0 0;
+  color: var(--palette-gallery-surface-text-color, #3e3428);
+  font-family: var(--font-utility);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
 .mag-access-actions {
   display: flex;
   align-items: center;
@@ -388,6 +452,17 @@
   color: var(--palette-gallery-surface-text-color, #1c1812);
   border: 1px solid rgba(var(--palette-gallery-surface-text-color-rgb, 28, 24, 18), 0.2);
   cursor: pointer;
+}
+
+.mag-access-primary:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  transform: none;
+}
+
+.mag-access-success-actions {
+  display: flex;
+  justify-content: flex-end;
 }
 
 /* Keep native-dialog focus, Escape and modal behavior with the design's overlay. */

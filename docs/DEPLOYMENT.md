@@ -73,7 +73,7 @@ uploads when the service is recreated. Production media is the bucket.
 
 Create the first admin user on the public `/admin` URL. Then create two API
 tokens: `web-readonly` (read-only) and `web-inquiries` (custom, only
-`api::inquiry.inquiry.create`).
+`api::inquiry.inquiry.create` and `api::gallery-access.gallery-access.create`).
 
 ### Next.js
 
@@ -87,7 +87,7 @@ Variables, all server-only:
 | --- | --- |
 | `STRAPI_URL` | Public HTTPS URL of Strapi |
 | `STRAPI_API_TOKEN` | `web-readonly` |
-| `STRAPI_INQUIRY_TOKEN` | `web-inquiries`, with Inquiry create and upload/media create permission for up to three images |
+| `STRAPI_INQUIRY_TOKEN` | `web-inquiries`, with Inquiry and Gallery Access create plus upload/media create permission for up to three images |
 | `STRAPI_PREVIEW_TOKEN` | Optional second read-only token for drafts |
 | `PREVIEW_SECRET`, `REVALIDATION_SECRET` | Same values as Strapi |
 | `MEDIA_ORIGINS` | Public bucket origin |
@@ -123,7 +123,7 @@ The committed `handoff/` archive stays unused.
 - Strapi preview opens `/api/preview?secret=…&path=/{locale}` or `/{locale}/news`.
 - Webhook **Website content refresh**: `https://PUBLIC_SITE/api/revalidate`, header `x-revalidation-secret` equal to `REVALIDATION_SECRET`, events publish, unpublish, update and delete. Replace the local webhook URL. Do not copy the local secret.
 - Public pages revalidate after 60 seconds. The webhook marks them stale. Draft preview is uncached.
-- Inquiry email stays off until a real sender and recipient exist. Then set `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASSWORD`, `EMAIL_FROM`, `EMAIL_REPLY_TO`, `INQUIRY_NOTIFICATION_TO` and `INQUIRY_NOTIFICATIONS_ENABLED=true`. A failed send still keeps the saved inquiry. The visitor does not get an automatic reply.
+- Admin email notifications for inquiries and private gallery requests stay off until a real sender, recipient, and SMTP credentials are configured. Set `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASSWORD`, `EMAIL_FROM`, `EMAIL_REPLY_TO`, `ADMIN_NOTIFICATION_TO`, and `ADMIN_NOTIFICATIONS_ENABLED=true`. Existing `INQUIRY_NOTIFICATION_TO` and `INQUIRY_NOTIFICATIONS_ENABLED` values are accepted as a fallback. A failed send does not undo the saved request. Visitors do not get an automatic inquiry reply; gallery invitation email is sent after access is approved.
 
 ## 5. Launch checks
 

@@ -1,0 +1,38 @@
+{
+  "collectionName": "components_pages_private_galleries",
+  "info": {
+    "displayName": "Private Gallery Page",
+    "description": "Copy and colors for the private gallery access and gallery view."
+  },
+  "attributes": {
+    "eyebrow": { "type": "string", "default": "BOTT MONUMENT · PRIVATE GALLERY" },
+    "title": { "type": "string", "default": "A collection of memories" },
+    "description": {
+      "type": "text",
+      "default": "Enter the email address approved for access to view this private collection."
+    },
+    "accessCheckEyebrow": { "type": "string", "default": "A PRIVATE COLLECTION" },
+    "accessCheckTitle": { "type": "string", "default": "Enter your email" },
+    "emailLabel": { "type": "string", "default": "Email address" },
+    "emailPlaceholder": { "type": "string", "default": "you@example.com" },
+    "submitLabel": { "type": "string", "default": "Open the gallery" },
+    "checkingLabel": { "type": "string", "default": "Checking access…" },
+    "accessDeniedMessage": {
+      "type": "text",
+      "default": "We couldn’t find active gallery access for that email. Check the address or contact us for help."
+    },
+    "errorMessage": { "type": "text", "default": "We couldn’t check access right now. Please try again." },
+    "emptyGalleryMessage": { "type": "text", "default": "There are no photos in the gallery yet. Please check back later." },
+    "backgroundColor": { "type": "string", "default": "#11110F" },
+    "backgroundMiddleColor": { "type": "string", "default": "#171713" },
+    "backgroundEndColor": { "type": "string", "default": "#191711" },
+    "textColor": { "type": "string", "default": "#F4EFE5" },
+    "mutedTextColor": { "type": "string", "default": "#D2C9BB" },
+    "accentColor": { "type": "string", "default": "#C9A050" },
+    "surfaceColor": { "type": "string", "default": "#25231D" },
+    "surfaceTextColor": { "type": "string", "default": "#F4EFE5" },
+    "borderColor": { "type": "string", "default": "#5F5238" },
+    "buttonColor": { "type": "string", "default": "#C9A050" },
+    "buttonTextColor": { "type": "string", "default": "#171510" }
+  }
+}

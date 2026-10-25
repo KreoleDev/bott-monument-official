@@ -212,6 +212,61 @@ export interface PagesNews extends Struct.ComponentSchema {
   };
 }
 
+export interface PagesPrivateGallery extends Struct.ComponentSchema {
+  collectionName: 'components_pages_private_galleries';
+  info: {
+    description: 'Copy and colors for the private gallery access and gallery view.';
+    displayName: 'Private Gallery Page';
+  };
+  attributes: {
+    accentColor: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'#C9A050'>;
+    accessCheckEyebrow: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'A PRIVATE COLLECTION'>;
+    accessCheckTitle: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Enter your email'>;
+    accessDeniedMessage: Schema.Attribute.Text &
+      Schema.Attribute.DefaultTo<'We couldn\u2019t find active gallery access for that email. Check the address or contact us for help.'>;
+    backgroundColor: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'#11110F'>;
+    backgroundEndColor: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'#191711'>;
+    backgroundMiddleColor: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'#171713'>;
+    borderColor: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'#5F5238'>;
+    buttonColor: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'#C9A050'>;
+    buttonTextColor: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'#171510'>;
+    checkingLabel: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Checking access\u2026'>;
+    description: Schema.Attribute.Text &
+      Schema.Attribute.DefaultTo<'Enter the email address approved for access to view this private collection.'>;
+    emailLabel: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Email address'>;
+    emailPlaceholder: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'you@example.com'>;
+    emptyGalleryMessage: Schema.Attribute.Text &
+      Schema.Attribute.DefaultTo<'There are no photos in the gallery yet. Please check back later.'>;
+    errorMessage: Schema.Attribute.Text &
+      Schema.Attribute.DefaultTo<'We couldn\u2019t check access right now. Please try again.'>;
+    eyebrow: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'BOTT MONUMENT \u00B7 PRIVATE GALLERY'>;
+    mutedTextColor: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'#D2C9BB'>;
+    submitLabel: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Open the gallery'>;
+    surfaceColor: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'#25231D'>;
+    surfaceTextColor: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'#F4EFE5'>;
+    textColor: Schema.Attribute.String & Schema.Attribute.DefaultTo<'#F4EFE5'>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'A collection of memories'>;
+  };
+}
+
 export interface PagesShowroom extends Struct.ComponentSchema {
   collectionName: 'components_pages_showroom';
   info: {
@@ -361,6 +416,7 @@ declare module '@strapi/strapi' {
       'pages.hero': PagesHero;
       'pages.marquee': PagesMarquee;
       'pages.news': PagesNews;
+      'pages.private-gallery': PagesPrivateGallery;
       'pages.showroom': PagesShowroom;
       'pages.testimonials': PagesTestimonials;
       'shared.seo': SharedSeo;
