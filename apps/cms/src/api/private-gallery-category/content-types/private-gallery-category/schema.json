@@ -1,0 +1,20 @@
+{
+  "kind": "collectionType",
+  "collectionName": "private_gallery_categories",
+  "info": {
+    "singularName": "private-gallery-category",
+    "pluralName": "private-gallery-categories",
+    "displayName": "Private Gallery Category"
+  },
+  "options": { "draftAndPublish": true },
+  "attributes": {
+    "name": { "type": "string", "required": true, "maxLength": 80, "unique": true },
+    "sortOrder": { "type": "integer", "default": 0 },
+    "images": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::private-gallery-item.private-gallery-item",
+      "mappedBy": "category"
+    }
+  }
+}

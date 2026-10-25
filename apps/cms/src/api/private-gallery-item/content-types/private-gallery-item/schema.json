@@ -1,0 +1,40 @@
+{
+  "kind": "collectionType",
+  "collectionName": "private_gallery_items",
+  "info": {
+    "singularName": "private-gallery-item",
+    "pluralName": "private-gallery-items",
+    "displayName": "Private Gallery Image"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "maxLength": 200
+    },
+    "caption": {
+      "type": "text",
+      "maxLength": 1000
+    },
+    "photos": {
+      "type": "customField",
+      "customField": "global::private-gallery-photos",
+      "description": "Photos uploaded directly from your computer to private storage. These files never appear in the shared Media Library or Public Gallery."
+    },
+    "category": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::private-gallery-category.private-gallery-category",
+      "inversedBy": "images",
+      "required": true,
+      "description": "Select an existing category. Create categories in Gallery Category before adding images."
+    },
+    "sortOrder": {
+      "type": "integer",
+      "default": 0
+    }
+  }
+}

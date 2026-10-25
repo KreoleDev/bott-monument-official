@@ -26,7 +26,13 @@ const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Middlewar
   },
   "strapi::poweredBy",
   "strapi::query",
-  "strapi::body",
+  {
+    name: "strapi::body",
+    config: {
+      formLimit: "100mb",
+      formidable: { maxFileSize: 25 * 1024 * 1024, maxFiles: 20 },
+    },
+  },
   "strapi::session",
   "strapi::favicon",
   "strapi::public",

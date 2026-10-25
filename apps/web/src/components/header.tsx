@@ -11,11 +11,13 @@ export function Header({
   siteName = "Bott Monument",
   links,
   locale = "en",
+  homeHref = "#",
 }: {
   logo?: string | null;
   siteName?: string;
   links?: { label: string; href: string }[];
   locale?: string;
+  homeHref?: string;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
@@ -121,7 +123,7 @@ export function Header({
         style={scrollColors}
         className={`site-nav${isScrolled ? " scrolled" : ""}${isHidden && !menuOpen ? " nav-hidden" : ""}`}
       >
-        <a className="nav-logo" href="#" aria-label="Bott Monument home">
+        <a className="nav-logo" href={homeHref} aria-label="Bott Monument home">
           <span className="sr-only">Bott Monument</span>
           <Image
             src={logo || "/bott-logo.png"}

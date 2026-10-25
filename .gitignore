@@ -23,6 +23,10 @@ handoff/*
 !handoff/bott-content-key.txt
 public/uploads/*
 !public/uploads/.gitkeep
+apps/cms/private-gallery-uploads/*
+!apps/cms/private-gallery-uploads/.gitkeep
+apps/cms/.private-gallery-uploads/*
+!apps/cms/.private-gallery-uploads/.gitkeep
 
 # Logs
 *.log

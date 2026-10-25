@@ -1,6 +1,6 @@
 export const HOME_PAGE_QUERY = `
-query HomePage($status: PublicationStatus!, $relationPage: Int!, $locale: I18NLocaleCode!) {
- pages(filters:{slug:{eq:"home"}},locale:$locale,status:$status,pagination:{limit:1}) {
+query Page($slug: String!, $status: PublicationStatus!, $relationPage: Int!, $locale: I18NLocaleCode!) {
+ pages(filters:{slug:{eq:$slug}},locale:$locale,status:$status,pagination:{limit:1}) {
  header { siteName logo { url alternativeText } links { id label href } }
  documentId title locale localizations { locale }
  seo { metaTitle metaDescription metaImage { url alternativeText } }
@@ -19,6 +19,12 @@ image { url alternativeText }
 video { url alternativeText }
 }
 footer { brand copyright tagline taglineEmphasis facebookUrl instagramUrl youtubeUrl }
+ privateGallery {
+  eyebrow title description accessCheckEyebrow accessCheckTitle emailLabel emailPlaceholder
+  submitLabel checkingLabel accessDeniedMessage errorMessage emptyGalleryMessage
+  backgroundColor backgroundMiddleColor backgroundEndColor textColor mutedTextColor accentColor
+  surfaceColor surfaceTextColor borderColor buttonColor buttonTextColor
+ }
  content { __typename
 ... on ComponentPagesContact {
 id

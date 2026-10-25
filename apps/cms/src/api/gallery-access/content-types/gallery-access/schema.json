@@ -1,0 +1,19 @@
+{
+  "kind": "collectionType",
+  "collectionName": "gallery_accesses",
+  "info": {
+    "singularName": "gallery-access",
+    "pluralName": "gallery-accesses",
+    "displayName": "Gallery Access"
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "name": { "type": "string", "required": true, "maxLength": 150 },
+    "email": { "type": "email", "required": true },
+    "submissionLocale": { "type": "string", "default": "en", "private": true },
+    "accessActive": { "type": "boolean", "default": false },
+    "accessNotificationSentAt": { "type": "datetime", "private": true },
+    "accessTokenHash": { "type": "string", "private": true },
+    "accessTokenExpiresAt": { "type": "datetime", "private": true }
+  }
+}

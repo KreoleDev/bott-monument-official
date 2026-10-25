@@ -32,6 +32,45 @@ test("inquiry API accepts submissions without category choices", async () => {
   assert.equal(mutation.variables.data.message, "Tell me about this person.");
 });
 
+test("gallery access requests create Gallery Access records, not Inquiries", async () => {
+  let mutation;
+  const { POST } = loadTs("../src/app/api/inquiries/route.ts", {
+    env: {
+      NODE_ENV: "development",
+      NEXT_PUBLIC_LOCAL_TURNSTILE_BYPASS: "true",
+      STRAPI_URL: "http://cms",
+      STRAPI_INQUIRY_TOKEN: "submit-token",
+    },
+    fetch: async (_url, options) => {
+      mutation = JSON.parse(options.body);
+      return {
+        ok: true,
+        json: async () => ({ data: { createGalleryAccess: { documentId: "access-1" } } }),
+      };
+    },
+  });
+  const response = await POST(
+    new Request("http://site.test/api/inquiries", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        name: "Visitor",
+        email: "visitor@example.com",
+        requestType: "gallery-access",
+        locale: "en",
+      }),
+    }),
+  );
+
+  assert.equal(response.status, 201);
+  assert.match(mutation.query, /createGalleryAccess/);
+  assert.doesNotMatch(mutation.query, /createInquiry/);
+  assert.deepEqual(mutation.variables.data, {
+    name: "Visitor",
+    email: "visitor@example.com",
+  });
+});
+
 test("inquiry API attaches up to three uploaded images to the Strapi inquiry", async () => {
   let upload;
   let mutation;

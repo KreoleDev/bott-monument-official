@@ -5,7 +5,7 @@
     "singularName": "page",
     "pluralName": "pages",
     "displayName": "Page",
-    "description": "Hero and Footer are fixed fields. Arrange the middle sections in content."
+    "description": "Page chrome, gallery access settings and middle sections."
   },
   "options": {
     "draftAndPublish": true
@@ -60,6 +60,16 @@
       "type": "component",
       "repeatable": false,
       "component": "footer.details",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "privateGallery": {
+      "type": "component",
+      "repeatable": false,
+      "component": "pages.private-gallery",
       "pluginOptions": {
         "i18n": {
           "localized": true

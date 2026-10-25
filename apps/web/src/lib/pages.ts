@@ -27,15 +27,41 @@ export type CmsPage = {
   } | null;
   hero: PageBlock | null;
   footer: FooterDetails | null;
+  privateGallery: {
+    eyebrow?: string | null;
+    title?: string | null;
+    description?: string | null;
+    accessCheckEyebrow?: string | null;
+    accessCheckTitle?: string | null;
+    emailLabel?: string | null;
+    emailPlaceholder?: string | null;
+    submitLabel?: string | null;
+    checkingLabel?: string | null;
+    accessDeniedMessage?: string | null;
+    errorMessage?: string | null;
+    emptyGalleryMessage?: string | null;
+    backgroundColor?: string | null;
+    backgroundMiddleColor?: string | null;
+    backgroundEndColor?: string | null;
+    textColor?: string | null;
+    mutedTextColor?: string | null;
+    accentColor?: string | null;
+    surfaceColor?: string | null;
+    surfaceTextColor?: string | null;
+    borderColor?: string | null;
+    buttonColor?: string | null;
+    buttonTextColor?: string | null;
+  } | null;
   content: PageBlock[];
 };
 
-export async function getHomePage(
+export async function getPageBySlug(
+  slug: string,
   preview = false,
   locale = DEFAULT_LOCALE,
 ): Promise<CmsPage | null> {
   return cmsRead(
-    `page:home:${locale}`,
+    `page:${slug}:${locale}`,
     async () => {
       let result: CmsPage | null = null;
       let relationPage = 1;
@@ -44,6 +70,7 @@ export async function getHomePage(
         const data = await cmsQuery<{ pages: CmsPage[] }>(
           HOME_PAGE_QUERY,
           {
+            slug,
             status: preview ? "DRAFT" : "PUBLISHED",
             relationPage,
             locale,
@@ -78,4 +105,8 @@ export async function getHomePage(
     null,
     preview,
   );
+}
+
+export function getHomePage(preview = false, locale = DEFAULT_LOCALE) {
+  return getPageBySlug("home", preview, locale);
 }

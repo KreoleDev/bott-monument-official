@@ -98,8 +98,9 @@ Na primeira corrida, cria o utilizador admin. Depois:
 3. Token type: **Read-only**
 4. Duration: Unlimited (local)
 5. Copia o token para `apps/web/.env.local`
-6. Cria outro token **Custom**, `web-inquiries`, com **Inquiry → create** e
-   upload/media create permission para até três anexos de imagem do formulário.
+6. Cria outro token **Custom**, `web-inquiries`, com **Inquiry → create**,
+   **Gallery Access → create** e upload/media create permission para até três
+   anexos de imagem do formulário.
 7. Guarda esse segundo token em `STRAPI_INQUIRY_TOKEN`. Não concedas leitura, alteração ou eliminação de inquiries.
 
 ### 2. Next.js
@@ -139,7 +140,7 @@ diretamente do CMS pelo browser.
 | --- | --- |
 | `STRAPI_URL` | URL do CMS, **sem** `NEXT_PUBLIC_` |
 | `STRAPI_API_TOKEN` | Token read-only, **sem** `NEXT_PUBLIC_` |
-| `STRAPI_INQUIRY_TOKEN` | Token custom com apenas `api::inquiry.inquiry.create`, só servidor |
+| `STRAPI_INQUIRY_TOKEN` | Token custom com `api::inquiry.inquiry.create`, `api::gallery-access.gallery-access.create` e upload, só servidor |
 | `PREVIEW_SECRET` / `REVALIDATION_SECRET` | Segredos partilhados com o CMS |
 | `STRAPI_PREVIEW_TOKEN` | Token read-only opcional para preview |
 | `MEDIA_ORIGINS` | Origens públicas adicionais para otimização de imagens |
@@ -465,3 +466,14 @@ fecha inicialmente os cartões fixos e SEO. A lista intermédia usa os controlos
 nativos do Strapi. A configuração Vite reutiliza dois renderizadores internos
 do Strapi 5.53; ao atualizar Strapi, verifique o build e a abertura/edição dos
 cartões, permissões, media e relações. Não há alterações em `node_modules`.
+
+### Aprovação de acesso à galeria
+
+Os pedidos de acesso ficam na coleção **Gallery Access**, separados das
+mensagens da coleção **Inquiries**. Cada pessoa tem um switch **Access active**;
+ativá-lo envia um link de sete dias para `/[locale]/private-gallery`, e
+desativá-lo revoga o link. Também é possível criar registos manualmente nesta
+coleção. As imagens privadas são geridas numa única coleção **Private Gallery**:
+carregue cada ficheiro do computador e escolha a categoria no mesmo registo. Esta versão destina-se apenas a desenvolvimento:
+os ficheiros podem ser acedidos diretamente pelas respetivas URLs. A proteção
+dos ficheiros e dos links deve ser configurada antes de publicar em produção.
