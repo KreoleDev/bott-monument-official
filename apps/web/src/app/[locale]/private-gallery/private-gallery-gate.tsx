@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type CSSProperties, type FormEvent } from "react";
 import type { StrapiMedia } from "@/lib/strapi";
 import type { CmsPage } from "@/lib/pages";
 type GalleryCopy = NonNullable<CmsPage["privateGallery"]>;
@@ -123,6 +123,21 @@ export function PrivateGalleryGate({
     [images, selectedCategory],
   );
   const activePhotoCount = selectedImage === null ? 0 : visibleImages[selectedImage]?.images.length || 0;
+
+  useEffect(() => {
+    if (selectedImage === null || activePhotoCount < 2) return;
+    const photos = visibleImages[selectedImage]?.images;
+    if (!photos?.length) return;
+    const adjacent = [
+      photos[(selectedPhoto + photos.length - 1) % photos.length],
+      photos[(selectedPhoto + 1) % photos.length],
+    ];
+    adjacent.forEach((photo) => {
+      const image = new window.Image();
+      image.decoding = "async";
+      image.src = photo.url;
+    });
+  }, [selectedImage, selectedPhoto, activePhotoCount, visibleImages]);
 
   useEffect(() => {
     if (selectedImage === null) return;
@@ -252,7 +267,10 @@ export function PrivateGalleryGate({
                 <div className="private-gallery-lightbox" role="dialog" aria-modal="true" aria-label={visibleImages[selectedImage].title} onClick={() => setSelectedImage(null)}>
                   <button className="private-gallery-lightbox-close" type="button" aria-label={text.close} onClick={() => setSelectedImage(null)}>×</button>
                   <div className="private-gallery-lightbox-panel" onClick={(event) => event.stopPropagation()}>
-                    <div className="private-gallery-lightbox-visual">
+                    <div
+                      className="private-gallery-lightbox-visual"
+                      style={{ "--private-gallery-photo": `url("${visibleImages[selectedImage].images[selectedPhoto].url}")` } as CSSProperties}
+                    >
                       <Image src={visibleImages[selectedImage].images[selectedPhoto].url} alt={visibleImages[selectedImage].images[selectedPhoto].alternativeText || visibleImages[selectedImage].title} width={visibleImages[selectedImage].images[selectedPhoto].width || 1600} height={visibleImages[selectedImage].images[selectedPhoto].height || 1200} priority />
                       {visibleImages[selectedImage].images.length > 1 && (
                         <>
