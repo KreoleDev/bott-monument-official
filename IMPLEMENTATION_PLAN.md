@@ -180,6 +180,7 @@ Do not add SEO, redirects or translation plugins without a demonstrated requirem
   item records, then verify translated interface copy, metadata and both localized URLs.
 - Additional CMS slug routes: Page can store entries, but the frontend currently consumes `home`; `/{locale}/news` remains a dedicated route.
 - Demo layout pickers, headline switchers and design toolbar are excluded. CMS palettes are a real feature; demo controls are not.
+- Replacing Strapi with Payload is not launch work. Impact and the migration shape, if the team later approves it, are in [PAYLOAD_MIGRATION_SPEC.md](docs/PAYLOAD_MIGRATION_SPEC.md).
 
 ## Data handoff and maintenance
 
