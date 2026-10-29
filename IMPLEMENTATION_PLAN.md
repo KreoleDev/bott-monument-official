@@ -87,7 +87,7 @@ task in this file.
 - [x] All sections in the map implemented using the local design.
 - [x] `getPage` → mappers → `RenderPage`; Hero precedes the middle list, Footer follows main content.
 - [x] Typed Page GraphQL fragments, Home SEO with safe code defaults and media URL resolution.
-- [x] Preserve gallery rotation, private-gallery dialog, image lightbox, navigation and Escape handling.
+- [x] Preserve gallery rotation, private-gallery access dialog, navigation and Escape handling. Public image zoom is still open; see Remaining work.
 - [x] Mobile menu, skip link, scroll reveals, reduced-motion handling and no-JS content visibility.
 - [x] Contact validation uses published Page choices; submissions are saved to Inquiries.
 - [x] Dedicated `/{locale}/news` route reads Press Item; arbitrary CMS slug routes are not implemented.
@@ -135,6 +135,18 @@ These checks are not a cross-device or accessibility audit, and they are not a p
 - [ ] Rerun frontend and CMS tests, typecheck and production builds on current `dev`.
 - [ ] Review desktop and mobile layout, keyboard use, focus, dialogs, gallery gestures, reduced motion, long content, the contact form, preview and publishing.
 
+### Sitemap, share previews and image zoom
+
+Checked on 2026-10-29 against `dev`. Do this in the Next.js app. Do not add a Strapi SEO plugin for it.
+
+- [ ] Serve `sitemap.xml` for each published locale: `/{locale}` and `/{locale}/news`. Leave out the private gallery, API routes and draft preview.
+- [ ] Serve `robots.txt` from the Next.js app. `apps/cms/public/robots.txt` belongs to Strapi and does not cover the public site.
+- [ ] Each public page shared on Teams, WhatsApp or LinkedIn shows a preview image, title and description.
+  - Home already reads Open Graph title, description and image from Home → SEO (`metaTitle`, `metaDescription`, `metaImage`). The image URL is absolute when the media URL is `https` or `STRAPI_URL` is set. `metadataBase` comes from Site Settings `siteUrl`. With no `metaImage`, the share has text and no picture. Still missing: `og:url`, type, site name, and image width and height.
+  - `/{locale}/news` has no metadata of its own and inherits the homepage values.
+  - `/{locale}/private-gallery` has its own title and description, no share image, and `noindex`. Keep it out of the sitemap.
+- [ ] Image zoom. The public gallery only enlarges a card on hover. `ImageLightbox` exists and is not used. Featured-in opens the file in a new tab. The private gallery lightbox moves between photos and does not zoom with pinch or the mouse wheel.
+
 ### Launch
 
 - [ ] Record keep or remove for each optional Strapi plugin in the table below. If one is removed, retest the APIs that depend on it.
@@ -158,7 +170,7 @@ The snapshot and the visual review can proceed locally. Approved copy, SMTP and 
 | Users & Permissions | Default Strapi user/API role support | Review dependencies before removal |
 | Content Releases / Review Workflows | Strapi editorial features | Review availability and team needs; do not assume separate uninstallable packages |
 
-Do not add SEO, redirects or translation plugins without a demonstrated requirement.
+Do not add SEO, redirects or translation plugins without a demonstrated requirement. Sitemap, robots and share previews belong in the Next.js app, under Remaining work.
 
 ## Optional future scope — not missing MVP work
 
