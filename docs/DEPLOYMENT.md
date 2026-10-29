@@ -123,13 +123,14 @@ The committed `handoff/` archive stays unused.
 - Strapi preview opens `/api/preview?secret=…&path=/{locale}` or `/{locale}/news`.
 - Webhook **Website content refresh**: `https://PUBLIC_SITE/api/revalidate`, header `x-revalidation-secret` equal to `REVALIDATION_SECRET`, events publish, unpublish, update and delete. Replace the local webhook URL. Do not copy the local secret.
 - Public pages revalidate after 60 seconds. The webhook marks them stale. Draft preview is uncached.
-- Admin email notifications for inquiries and private gallery requests stay off until a real sender, recipient, and SMTP credentials are configured. Set `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASSWORD`, `EMAIL_FROM`, `EMAIL_REPLY_TO`, `ADMIN_NOTIFICATION_TO`, and `ADMIN_NOTIFICATIONS_ENABLED=true`. Existing `INQUIRY_NOTIFICATION_TO` and `INQUIRY_NOTIFICATIONS_ENABLED` values are accepted as a fallback. A failed send does not undo the saved request. Visitors do not get an automatic inquiry reply; gallery invitation email is sent after access is approved.
+- SMTP is required before launch, decided 2026-10-29. Use a sender on the client's domain. Until those credentials exist, admin email stays off. Set `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASSWORD`, `EMAIL_FROM`, `EMAIL_REPLY_TO`, `ADMIN_NOTIFICATION_TO`, and `ADMIN_NOTIFICATIONS_ENABLED=true`. Existing `INQUIRY_NOTIFICATION_TO` and `INQUIRY_NOTIFICATIONS_ENABLED` values are accepted as a fallback. A failed send does not undo the saved request. Visitors do not get an automatic inquiry reply. Turning Gallery Access active sends the visitor the seven-day link.
 
 ## 5. Launch checks
 
 - Web: `npm run lint`, `npm test`, `npm run typecheck`, `npm run build -- --webpack`.
 - CMS: `npm test`, `npx tsc --noEmit`, `npx tsc -p src/admin/tsconfig.json --noEmit`, `npm run build`.
 - On the live URLs: home in English, `/` language redirect, gallery images from the bucket, contact form stored as an Inquiry, preview banner and exit, publish then refresh, mobile layout, keyboard and reduced motion.
+- Receive the studio notice for a real inquiry and for a private-gallery request, and the visitor approval message with the seven-day link.
 - Replace the sample phone, commission availability, copyright year and placeholder testimonials before launch.
 - Re-test the Strapi 5.53 admin editor aliases when upgrading Strapi.
 

@@ -152,10 +152,11 @@ Checked on 2026-10-29 against `dev`. Do this in the Next.js app. Do not add a St
 - [ ] Record keep or remove for each optional Strapi plugin in the table below. If one is removed, retest the APIs that depend on it.
 - [x] Hosting decision: one Railway Pro project in the client account for Next.js, Strapi and Postgres. Media is an S3-compatible bucket. Plan: [DEPLOYMENT.md](docs/DEPLOYMENT.md).
 - [ ] Provision that project, the bucket and the domain. Migrate with backups and verify media delivery.
-- [ ] Configure the approved SMTP sender and recipient and send a real inquiry notification.
+- [ ] SMTP is required for the final project, decided 2026-10-29. Use a sender on the client's domain. Configure `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASSWORD`, `EMAIL_FROM`, `EMAIL_REPLY_TO`, `ADMIN_NOTIFICATION_TO` and `ADMIN_NOTIFICATIONS_ENABLED=true`. A failed send must still leave the saved inquiry or gallery request in place.
+- [ ] Receive both live messages: the studio notice for a new inquiry and for a private-gallery request, and the visitor message sent when Gallery Access is set active. That visitor message carries the seven-day link.
 - [ ] Run the launch checks in [DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
-The snapshot and the visual review can proceed locally. Approved copy, SMTP and hosting need the corresponding content, decision or access.
+The snapshot and the visual review can proceed locally. Approved copy and hosting still need the corresponding content or access. SMTP is no longer optional for launch.
 
 ## Plugin review still pending
 
@@ -164,7 +165,7 @@ The snapshot and the visual review can proceed locally. Approved copy, SMTP and 
 | GraphQL | Frontend content API | Keep |
 | Upload | CMS media | Keep |
 | i18n | Localized Page structure; English configured | Keep; no second public locale yet |
-| Email/Nodemailer | Optional inquiry notifications | Keep code; real SMTP unverified |
+| Email/Nodemailer | Inquiry notice, gallery-request notice, and the visitor approval link | Keep. Required for launch; real SMTP unverified |
 | S3 provider | Optional persistent media | Prepared, not activated |
 | Cloud | Strapi Cloud integration | Decide after hosting choice |
 | Users & Permissions | Default Strapi user/API role support | Review dependencies before removal |
