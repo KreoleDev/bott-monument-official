@@ -44,7 +44,9 @@ const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Plugin =>
               host: env("SMTP_HOST"),
               port: env.int("SMTP_PORT", 587),
               secure: env.bool("SMTP_SECURE", false),
-              auth: { user: env("SMTP_USER"), pass: env("SMTP_PASSWORD") },
+              ...(env("SMTP_USER") && env("SMTP_PASSWORD")
+                ? { auth: { user: env("SMTP_USER"), pass: env("SMTP_PASSWORD") } }
+                : {}),
             },
             settings: { defaultFrom: env("EMAIL_FROM"), defaultReplyTo: env("EMAIL_REPLY_TO") },
           },
