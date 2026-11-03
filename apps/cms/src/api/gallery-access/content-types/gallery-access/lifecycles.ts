@@ -17,7 +17,12 @@ export default {
     const enabled =
       process.env.ADMIN_NOTIFICATIONS_ENABLED === "true" ||
       process.env.INQUIRY_NOTIFICATIONS_ENABLED === "true";
-    if (!enabled || !recipient || !process.env.SMTP_HOST) return;
+    if (!enabled || !recipient || !process.env.SMTP_HOST) {
+      strapi.log.warn(
+        `Gallery access request ${access.documentId}: admin notification skipped (enabled=${enabled}, recipientConfigured=${Boolean(recipient)}, smtpHostConfigured=${Boolean(process.env.SMTP_HOST)}).`,
+      );
+      return;
+    }
 
     const text = `A private gallery access request was submitted.\n\nName: ${access.name}\nEmail: ${access.email}\n\nReview it in the Gallery Access collection in Strapi.\nEntry: ${access.documentId}`;
     try {
@@ -28,6 +33,7 @@ export default {
         text,
         html: `<pre>${escapeHtml(text)}</pre>`,
       });
+      strapi.log.info(`Gallery access request ${access.documentId}: admin notification accepted by the email provider.`);
     } catch (error) {
       strapi.log.error(`Gallery access request ${access.documentId} was saved, but the admin notification failed: ${error instanceof Error ? error.message : "unknown error"}`);
     }
@@ -48,7 +54,10 @@ export default {
     const stored = await strapi.db.query(uid).findOne({
       where: { documentId: access.documentId }, select: ["accessNotificationSentAt"],
     });
-    if (stored?.accessNotificationSentAt) return;
+    if (stored?.accessNotificationSentAt) {
+      strapi.log.info(`Gallery access ${access.documentId}: approval email skipped because it was already sent.`);
+      return;
+    }
 
     const token = randomBytes(32).toString("base64url");
     const tokenHash = createHash("sha256").update(token).digest("hex");
@@ -70,6 +79,7 @@ export default {
         html: `<p>${escapeHtml(copy.body).replace(/\n/g, "<br>")}</p><p><a href="${escapeHtml(galleryUrl)}">Open private gallery</a></p>`,
       });
       await strapi.db.query(uid).update({ where: { documentId: access.documentId }, data: { accessNotificationSentAt: new Date() } });
+      strapi.log.info(`Gallery access ${access.documentId}: approval email accepted by the email provider.`);
     } catch (error) {
       strapi.log.error(`Approval email for gallery access ${access.documentId} failed: ${error instanceof Error ? error.message : "unknown error"}`);
     }
