@@ -2,6 +2,7 @@ import type { StrapiApp } from "@strapi/strapi/admin";
 import type { EditLayout } from "@strapi/content-manager/strapi-admin";
 import { unstable_useContentManagerContext as useContentManagerContext } from "@strapi/content-manager/strapi-admin";
 import { ComponentInput } from "@bott/component-input";
+import { DynamicZone } from "@bott/dynamic-zone";
 import { styled } from "styled-components";
 import { InputRenderer } from "@bott/content-input";
 import { useField } from "@strapi/strapi/admin";
@@ -65,7 +66,18 @@ function fieldTitle(name: unknown, label: unknown) {
 
 function FixedPageField(props: Record<string, unknown>) {
   const { model, layout } = useContentManagerContext();
+  const { value: pageSlug } = useField<string>("slug");
   const attribute = props.attribute as { component: string };
+  const fieldName = String(props.name);
+  if (model === "api::page.page" && fieldName === "privateGallery" && pageSlug !== "private-gallery")
+    return null;
+  if (
+    model === "api::page.page" &&
+    pageSlug === "private-gallery" &&
+    ["header", "hero", "footer"].includes(fieldName)
+  )
+    return null;
+
   const input = (
     <ComponentInput {...props} layout={layout.edit.components[attribute.component]?.layout || []}>
       {(child: Record<string, unknown>) =>
@@ -123,9 +135,19 @@ function FixedPageField(props: Record<string, unknown>) {
   );
 }
 
+function PageSectionsField(props: Record<string, unknown>) {
+  const { model } = useContentManagerContext();
+  const { value: pageSlug } = useField<string>("slug");
+  if (model === "api::page.page" && pageSlug === "private-gallery") return null;
+  return <DynamicZone {...props} />;
+}
+
 export default {
   register(app: StrapiApp) {
-    app.addFields({ type: "component", Component: FixedPageField });
+    app.addFields([
+      { type: "component", Component: FixedPageField },
+      { type: "dynamiczone", Component: PageSectionsField },
+    ]);
     app.customFields.register({
       name: "private-gallery-photos",
       type: "json",

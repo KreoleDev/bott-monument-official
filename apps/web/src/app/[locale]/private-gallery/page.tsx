@@ -3,7 +3,7 @@ import type { CSSProperties } from "react";
 import { notFound } from "next/navigation";
 import { Footer, Header } from "@/components";
 import { isLocaleCode } from "@/lib/locale";
-import { getHomePage, getPageBySlug, type CmsPage } from "@/lib/pages";
+import { getHomeChrome, getPrivateGalleryPage, type PrivateGalleryContent } from "@/lib/pages";
 import { getStrapiMediaUrl, type SectionContent } from "@/lib/strapi";
 import { PrivateGalleryGate } from "./private-gallery-gate";
 import "./private-gallery.css";
@@ -15,7 +15,7 @@ type PrivateGalleryPageProps = {
   searchParams: Promise<{ token?: string | string[] }>;
 };
 
-function galleryPageStyle(content: CmsPage["privateGallery"] | undefined) {
+function galleryPageStyle(content: PrivateGalleryContent | undefined) {
   const hex = (value: string | null | undefined, fallback: string) =>
     value && /^#[0-9a-f]{6}$/i.test(value) ? value : fallback;
   const color = (value: string | null | undefined, fallback: string, previousDefault: string) =>
@@ -39,7 +39,7 @@ function galleryPageStyle(content: CmsPage["privateGallery"] | undefined) {
 
 export async function generateMetadata({ params }: PrivateGalleryPageProps): Promise<Metadata> {
   const { locale } = await params;
-  const page = isLocaleCode(locale) ? await getPageBySlug("private-gallery", false, locale) : null;
+  const page = isLocaleCode(locale) ? await getPrivateGalleryPage(false, locale) : null;
   return {
     title: page?.seo?.metaTitle || page?.title || "Private Gallery",
     description: page?.seo?.metaDescription || undefined,
@@ -51,11 +51,11 @@ export default async function PrivateGalleryPage({ params, searchParams }: Priva
   const [{ locale }, query] = await Promise.all([params, searchParams]);
   if (!isLocaleCode(locale)) notFound();
   const [galleryPage, home] = await Promise.all([
-    getPageBySlug("private-gallery", false, locale),
-    getHomePage(false, locale),
+    getPrivateGalleryPage(false, locale),
+    getHomeChrome(false, locale),
   ]);
-  // The private gallery supplies page content only. Reuse the site's shared
-  // header and footer from the home page, even if this CMS entry has overrides.
+  const galleryContent = galleryPage?.privateGallery;
+  // Keep gallery content on its own page; share only Home's site chrome.
   const siteHeader = home?.header;
   const footerDetails = home?.footer;
   const token = Array.isArray(query.token) ? query.token[0] : query.token;
@@ -76,12 +76,12 @@ export default async function PrivateGalleryPage({ params, searchParams }: Priva
             href: link.href.startsWith("#") ? `/${locale}/${link.href}` : link.href,
           }))}
       />
-      <div className="private-gallery-shell" style={galleryPageStyle(galleryPage?.privateGallery)}>
+      <div className="private-gallery-shell" style={galleryPageStyle(galleryContent)}>
         <PrivateGalleryGate
           locale={locale}
           token={token}
-          pageTitle={galleryPage?.privateGallery?.title || galleryPage?.title}
-          copyOverrides={galleryPage?.privateGallery}
+          pageTitle={galleryContent?.title || galleryPage?.title}
+          copyOverrides={galleryContent}
         />
       </div>
       {footer && <Footer section={footer} />}

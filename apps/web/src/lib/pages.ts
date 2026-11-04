@@ -1,5 +1,5 @@
 import { cmsQuery, cmsRead } from "./cms-cache";
-import { HOME_PAGE_QUERY } from "./page-query";
+import { HOME_CHROME_QUERY, HOME_PAGE_QUERY, PRIVATE_GALLERY_PAGE_QUERY } from "./page-query";
 import { DEFAULT_LOCALE } from "./locale";
 import type { FooterDetails, SectionContent, StrapiMedia } from "./strapi";
 
@@ -10,6 +10,48 @@ export type PageBlock = Partial<SectionContent> & {
   __typename: string;
   items?: { label: string }[];
 } & Partial<Record<`${(typeof ITEM_RELATIONS)[number]}_connection`, Selection>>;
+export type PrivateGalleryContent = {
+  eyebrow?: string | null;
+  title?: string | null;
+  description?: string | null;
+  accessCheckEyebrow?: string | null;
+  accessCheckTitle?: string | null;
+  emailLabel?: string | null;
+  emailPlaceholder?: string | null;
+  submitLabel?: string | null;
+  checkingLabel?: string | null;
+  accessDeniedMessage?: string | null;
+  errorMessage?: string | null;
+  emptyGalleryMessage?: string | null;
+  backgroundColor?: string | null;
+  backgroundMiddleColor?: string | null;
+  backgroundEndColor?: string | null;
+  textColor?: string | null;
+  mutedTextColor?: string | null;
+  accentColor?: string | null;
+  surfaceColor?: string | null;
+  surfaceTextColor?: string | null;
+  borderColor?: string | null;
+  buttonColor?: string | null;
+  buttonTextColor?: string | null;
+} | null;
+export type PrivateGalleryPage = {
+  title: string;
+  seo: {
+    metaTitle: string | null;
+    metaDescription: string | null;
+    metaImage: StrapiMedia | null;
+  } | null;
+  privateGallery: PrivateGalleryContent;
+};
+export type HomeChrome = {
+  header: {
+    siteName: string | null;
+    logo: StrapiMedia | null;
+    links: { id: string; label: string; href: string }[];
+  } | null;
+  footer: FooterDetails | null;
+};
 export type CmsPage = {
   documentId: string;
   title: string;
@@ -27,31 +69,7 @@ export type CmsPage = {
   } | null;
   hero: PageBlock | null;
   footer: FooterDetails | null;
-  privateGallery: {
-    eyebrow?: string | null;
-    title?: string | null;
-    description?: string | null;
-    accessCheckEyebrow?: string | null;
-    accessCheckTitle?: string | null;
-    emailLabel?: string | null;
-    emailPlaceholder?: string | null;
-    submitLabel?: string | null;
-    checkingLabel?: string | null;
-    accessDeniedMessage?: string | null;
-    errorMessage?: string | null;
-    emptyGalleryMessage?: string | null;
-    backgroundColor?: string | null;
-    backgroundMiddleColor?: string | null;
-    backgroundEndColor?: string | null;
-    textColor?: string | null;
-    mutedTextColor?: string | null;
-    accentColor?: string | null;
-    surfaceColor?: string | null;
-    surfaceTextColor?: string | null;
-    borderColor?: string | null;
-    buttonColor?: string | null;
-    buttonTextColor?: string | null;
-  } | null;
+  privateGallery: PrivateGalleryContent;
   content: PageBlock[];
 };
 
@@ -109,4 +127,46 @@ export async function getPageBySlug(
 
 export function getHomePage(preview = false, locale = DEFAULT_LOCALE) {
   return getPageBySlug("home", preview, locale);
+}
+
+export function getHomeChrome(preview = false, locale = DEFAULT_LOCALE) {
+  return cmsRead<HomeChrome | null>(
+    `home-chrome:${locale}`,
+    async () => {
+      const data = await cmsQuery<{ pages: HomeChrome[] }>(
+        HOME_CHROME_QUERY,
+        {
+          slug: "home",
+          status: preview ? "DRAFT" : "PUBLISHED",
+          locale,
+        },
+        preview,
+      );
+      if (!Array.isArray(data.pages)) throw new Error("Invalid Home Chrome response");
+      return data.pages[0] || null;
+    },
+    null,
+    preview,
+  );
+}
+
+export function getPrivateGalleryPage(preview = false, locale = DEFAULT_LOCALE) {
+  return cmsRead<PrivateGalleryPage | null>(
+    `private-gallery-page:${locale}`,
+    async () => {
+      const data = await cmsQuery<{ pages: PrivateGalleryPage[] }>(
+        PRIVATE_GALLERY_PAGE_QUERY,
+        {
+          slug: "private-gallery",
+          status: preview ? "DRAFT" : "PUBLISHED",
+          locale,
+        },
+        preview,
+      );
+      if (!Array.isArray(data.pages)) throw new Error("Invalid Private Gallery Page response");
+      return data.pages[0] || null;
+    },
+    null,
+    preview,
+  );
 }
