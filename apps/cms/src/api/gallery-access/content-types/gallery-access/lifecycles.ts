@@ -1,7 +1,7 @@
 import { createHash, randomBytes } from "node:crypto";
 
 type AccessEvent = {
-  result: { name: string; email: string; documentId: string; submissionLocale?: string };
+  result: { id: number; name: string; email: string; documentId: string; submissionLocale?: string };
   params?: { data?: Record<string, unknown> };
 };
 
@@ -45,14 +45,15 @@ export default {
     const uid = "api::gallery-access.gallery-access";
     if (data?.accessActive === false) {
       await strapi.db.query(uid).update({
-        where: { documentId: access.documentId },
+        where: { id: access.id },
         data: { accessTokenHash: null, accessTokenExpiresAt: null, accessNotificationSentAt: null },
       });
+      strapi.log.info(`Gallery access ${access.documentId}: access disabled; approval link and sent marker cleared.`);
       return;
     }
     if (data?.accessActive !== true || !access.email) return;
     const stored = await strapi.db.query(uid).findOne({
-      where: { documentId: access.documentId }, select: ["accessNotificationSentAt"],
+      where: { id: access.id }, select: ["accessNotificationSentAt"],
     });
     if (stored?.accessNotificationSentAt) {
       strapi.log.info(`Gallery access ${access.documentId}: approval email skipped because it was already sent.`);
@@ -63,7 +64,7 @@ export default {
     const tokenHash = createHash("sha256").update(token).digest("hex");
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
     await strapi.db.query(uid).update({
-      where: { documentId: access.documentId }, data: { accessTokenHash: tokenHash, accessTokenExpiresAt: expiresAt },
+      where: { id: access.id }, data: { accessTokenHash: tokenHash, accessTokenExpiresAt: expiresAt },
     });
     const requestedLocale = access.submissionLocale || "en";
     const locale = requestedLocale.toLowerCase().startsWith("pt") ? requestedLocale : "en";
@@ -78,7 +79,7 @@ export default {
         subject: copy.subject, text: copy.body,
         html: `<p>${escapeHtml(copy.body).replace(/\n/g, "<br>")}</p><p><a href="${escapeHtml(galleryUrl)}">Open private gallery</a></p>`,
       });
-      await strapi.db.query(uid).update({ where: { documentId: access.documentId }, data: { accessNotificationSentAt: new Date() } });
+      await strapi.db.query(uid).update({ where: { id: access.id }, data: { accessNotificationSentAt: new Date() } });
       strapi.log.info(`Gallery access ${access.documentId}: approval email accepted by the email provider.`);
     } catch (error) {
       strapi.log.error(`Approval email for gallery access ${access.documentId} failed: ${error instanceof Error ? error.message : "unknown error"}`);
