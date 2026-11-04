@@ -67,16 +67,14 @@ function fieldTitle(name: unknown, label: unknown) {
 function FixedPageField(props: Record<string, unknown>) {
   const { model, layout } = useContentManagerContext();
   const { value: pageSlug } = useField<string>("slug");
+  const details = useRef<HTMLDetailsElement>(null);
+  const { error } = useField(String(props.name));
   const attribute = props.attribute as { component: string };
   const fieldName = String(props.name);
-  if (model === "api::page.page" && fieldName === "privateGallery" && pageSlug !== "private-gallery")
-    return null;
-  if (
+  const hiddenForPage =
     model === "api::page.page" &&
-    pageSlug === "private-gallery" &&
-    ["header", "hero", "footer"].includes(fieldName)
-  )
-    return null;
+    ((fieldName === "privateGallery" && pageSlug !== "private-gallery") ||
+      (pageSlug === "private-gallery" && ["header", "hero", "footer"].includes(fieldName)));
 
   const input = (
     <ComponentInput {...props} layout={layout.edit.components[attribute.component]?.layout || []}>
@@ -99,11 +97,11 @@ function FixedPageField(props: Record<string, unknown>) {
     </ComponentInput>
   );
 
-  const details = useRef<HTMLDetailsElement>(null);
-  const { error } = useField(String(props.name));
   useEffect(() => {
     if (error && details.current) details.current.open = true;
   }, [error]);
+
+  if (hiddenForPage) return null;
 
   const fixedPageField =
     model === "api::page.page" &&
