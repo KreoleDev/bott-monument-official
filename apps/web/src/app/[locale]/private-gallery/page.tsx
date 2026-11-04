@@ -54,14 +54,16 @@ export default async function PrivateGalleryPage({ params, searchParams }: Priva
     getPageBySlug("private-gallery", false, locale),
     getHomePage(false, locale),
   ]);
-  const siteHeader = galleryPage?.header || home?.header;
-  const footerDetails = galleryPage?.footer || home?.footer;
+  // The private gallery supplies page content only. Reuse the site's shared
+  // header and footer from the home page, even if this CMS entry has overrides.
+  const siteHeader = home?.header;
+  const footerDetails = home?.footer;
   const token = Array.isArray(query.token) ? query.token[0] : query.token;
   const footer = footerDetails
     ? ({ sectionKey: "footer", footer: footerDetails } as SectionContent)
     : null;
   return (
-    <div className="private-gallery-shell" style={galleryPageStyle(galleryPage?.privateGallery)}>
+    <div className="private-gallery-layout">
       <Header
         locale={locale}
         homeHref={`/${locale}`}
@@ -74,12 +76,14 @@ export default async function PrivateGalleryPage({ params, searchParams }: Priva
             href: link.href.startsWith("#") ? `/${locale}/${link.href}` : link.href,
           }))}
       />
-      <PrivateGalleryGate
-        locale={locale}
-        token={token}
-        pageTitle={galleryPage?.privateGallery?.title || galleryPage?.title}
-        copyOverrides={galleryPage?.privateGallery}
-      />
+      <div className="private-gallery-shell" style={galleryPageStyle(galleryPage?.privateGallery)}>
+        <PrivateGalleryGate
+          locale={locale}
+          token={token}
+          pageTitle={galleryPage?.privateGallery?.title || galleryPage?.title}
+          copyOverrides={galleryPage?.privateGallery}
+        />
+      </div>
       {footer && <Footer section={footer} />}
     </div>
   );
