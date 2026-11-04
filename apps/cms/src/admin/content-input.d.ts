@@ -5,3 +5,7 @@ declare module "@bott/content-input" {
 declare module "@bott/component-input" {
   export const ComponentInput: import("react").ComponentType<Record<string, unknown>>;
 }
+
+declare module "@bott/dynamic-zone" {
+  export const DynamicZone: import("react").ComponentType<Record<string, unknown>>;
+}

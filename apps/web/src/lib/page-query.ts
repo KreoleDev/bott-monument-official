@@ -143,3 +143,25 @@ comments_connection(pagination:{page:$relationPage,pageSize:100}) { nodes { docu
 }
 }
 }`;
+
+export const PRIVATE_GALLERY_PAGE_QUERY = `
+query PrivateGalleryPage($slug: String!, $status: PublicationStatus!, $locale: I18NLocaleCode!) {
+ pages(filters: { slug: { eq: $slug } }, locale: $locale, status: $status, pagination: { limit: 1 }) {
+  title
+  seo { metaTitle metaDescription metaImage { url alternativeText } }
+  privateGallery {
+   eyebrow title description accessCheckEyebrow accessCheckTitle emailLabel emailPlaceholder
+   submitLabel checkingLabel accessDeniedMessage errorMessage emptyGalleryMessage
+   backgroundColor backgroundMiddleColor backgroundEndColor textColor mutedTextColor accentColor
+   surfaceColor surfaceTextColor borderColor buttonColor buttonTextColor
+  }
+ }
+}`;
+
+export const HOME_CHROME_QUERY = `
+query HomeChrome($slug: String!, $status: PublicationStatus!, $locale: I18NLocaleCode!) {
+ pages(filters: { slug: { eq: $slug } }, locale: $locale, status: $status, pagination: { limit: 1 }) {
+  header { siteName logo { url alternativeText } links { id label href } }
+  footer { brand copyright tagline taglineEmphasis facebookUrl instagramUrl youtubeUrl }
+ }
+}`;

@@ -13,6 +13,10 @@ export default (config: UserConfig) =>
           path.dirname(require.resolve("@strapi/content-manager/package.json")),
           "dist/admin/pages/EditView/components/FormInputs/Component/Input.mjs",
         ),
+        "@bott/dynamic-zone": path.join(
+          path.dirname(require.resolve("@strapi/content-manager/package.json")),
+          "dist/admin/pages/EditView/components/FormInputs/DynamicZone/Field.mjs",
+        ),
         "@bott/content-input": path.join(
           path.dirname(require.resolve("@strapi/content-manager/package.json")),
           "dist/admin/pages/EditView/components/InputRenderer.mjs",
