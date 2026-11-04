@@ -159,13 +159,11 @@ export default {
             "name",
             "email",
             "accessActive",
-            "accessNotificationSentAt",
             "accessTokenExpiresAt",
           ]);
           const labels: Record<string, string> = {
             accessActive: "Gallery access",
-            accessNotificationSentAt: "Access starts",
-            accessTokenExpiresAt: "Access ends",
+            accessTokenExpiresAt: "Access link expires",
           };
           return {
             ...context,
