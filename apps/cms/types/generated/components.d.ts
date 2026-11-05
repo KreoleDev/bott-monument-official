@@ -220,7 +220,7 @@ export interface PagesPrivateGallery extends Struct.ComponentSchema {
   };
   attributes: {
     accentColor: Schema.Attribute.String &
-      Schema.Attribute.DefaultTo<'#C9A050'>;
+      Schema.Attribute.DefaultTo<'#9A6F2C'>;
     accessCheckEyebrow: Schema.Attribute.String &
       Schema.Attribute.DefaultTo<'A PRIVATE COLLECTION'>;
     accessCheckTitle: Schema.Attribute.String &
@@ -228,13 +228,13 @@ export interface PagesPrivateGallery extends Struct.ComponentSchema {
     accessDeniedMessage: Schema.Attribute.Text &
       Schema.Attribute.DefaultTo<'We couldn\u2019t find active gallery access for that email. Check the address or contact us for help.'>;
     backgroundColor: Schema.Attribute.String &
-      Schema.Attribute.DefaultTo<'#11110F'>;
+      Schema.Attribute.DefaultTo<'#F8F4EB'>;
     backgroundEndColor: Schema.Attribute.String &
-      Schema.Attribute.DefaultTo<'#191711'>;
+      Schema.Attribute.DefaultTo<'#E8DFD0'>;
     backgroundMiddleColor: Schema.Attribute.String &
-      Schema.Attribute.DefaultTo<'#171713'>;
+      Schema.Attribute.DefaultTo<'#F2ECE1'>;
     borderColor: Schema.Attribute.String &
-      Schema.Attribute.DefaultTo<'#5F5238'>;
+      Schema.Attribute.DefaultTo<'#D4C8B1'>;
     buttonColor: Schema.Attribute.String &
       Schema.Attribute.DefaultTo<'#C9A050'>;
     buttonTextColor: Schema.Attribute.String &
@@ -254,14 +254,14 @@ export interface PagesPrivateGallery extends Struct.ComponentSchema {
     eyebrow: Schema.Attribute.String &
       Schema.Attribute.DefaultTo<'BOTT MONUMENT \u00B7 PRIVATE GALLERY'>;
     mutedTextColor: Schema.Attribute.String &
-      Schema.Attribute.DefaultTo<'#D2C9BB'>;
+      Schema.Attribute.DefaultTo<'#746D61'>;
     submitLabel: Schema.Attribute.String &
       Schema.Attribute.DefaultTo<'Open the gallery'>;
     surfaceColor: Schema.Attribute.String &
-      Schema.Attribute.DefaultTo<'#25231D'>;
+      Schema.Attribute.DefaultTo<'#FFFFFF'>;
     surfaceTextColor: Schema.Attribute.String &
-      Schema.Attribute.DefaultTo<'#F4EFE5'>;
-    textColor: Schema.Attribute.String & Schema.Attribute.DefaultTo<'#F4EFE5'>;
+      Schema.Attribute.DefaultTo<'#1E1208'>;
+    textColor: Schema.Attribute.String & Schema.Attribute.DefaultTo<'#1E1208'>;
     title: Schema.Attribute.String &
       Schema.Attribute.DefaultTo<'A collection of memories'>;
   };
