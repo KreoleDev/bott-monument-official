@@ -144,7 +144,7 @@
   font-weight: 600;
   line-height: 1.12;
   letter-spacing: -0.035em;
-  color: #141414;
+  color: var(--pg-text, #1e1208);
 }
 
 .private-gallery-header-intro {
@@ -187,7 +187,7 @@
 .private-gallery-intro {
   max-width: 34rem;
   margin: 1.1rem auto 2rem;
-  color: var(--pg-muted, #746d61);
+  color: color-mix(in srgb, var(--pg-surface-text, #1e1208) 70%, transparent);
   font-family: var(--font-display, Georgia, serif);
   font-size: 1.05rem;
   line-height: 1.7;
@@ -216,14 +216,14 @@
   padding: 0.8rem 1rem;
   border: 1px solid var(--pg-border, rgba(80, 65, 42, 0.28));
   border-radius: 2px;
-  background: color-mix(in srgb, var(--pg-surface, #fff) 82%, transparent);
-  color: var(--pg-text, var(--mahogany));
+  background: color-mix(in srgb, var(--pg-surface, #fff) 94%, white);
+  color: var(--pg-surface-text, var(--mahogany));
   font: 1rem var(--font-utility, Arial, sans-serif);
 }
 
 .private-gallery-gate input::placeholder {
-  color: var(--pg-muted, #8e877a);
-  opacity: 0.78;
+  color: color-mix(in srgb, var(--pg-surface-text, #1e1208) 56%, transparent);
+  opacity: 1;
 }
 
 .private-gallery-gate input:focus-visible,

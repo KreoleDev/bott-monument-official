@@ -65,18 +65,16 @@ const copy = {
 export function PrivateGalleryGate({
   locale,
   token,
-  pageTitle,
   copyOverrides,
 }: {
   locale: string;
   token?: string;
-  pageTitle?: string;
   copyOverrides?: GalleryCopy | null;
 }) {
   const fallback = locale.toLowerCase().startsWith("pt") ? copy.pt : copy.en;
   const text = {
     eyebrow: copyOverrides?.eyebrow || fallback.eyebrow,
-    title: pageTitle || copyOverrides?.title || fallback.title,
+    title: copyOverrides?.title || fallback.title,
     intro: copyOverrides?.description || fallback.intro,
     accessEyebrow: copyOverrides?.accessCheckEyebrow || fallback.accessEyebrow,
     accessTitle: copyOverrides?.accessCheckTitle || fallback.accessTitle,
@@ -194,7 +192,7 @@ export function PrivateGalleryGate({
         <p>{text.eyebrow}</p>
         <div className="private-gallery-header-row">
           <div>
-            <h1>{images !== null ? text.galleryHeading : pageTitle || text.title}</h1>
+            <h1>{images !== null ? text.galleryHeading : text.title}</h1>
             {images !== null && <p className="private-gallery-header-intro">{text.galleryIntro}</p>}
           </div>
         </div>

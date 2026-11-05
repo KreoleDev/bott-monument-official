@@ -20,17 +20,17 @@ function galleryPageStyle(content: PrivateGalleryContent | undefined) {
     value && /^#[0-9a-f]{6}$/i.test(value) ? value : fallback;
   const color = (value: string | null | undefined, fallback: string, previousDefault: string) =>
     hex(value?.toUpperCase() === previousDefault ? fallback : value, fallback);
-  const start = color(content?.backgroundColor, "#11110F", "#F0EDE8");
-  const middle = color(content?.backgroundMiddleColor, "#171713", "");
-  const end = color(content?.backgroundEndColor, "#191711", "");
+  const start = color(content?.backgroundColor, "#F8F4EB", "#11110F");
+  const middle = color(content?.backgroundMiddleColor, "#F2ECE1", "#171713");
+  const end = color(content?.backgroundEndColor, "#E8DFD0", "#191711");
   const colors: Record<string, string> = {
     "--pg-background": middle || end ? `linear-gradient(135deg, ${start}, ${middle || start}, ${end || middle || start})` : start,
-    "--pg-text": color(content?.textColor, "#F4EFE5", "#1E1208"),
-    "--pg-muted": color(content?.mutedTextColor, "#D2C9BB", "#746D61"),
-    "--pg-accent": hex(content?.accentColor, "#C9A050"),
-    "--pg-surface": color(content?.surfaceColor, "#25231D", "#F8F4EB"),
-    "--pg-surface-text": color(content?.surfaceTextColor, "#F4EFE5", "#1E1208"),
-    "--pg-border": color(content?.borderColor, "#5F5238", "#D4C8B1"),
+    "--pg-text": color(content?.textColor, "#1E1208", "#F4EFE5"),
+    "--pg-muted": color(content?.mutedTextColor, "#746D61", "#D2C9BB"),
+    "--pg-accent": color(content?.accentColor, "#9A6F2C", "#C9A050"),
+    "--pg-surface": color(content?.surfaceColor, "#FFFFFF", "#F4EFE5"),
+    "--pg-surface-text": color(content?.surfaceTextColor, "#1E1208", "#F4EFE5"),
+    "--pg-border": color(content?.borderColor, "#D4C8B1", "#F4EFE5"),
     "--pg-button": color(content?.buttonColor, "#C9A050", "#1E1208"),
     "--pg-button-text": color(content?.buttonTextColor, "#171510", "#F0EDE8"),
   };
@@ -67,6 +67,7 @@ export default async function PrivateGalleryPage({ params, searchParams }: Priva
       <Header
         locale={locale}
         homeHref={`/${locale}`}
+        forceScrolled
         logo={getStrapiMediaUrl(siteHeader?.logo)}
         siteName={siteHeader?.siteName || undefined}
         links={siteHeader?.links
@@ -80,7 +81,6 @@ export default async function PrivateGalleryPage({ params, searchParams }: Priva
         <PrivateGalleryGate
           locale={locale}
           token={token}
-          pageTitle={galleryContent?.title || galleryPage?.title}
           copyOverrides={galleryContent}
         />
       </div>

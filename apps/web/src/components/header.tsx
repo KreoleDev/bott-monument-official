@@ -12,12 +12,14 @@ export function Header({
   links,
   locale = "en",
   homeHref = "#",
+  forceScrolled = false,
 }: {
   logo?: string | null;
   siteName?: string;
   links?: { label: string; href: string }[];
   locale?: string;
   homeHref?: string;
+  forceScrolled?: boolean;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
@@ -121,7 +123,7 @@ export function Header({
         aria-label="Main navigation"
         id="navbar"
         style={scrollColors}
-        className={`site-nav${isScrolled ? " scrolled" : ""}${isHidden && !menuOpen ? " nav-hidden" : ""}`}
+        className={`site-nav${isScrolled || forceScrolled ? " scrolled" : ""}${isHidden && !menuOpen && !forceScrolled ? " nav-hidden" : ""}`}
       >
         <a className="nav-logo" href={homeHref} aria-label="Bott Monument home">
           <span className="sr-only">Bott Monument</span>
