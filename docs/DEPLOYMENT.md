@@ -71,6 +71,14 @@ Variables:
 Leave `S3_BUCKET` empty only for a disposable preview. A Railway disk loses
 uploads when the service is recreated. Production media is the bucket.
 
+The private gallery photo field uses a separate, access-controlled file route.
+When `RAILWAY_VOLUME_MOUNT_PATH` is available, its files are stored in the
+`.private-gallery-uploads` subdirectory of that mounted volume. For the CMS
+volume mounted at `/app/public`, the private files are stored at
+`/app/public/.private-gallery-uploads`; the leading dot keeps Strapi's static
+file server from exposing them. Existing photos outside the volume must be
+copied into this directory or uploaded again.
+
 Create the first admin user on the public `/admin` URL. Then create two API
 tokens: `web-readonly` (read-only) and `web-inquiries` (custom, only
 `api::inquiry.inquiry.create` and `api::gallery-access.gallery-access.create`).

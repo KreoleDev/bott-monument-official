@@ -308,7 +308,6 @@ export function PrivateGalleryGate({
                   <button className="private-gallery-card" key={`${item.sortOrder}-${item.title}-${index}`} type="button" onClick={() => { setSelectedImage(index); setSelectedPhoto(0); }} aria-label={`${item.title}. ${item.category}`}>
                     <span className="private-gallery-card-media">
                       <Image
-                        unoptimized
                         className={settledCardImages.has(item.images[0].url) ? "is-loaded" : "is-loading"}
                         src={item.images[0].url}
                         alt={item.images[0].alternativeText || item.title}
@@ -343,7 +342,6 @@ export function PrivateGalleryGate({
                       style={{ "--private-gallery-photo": `url("${visibleImages[selectedImage].images[selectedPhoto].url}")` } as CSSProperties}
                     >
                       <Image
-                        unoptimized
                         src={visibleImages[selectedImage].images[selectedPhoto].url}
                         alt={visibleImages[selectedImage].images[selectedPhoto].alternativeText || visibleImages[selectedImage].title}
                         width={visibleImages[selectedImage].images[selectedPhoto].width || 1600}
@@ -372,7 +370,7 @@ export function PrivateGalleryGate({
                       <nav className="private-gallery-thumbnails" aria-label={text.galleryHeading}>
                         {visibleImages[selectedImage].images.map((photo, index) => (
                           <button key={`${visibleImages[selectedImage].title}-${photo.url}-${index}`} type="button" className={index === selectedPhoto ? "is-active" : ""} aria-label={`${visibleImages[selectedImage].title} — ${index + 1}`} aria-current={index === selectedPhoto ? "true" : undefined} onClick={() => setSelectedPhoto(index)}>
-                            <Image src={photo.url} alt="" width={84} height={60} unoptimized />
+                            <Image src={photo.url} alt="" width={84} height={60} />
                           </button>
                         ))}
                       </nav>
