@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState, type CSSProperties, type FormEvent } from "react";
+import { createPortal } from "react-dom";
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from "react";
 import type { StrapiMedia } from "@/lib/strapi";
 import type { CmsPage } from "@/lib/pages";
 type GalleryCopy = NonNullable<CmsPage["privateGallery"]>;
@@ -14,6 +15,59 @@ type PrivateImage = {
   sortOrder: number;
   images: StrapiMedia[];
 };
+
+function renderInlineMarkdown(value: string): ReactNode[] {
+  const pattern = /(\*\*[^*]+\*\*|__[^_]+__|\*[^*]+\*|_[^_]+_|`[^`]+`)/g;
+  return value.split(pattern).map((part, index) => {
+    if ((part.startsWith("**") && part.endsWith("**")) || (part.startsWith("__") && part.endsWith("__"))) {
+      return <strong key={index}>{part.slice(2, -2)}</strong>;
+    }
+    if ((part.startsWith("*") && part.endsWith("*")) || (part.startsWith("_") && part.endsWith("_"))) {
+      return <em key={index}>{part.slice(1, -1)}</em>;
+    }
+    if (part.startsWith("`") && part.endsWith("`")) {
+      return <code key={index}>{part.slice(1, -1)}</code>;
+    }
+    return part;
+  });
+}
+
+function renderFormattedDescription(value: string) {
+  const blocks: Array<{ type: "paragraph" | "heading"; text: string }> = [];
+  let paragraph: string[] = [];
+  const flushParagraph = () => {
+    if (paragraph.length) blocks.push({ type: "paragraph", text: paragraph.join("\n") });
+    paragraph = [];
+  };
+
+  for (const line of value.replace(/\r\n?/g, "\n").split("\n")) {
+    if (!line.trim()) {
+      flushParagraph();
+      continue;
+    }
+    const heading = line.match(/^\s{0,3}(#{1,6})\s+(.+)$/);
+    if (heading) {
+      flushParagraph();
+      blocks.push({ type: "heading", text: heading[2] });
+    } else {
+      paragraph.push(line);
+    }
+  }
+  flushParagraph();
+
+  return blocks.map((block, index) => {
+    const lines = block.text.split("\n");
+    const content = lines.flatMap((line, lineIndex) => [
+      ...(lineIndex ? [<br key={`br-${index}-${lineIndex}`} />] : []),
+      ...renderInlineMarkdown(line),
+    ]);
+    return block.type === "heading" ? (
+      <h3 key={index}>{content}</h3>
+    ) : (
+      <p key={index}>{content}</p>
+    );
+  });
+}
 
 const copy = {
   en: {
@@ -32,8 +86,7 @@ const copy = {
     all: "All",
     materials: "Details",
     features: "Features",
-    previous: "Previous image",
-    next: "Next image",
+    loadingPhoto: "Loading photo…",
     close: "Close image",
     galleryHeading: "Our Gallery",
     galleryIntro: "Explore our work by category. Click on any image to view a larger photo and details.",
@@ -54,8 +107,7 @@ const copy = {
     all: "Todas",
     materials: "Detalhes",
     features: "Características",
-    previous: "Imagem anterior",
-    next: "Imagem seguinte",
+    loadingPhoto: "A carregar fotografia…",
     close: "Fechar imagem",
     galleryHeading: "A nossa galeria",
     galleryIntro: "Explore o nosso trabalho por categoria. Selecione uma imagem para ver uma fotografia ampliada e os detalhes.",
@@ -88,9 +140,8 @@ export function PrivateGalleryGate({
     all: fallback.all,
     galleryHeading: fallback.galleryHeading,
     galleryIntro: fallback.galleryIntro,
-    previous: fallback.previous,
-    next: fallback.next,
     close: fallback.close,
+    loadingPhoto: fallback.loadingPhoto,
   };
   const [email, setEmail] = useState("");
   const [images, setImages] = useState<PrivateImage[] | null>(null);
@@ -99,6 +150,9 @@ export function PrivateGalleryGate({
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
   const [selectedPhoto, setSelectedPhoto] = useState(0);
+  const touchStartX = useRef<number | null>(null);
+  const [settledCardImages, setSettledCardImages] = useState<Set<string>>(() => new Set());
+  const [readyDetailImage, setReadyDetailImage] = useState<string | null>(null);
   const categories = useMemo(() => {
     if (!images) return [];
     const names = new Map<string, { name: string; sortOrder: number }>();
@@ -121,6 +175,14 @@ export function PrivateGalleryGate({
     [images, selectedCategory],
   );
   const activePhotoCount = selectedImage === null ? 0 : visibleImages[selectedImage]?.images.length || 0;
+  function settleCardImage(url: string) {
+    setSettledCardImages((current) => {
+      if (current.has(url)) return current;
+      const next = new Set(current);
+      next.add(url);
+      return next;
+    });
+  }
 
   useEffect(() => {
     if (selectedImage === null || activePhotoCount < 2) return;
@@ -244,16 +306,26 @@ export function PrivateGalleryGate({
               <div className="private-gallery-grid">
                 {visibleImages.map((item, index) => (
                   <button className="private-gallery-card" key={`${item.sortOrder}-${item.title}-${index}`} type="button" onClick={() => { setSelectedImage(index); setSelectedPhoto(0); }} aria-label={`${item.title}. ${item.category}`}>
-                    <Image
-                      src={item.images[0].url}
-                      alt={item.images[0].alternativeText || item.title}
-                      width={item.images[0].width || 1200}
-                      height={item.images[0].height || 900}
-                      loading="lazy"
-                    />
+                    <span className="private-gallery-card-media">
+                      <Image
+                        className={settledCardImages.has(item.images[0].url) ? "is-loaded" : "is-loading"}
+                        src={item.images[0].url}
+                        alt={item.images[0].alternativeText || item.title}
+                        width={item.images[0].width || 1200}
+                        height={item.images[0].height || 900}
+                        loading="lazy"
+                        onLoad={() => settleCardImage(item.images[0].url)}
+                        onError={() => settleCardImage(item.images[0].url)}
+                      />
+                      {!settledCardImages.has(item.images[0].url) && (
+                        <span className="private-gallery-image-loading" role="status">
+                          <span className="private-gallery-loading-spinner" aria-hidden="true" />
+                          <span>{text.loadingPhoto}</span>
+                        </span>
+                      )}
+                    </span>
                     <span className="private-gallery-card-copy">
                       <strong>{item.title}</strong>
-                      {item.caption && <span>{item.caption}</span>}
                       <span className="private-gallery-card-footer">
                         <span className="private-gallery-card-arrow" aria-hidden="true">→</span>
                       </span>
@@ -261,20 +333,39 @@ export function PrivateGalleryGate({
                   </button>
                 ))}
               </div>
-              {selectedImage !== null && visibleImages[selectedImage] && visibleImages[selectedImage].images[selectedPhoto] && (
+              {selectedImage !== null && visibleImages[selectedImage] && visibleImages[selectedImage].images[selectedPhoto] && typeof document !== "undefined" && createPortal(
                 <div className="private-gallery-lightbox" role="dialog" aria-modal="true" aria-label={visibleImages[selectedImage].title} onClick={() => setSelectedImage(null)}>
-                  <button className="private-gallery-lightbox-close" type="button" aria-label={text.close} onClick={() => setSelectedImage(null)}>×</button>
                   <div className="private-gallery-lightbox-panel" onClick={(event) => event.stopPropagation()}>
+                    <button className="private-gallery-lightbox-close" type="button" aria-label={text.close} onClick={() => setSelectedImage(null)}>×</button>
                     <div
                       className="private-gallery-lightbox-visual"
                       style={{ "--private-gallery-photo": `url("${visibleImages[selectedImage].images[selectedPhoto].url}")` } as CSSProperties}
                     >
-                      <Image src={visibleImages[selectedImage].images[selectedPhoto].url} alt={visibleImages[selectedImage].images[selectedPhoto].alternativeText || visibleImages[selectedImage].title} width={visibleImages[selectedImage].images[selectedPhoto].width || 1600} height={visibleImages[selectedImage].images[selectedPhoto].height || 1200} priority />
-                      {visibleImages[selectedImage].images.length > 1 && (
-                        <>
-                          <button className="private-gallery-lightbox-prev" type="button" aria-label={text.previous} onClick={() => setSelectedPhoto((selectedPhoto + visibleImages[selectedImage].images.length - 1) % visibleImages[selectedImage].images.length)}>‹</button>
-                          <button className="private-gallery-lightbox-next" type="button" aria-label={text.next} onClick={() => setSelectedPhoto((selectedPhoto + 1) % visibleImages[selectedImage].images.length)}>›</button>
-                        </>
+                      <Image
+                        src={visibleImages[selectedImage].images[selectedPhoto].url}
+                        alt={visibleImages[selectedImage].images[selectedPhoto].alternativeText || visibleImages[selectedImage].title}
+                        width={visibleImages[selectedImage].images[selectedPhoto].width || 1600}
+                        height={visibleImages[selectedImage].images[selectedPhoto].height || 1200}
+                        priority
+                        className={readyDetailImage === visibleImages[selectedImage].images[selectedPhoto].url ? "is-loaded" : "is-loading"}
+                        onLoad={() => setReadyDetailImage(visibleImages[selectedImage].images[selectedPhoto].url)}
+                        onError={() => setReadyDetailImage(visibleImages[selectedImage].images[selectedPhoto].url)}
+                        onTouchStart={(event) => { touchStartX.current = event.changedTouches[0]?.clientX ?? null; }}
+                        onTouchEnd={(event) => {
+                          const startX = touchStartX.current;
+                          touchStartX.current = null;
+                          if (startX === null || visibleImages[selectedImage].images.length < 2) return;
+                          const distance = event.changedTouches[0].clientX - startX;
+                          if (Math.abs(distance) < 45) return;
+                          const count = visibleImages[selectedImage].images.length;
+                          setSelectedPhoto((index) => (index + count + (distance < 0 ? 1 : -1)) % count);
+                        }}
+                      />
+                      {readyDetailImage !== visibleImages[selectedImage].images[selectedPhoto].url && (
+                        <span className="private-gallery-detail-loading" role="status">
+                          <span className="private-gallery-loading-spinner" aria-hidden="true" />
+                          <span>{text.loadingPhoto}</span>
+                        </span>
                       )}
                       <nav className="private-gallery-thumbnails" aria-label={text.galleryHeading}>
                         {visibleImages[selectedImage].images.map((photo, index) => (
@@ -288,10 +379,11 @@ export function PrivateGalleryGate({
                       <h2>{visibleImages[selectedImage].title}</h2>
                       <p className="private-gallery-lightbox-category">{visibleImages[selectedImage].category}</p>
                       <hr />
-                      {visibleImages[selectedImage].caption && <p>{visibleImages[selectedImage].caption}</p>}
+                      {visibleImages[selectedImage].caption && renderFormattedDescription(visibleImages[selectedImage].caption)}
                     </aside>
                   </div>
-                </div>
+                </div>,
+                document.body
               )}
             </>
           )}
