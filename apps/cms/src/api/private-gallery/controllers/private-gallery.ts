@@ -20,10 +20,16 @@ type PrivateGalleryEntry = {
 
 type PrivatePhoto = { id: string; name: string; alternativeText?: string | null };
 
+const workingDirectory = process.cwd();
+const railwayVolumeMountPath = process.env.RAILWAY_VOLUME_MOUNT_PATH;
+const primaryPrivatePhotoDirectory = railwayVolumeMountPath
+  ? path.join(railwayVolumeMountPath, ".private-gallery-uploads")
+  : path.join(workingDirectory, ".private-gallery-uploads");
 const privatePhotoDirectories = [
-  path.join(process.cwd(), ".private-gallery-uploads"),
-  path.join(process.cwd(), "private-gallery-uploads"), // existing uploads from before the watcher-safe directory
-];
+  primaryPrivatePhotoDirectory,
+  path.join(workingDirectory, ".private-gallery-uploads"),
+  path.join(workingDirectory, "private-gallery-uploads"), // existing uploads from before the watcher-safe directory
+].filter((directory, index, directories) => directories.indexOf(directory) === index);
 
 async function findPrivatePhotoFile(id: string, name?: string) {
   for (const directory of privatePhotoDirectories) {
@@ -155,7 +161,7 @@ export default {
       ctx.body = { error: "Choose up to 20 JPEG, PNG, WebP, or AVIF images." };
       return;
     }
-    const directory = privatePhotoDirectories[0];
+    const directory = primaryPrivatePhotoDirectory;
     await mkdir(directory, { recursive: true });
     const photos: PrivatePhoto[] = [];
     const requestedId = ctx.get?.("X-Private-Photo-Id") || "";
