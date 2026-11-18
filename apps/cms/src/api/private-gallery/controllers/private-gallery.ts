@@ -2,6 +2,7 @@ import { createHash, randomUUID } from "node:crypto";
 import { createReadStream } from "node:fs";
 import { mkdir, copyFile, readdir, stat } from "node:fs/promises";
 import path from "node:path";
+import { getPhotoVariant, getPhotoWidth } from "../utils/photo-variants";
 
 type GalleryContext = {
   request: { body?: unknown };
@@ -118,6 +119,12 @@ export default {
     const id = ctx.params?.id || "";
     const email = typeof ctx.query?.email === "string" ? ctx.query.email.trim().toLowerCase() : "";
     const token = ctx.query?.token;
+    const width = getPhotoWidth(ctx.query?.width);
+    if (ctx.query?.width !== undefined && width === null) {
+      ctx.status = 400;
+      ctx.body = { error: "Invalid photo width" };
+      return;
+    }
     if (!/^[0-9a-f-]{36}$/i.test(id) || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       ctx.status = 404;
       ctx.body = { error: "Photo not found" };
@@ -142,10 +149,12 @@ export default {
     try {
       const storedPhoto = await findPrivatePhotoFile(photo.id, photo.name);
       if (!storedPhoto) throw new Error("Private photo file not found");
-      ctx.set?.("Content-Type", photo.name.toLowerCase().endsWith(".png") ? "image/png" : photo.name.toLowerCase().endsWith(".webp") ? "image/webp" : photo.name.toLowerCase().endsWith(".avif") ? "image/avif" : "image/jpeg");
-      ctx.set?.("Content-Length", String(storedPhoto.fileStat.size));
+      const filepath = width ? await getPhotoVariant(storedPhoto.filepath, width) : storedPhoto.filepath;
+      const fileStat = width ? await stat(filepath) : storedPhoto.fileStat;
+      ctx.set?.("Content-Type", width ? "image/webp" : photo.name.toLowerCase().endsWith(".png") ? "image/png" : photo.name.toLowerCase().endsWith(".webp") ? "image/webp" : photo.name.toLowerCase().endsWith(".avif") ? "image/avif" : "image/jpeg");
+      ctx.set?.("Content-Length", String(fileStat.size));
       ctx.set?.("Cache-Control", "private, no-store");
-      ctx.body = createReadStream(storedPhoto.filepath);
+      ctx.body = createReadStream(filepath);
     } catch {
       ctx.status = 404;
       ctx.body = { error: "Photo not found" };
