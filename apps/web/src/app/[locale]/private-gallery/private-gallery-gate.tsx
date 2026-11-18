@@ -2,11 +2,11 @@
 
 import Image from "next/image";
 import { createPortal } from "react-dom";
-import { useEffect, useMemo, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type CSSProperties, type FormEvent, type ReactNode } from "react";
 import { privateGalleryImageLoader } from "@/lib/private-gallery-images";
 import type { StrapiMedia } from "@/lib/strapi";
 import type { CmsPage } from "@/lib/pages";
-const detailSizes = "(max-width: 700px) 100vw, (max-width: 1180px) 65vw, 1016px";
+import { PrivateGalleryDetailPhotos } from "./private-gallery-detail-photos";
 
 type GalleryCopy = NonNullable<CmsPage["privateGallery"]>;
 
@@ -153,9 +153,7 @@ export function PrivateGalleryGate({
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
   const [selectedPhoto, setSelectedPhoto] = useState(0);
-  const touchStartX = useRef<number | null>(null);
   const [settledCardImages, setSettledCardImages] = useState<Set<string>>(() => new Set());
-  const [readyDetailImage, setReadyDetailImage] = useState<string | null>(null);
   const categories = useMemo(() => {
     if (!images) return [];
     const names = new Map<string, { name: string; sortOrder: number }>();
@@ -331,36 +329,13 @@ export function PrivateGalleryGate({
                       className="private-gallery-lightbox-visual"
                       style={{ "--private-gallery-photo": `url("${privateGalleryImageLoader({ src: visibleImages[selectedImage].images[selectedPhoto].url, width: 160 })}")` } as CSSProperties}
                     >
-                      <Image
-                        key={visibleImages[selectedImage].images[selectedPhoto].url}
-                        loader={privateGalleryImageLoader}
-                        sizes={detailSizes}
-                        src={visibleImages[selectedImage].images[selectedPhoto].url}
-                        alt={visibleImages[selectedImage].images[selectedPhoto].alternativeText || visibleImages[selectedImage].title}
-                        width={visibleImages[selectedImage].images[selectedPhoto].width || 1600}
-                        height={visibleImages[selectedImage].images[selectedPhoto].height || 1200}
-                        loading="eager"
-                        fetchPriority="high"
-                        className={readyDetailImage === visibleImages[selectedImage].images[selectedPhoto].url ? "is-loaded" : "is-loading"}
-                        onLoad={() => setReadyDetailImage(visibleImages[selectedImage].images[selectedPhoto].url)}
-                        onError={() => setReadyDetailImage(visibleImages[selectedImage].images[selectedPhoto].url)}
-                        onTouchStart={(event) => { touchStartX.current = event.changedTouches[0]?.clientX ?? null; }}
-                        onTouchEnd={(event) => {
-                          const startX = touchStartX.current;
-                          touchStartX.current = null;
-                          if (startX === null || visibleImages[selectedImage].images.length < 2) return;
-                          const distance = event.changedTouches[0].clientX - startX;
-                          if (Math.abs(distance) < 45) return;
-                          const count = visibleImages[selectedImage].images.length;
-                          setSelectedPhoto((index) => (index + count + (distance < 0 ? 1 : -1)) % count);
-                        }}
+                      <PrivateGalleryDetailPhotos
+                        photos={visibleImages[selectedImage].images}
+                        title={visibleImages[selectedImage].title}
+                        selectedPhoto={selectedPhoto}
+                        loadingLabel={text.loadingPhoto}
+                        onNavigate={(direction) => setSelectedPhoto((index) => (index + activePhotoCount + direction) % activePhotoCount)}
                       />
-                      {readyDetailImage !== visibleImages[selectedImage].images[selectedPhoto].url && (
-                        <span className="private-gallery-detail-loading" role="status">
-                          <span className="private-gallery-loading-spinner" aria-hidden="true" />
-                          <span>{text.loadingPhoto}</span>
-                        </span>
-                      )}
                       <nav className="private-gallery-thumbnails" aria-label={text.galleryHeading}>
                         {visibleImages[selectedImage].images.map((photo, index) => (
                           <button key={`${visibleImages[selectedImage].title}-${photo.url}-${index}`} type="button" className={index === selectedPhoto ? "is-active" : ""} aria-label={`${visibleImages[selectedImage].title} — ${index + 1}`} aria-current={index === selectedPhoto ? "true" : undefined} onClick={() => setSelectedPhoto(index)}>

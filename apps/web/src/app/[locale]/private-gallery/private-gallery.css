@@ -387,6 +387,8 @@
   flex-direction: column;
   background: rgba(30, 29, 27, 0.72);
   color: #fff;
+  visibility: hidden;
+  animation: private-gallery-loading-reveal 0s 400ms forwards;
 }
 
 .private-gallery-loading-spinner {
@@ -404,6 +406,10 @@
   height: 1.5rem;
   border-color: rgba(255, 255, 255, 0.35);
   border-top-color: #d1aa62;
+}
+
+@keyframes private-gallery-loading-reveal {
+  to { visibility: visible; }
 }
 
 @keyframes private-gallery-spin {
@@ -516,6 +522,10 @@
   min-height: 0;
   object-fit: contain;
   touch-action: pan-y;
+}
+
+.private-gallery-lightbox-visual > img[hidden] {
+  display: none;
 }
 
 .private-gallery-lightbox-details {
