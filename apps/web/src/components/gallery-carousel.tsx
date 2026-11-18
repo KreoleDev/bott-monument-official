@@ -165,6 +165,7 @@ export function GalleryCarousel({
                     alt={item.image?.alternativeText || item.title}
                     width={560}
                     height={720}
+                    sizes="(max-width: 600px) 176px, (max-width: 900px) 231px, (max-width: 1300px) 264px, 308px"
                     draggable={false}
                     style={{ objectPosition: item.imagePosition || "center center" }}
                   />

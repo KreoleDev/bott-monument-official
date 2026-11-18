@@ -3,8 +3,11 @@
 import Image from "next/image";
 import { createPortal } from "react-dom";
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from "react";
+import { privateGalleryImageLoader } from "@/lib/private-gallery-images";
 import type { StrapiMedia } from "@/lib/strapi";
 import type { CmsPage } from "@/lib/pages";
+const detailSizes = "(max-width: 700px) 100vw, (max-width: 1180px) 65vw, 1016px";
+
 type GalleryCopy = NonNullable<CmsPage["privateGallery"]>;
 
 type PrivateImage = {
@@ -185,21 +188,6 @@ export function PrivateGalleryGate({
   }
 
   useEffect(() => {
-    if (selectedImage === null || activePhotoCount < 2) return;
-    const photos = visibleImages[selectedImage]?.images;
-    if (!photos?.length) return;
-    const adjacent = [
-      photos[(selectedPhoto + photos.length - 1) % photos.length],
-      photos[(selectedPhoto + 1) % photos.length],
-    ];
-    adjacent.forEach((photo) => {
-      const image = new window.Image();
-      image.decoding = "async";
-      image.src = photo.url;
-    });
-  }, [selectedImage, selectedPhoto, activePhotoCount, visibleImages]);
-
-  useEffect(() => {
     if (selectedImage === null) return;
     const savedOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -309,11 +297,13 @@ export function PrivateGalleryGate({
                     <span className="private-gallery-card-media">
                       <Image
                         className={settledCardImages.has(item.images[0].url) ? "is-loaded" : "is-loading"}
+                        loader={privateGalleryImageLoader}
+                        sizes="(max-width: 700px) calc(100vw - 32px), (max-width: 1180px) 31vw, (max-width: 1536px) 23vw, 351px"
                         src={item.images[0].url}
                         alt={item.images[0].alternativeText || item.title}
                         width={item.images[0].width || 1200}
                         height={item.images[0].height || 900}
-                        loading="lazy"
+                        loading={index < 4 ? "eager" : "lazy"}
                         onLoad={() => settleCardImage(item.images[0].url)}
                         onError={() => settleCardImage(item.images[0].url)}
                       />
@@ -339,14 +329,18 @@ export function PrivateGalleryGate({
                     <button className="private-gallery-lightbox-close" type="button" aria-label={text.close} onClick={() => setSelectedImage(null)}>×</button>
                     <div
                       className="private-gallery-lightbox-visual"
-                      style={{ "--private-gallery-photo": `url("${visibleImages[selectedImage].images[selectedPhoto].url}")` } as CSSProperties}
+                      style={{ "--private-gallery-photo": `url("${privateGalleryImageLoader({ src: visibleImages[selectedImage].images[selectedPhoto].url, width: 160 })}")` } as CSSProperties}
                     >
                       <Image
+                        key={visibleImages[selectedImage].images[selectedPhoto].url}
+                        loader={privateGalleryImageLoader}
+                        sizes={detailSizes}
                         src={visibleImages[selectedImage].images[selectedPhoto].url}
                         alt={visibleImages[selectedImage].images[selectedPhoto].alternativeText || visibleImages[selectedImage].title}
                         width={visibleImages[selectedImage].images[selectedPhoto].width || 1600}
                         height={visibleImages[selectedImage].images[selectedPhoto].height || 1200}
-                        priority
+                        loading="eager"
+                        fetchPriority="high"
                         className={readyDetailImage === visibleImages[selectedImage].images[selectedPhoto].url ? "is-loaded" : "is-loading"}
                         onLoad={() => setReadyDetailImage(visibleImages[selectedImage].images[selectedPhoto].url)}
                         onError={() => setReadyDetailImage(visibleImages[selectedImage].images[selectedPhoto].url)}
@@ -370,7 +364,7 @@ export function PrivateGalleryGate({
                       <nav className="private-gallery-thumbnails" aria-label={text.galleryHeading}>
                         {visibleImages[selectedImage].images.map((photo, index) => (
                           <button key={`${visibleImages[selectedImage].title}-${photo.url}-${index}`} type="button" className={index === selectedPhoto ? "is-active" : ""} aria-label={`${visibleImages[selectedImage].title} — ${index + 1}`} aria-current={index === selectedPhoto ? "true" : undefined} onClick={() => setSelectedPhoto(index)}>
-                            <Image src={photo.url} alt="" width={84} height={60} />
+                            <Image src={privateGalleryImageLoader({ src: photo.url, width: 160 })} unoptimized alt="" width={84} height={60} />
                           </button>
                         ))}
                       </nav>
