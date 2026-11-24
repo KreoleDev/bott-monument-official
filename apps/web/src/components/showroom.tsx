@@ -53,48 +53,13 @@ export function Showroom({
         width={4031}
         height={2249}
       />
-      <div className="showroom-content">
-        <div className="showroom-panel">
-          <div className="showroom-kicker">
-            <p>{section.eyebrow}</p>
-          </div>
-          <h2 id="showroom-title" className="showroom-title">
-            {section.title === "Trusted for generations" ? (
-              <>
-                Trusted for
-                <br />
-                generations
-              </>
-            ) : (
-              section.title
-            )}
-          </h2>
-          <p className="showroom-copy">
-            {section.description || "Timeless craftsmanship. Lasting memories. Built to honor what matters most."}
-          </p>
-          <a className="showroom-cta showroom-cta-mobile" href={href}>
-            <span>{section.buttonLabel}</span>
-            <span className="showroom-cta-arrow" aria-hidden="true">
-              →
-            </span>
-          </a>
-        </div>
-      </div>
       <div className="showroom-lower">
         <div className="showroom-lower-inner">
-          <div className="showroom-stats">
-            {details.statistics.map((stat) => (
-              <div className="showroom-stat" key={stat.id}>
-                <p className="showroom-stat-value">{stat.value}</p>
-                <p className="showroom-stat-label">{stat.label}</p>
-              </div>
-            ))}
-          </div>
           <div className="showroom-visit-card">
             <div className="showroom-location-group">
               <DetailIcon kind="location" />
               <div>
-                <h3 className="showroom-visit-title">{details.visitTitle}</h3>
+                <h2 id="showroom-title" className="showroom-visit-title">{details.visitTitle}</h2>
                 <p className="showroom-location">{details.location}</p>
               </div>
             </div>
