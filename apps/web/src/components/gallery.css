@@ -388,7 +388,8 @@
   pointer-events: none;
 }
 
-.cg-item:hover {
+.cg-item:hover,
+.cg-item:focus-within {
   z-index: 18;
 }
 
@@ -424,6 +425,70 @@
   font-style: italic;
   font-size: max(0.72rem, 0.72vw);
   color: var(--palette-gallery-accent-color, var(--gold));
+}
+
+.cg-card:has(.cg-card-more) .cg-caption {
+  padding-right: 3.25rem;
+}
+
+.cg-card-more {
+  position: absolute;
+  right: 0.6rem;
+  bottom: 0.6rem;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 11px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--palette-gallery-text-color, #f4efe5);
+  cursor: pointer;
+}
+
+.cg-card-more svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.35;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5));
+  transition: transform 180ms ease, filter 180ms ease;
+}
+
+.cg-card-more-ring {
+  stroke: var(--palette-gallery-accent-color, var(--gold));
+  stroke-width: 1;
+  opacity: 0.85;
+}
+
+.cg-card-more .cg-card-more-dot {
+  fill: currentColor;
+  stroke: none;
+}
+
+.cg-card-more:hover {
+  color: var(--palette-gallery-accent-color, var(--gold));
+}
+
+.cg-card-more:hover svg,
+.cg-card-more:focus-visible svg {
+  transform: translateY(-1px) scale(1.08);
+  filter: drop-shadow(0 0 4px rgba(var(--palette-gallery-accent-color-rgb, 201, 160, 80), 0.3));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cg-card-more svg {
+    transition: none;
+  }
+}
+
+.cg-card-more:focus-visible {
+  outline: 2px solid var(--palette-gallery-text-color, #f4efe5);
+  outline-offset: -4px;
 }
 
 .mag-access-primary,

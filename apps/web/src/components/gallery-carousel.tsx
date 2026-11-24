@@ -173,6 +173,23 @@ export function GalleryCarousel({
                     <h3>{item.title}</h3>
                     {item.subtitle && <em>{item.subtitle}</em>}
                   </div>
+                  {access && (
+                    <button
+                      className="cg-card-more"
+                      type="button"
+                      aria-label={`${locale.toLowerCase().startsWith("pt") ? "Saber mais sobre" : "See more about"} ${item.title}`}
+                      title={locale.toLowerCase().startsWith("pt") ? "Saber mais" : "See more"}
+                      aria-haspopup="dialog"
+                      aria-controls="magAccessModal"
+                      onClick={openAccess}
+                    >
+                      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <circle className="cg-card-more-ring" cx="12" cy="12" r="9.5" />
+                        <path d="M10.5 10.5H12v6m-1.5 0h3" />
+                        <circle className="cg-card-more-dot" cx="12" cy="7.2" r="0.8" />
+                      </svg>
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
