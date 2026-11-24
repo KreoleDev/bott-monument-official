@@ -2257,3 +2257,53 @@ body .showroom-detail .showroom-icon {
     padding-bottom: 0.12em !important;
   }
 }
+
+/* Show the showroom photo without a color overlay at every viewport size. */
+body #showroom::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Fit the photo and visit details below the fixed, scrolled header. */
+body #showroom {
+  --showroom-header-height: calc(max(55px, 3.6vw) + max(1.2rem, 1.2vw) + max(0.5rem, 0.5vw));
+  height: calc(100svh - var(--showroom-header-height)) !important;
+  scroll-margin-top: var(--showroom-header-height);
+}
+
+body .showroom-bg {
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center top !important;
+}
+
+@media (min-width: 701px) {
+  body .showroom-lower {
+    top: 50% !important;
+    bottom: auto !important;
+    transform: translateY(-50%) !important;
+  }
+}
+
+@media (min-width: 700px) and (orientation: portrait) {
+  body #showroom {
+    --showroom-header-height: calc(48px + 1.9rem + env(safe-area-inset-top, 0px));
+  }
+}
+
+@media (max-width: 700px) {
+  body #showroom {
+    --showroom-header-height: calc(55px + 2rem);
+    display: grid !important;
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+
+  body .showroom-bg {
+    min-height: 0;
+  }
+
+  body .showroom-lower {
+    min-height: 0 !important;
+    padding: 1rem clamp(1.25rem, 6vw, 2.5rem) !important;
+  }
+}
