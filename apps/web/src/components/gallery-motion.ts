@@ -107,6 +107,7 @@ export function startGalleryMotion(viewport: HTMLElement) {
     ring!.classList.remove("is-dragging");
   }
   function down(e: PointerEvent) {
+    if ((e.target as HTMLElement | null)?.closest("button")) return;
     if (e.pointerType === "mouse" && e.button !== 0) return;
     focused = false;
     dragging = true;
@@ -152,6 +153,7 @@ export function startGalleryMotion(viewport: HTMLElement) {
     focused = false;
   };
   function key(e: KeyboardEvent) {
+    if ((e.target as HTMLElement | null)?.closest("button")) return;
     if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
       e.preventDefault();
       manual += e.key === "ArrowLeft" ? anglePerItem : -anglePerItem;
@@ -170,8 +172,8 @@ export function startGalleryMotion(viewport: HTMLElement) {
   viewport.addEventListener("lostpointercapture", end);
   window.addEventListener("pointerup", end);
   window.addEventListener("pointercancel", end);
-  viewport.addEventListener("focus", focus);
-  viewport.addEventListener("blur", blur);
+  viewport.addEventListener("focusin", focus);
+  viewport.addEventListener("focusout", blur);
   viewport.addEventListener("keydown", key);
   items.forEach((item) => {
     item.addEventListener("mouseenter", enter);
@@ -186,8 +188,8 @@ export function startGalleryMotion(viewport: HTMLElement) {
     viewport.removeEventListener("lostpointercapture", end);
     window.removeEventListener("pointerup", end);
     window.removeEventListener("pointercancel", end);
-    viewport.removeEventListener("focus", focus);
-    viewport.removeEventListener("blur", blur);
+    viewport.removeEventListener("focusin", focus);
+    viewport.removeEventListener("focusout", blur);
     viewport.removeEventListener("keydown", key);
     items.forEach((item) => {
       item.removeEventListener("mouseenter", enter);

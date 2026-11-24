@@ -56,19 +56,16 @@ export function Showroom({
       <div className="showroom-lower">
         <div className="showroom-lower-inner">
           <div className="showroom-visit-card">
-            <div className="showroom-location-group">
-              <DetailIcon kind="location" />
-              <div>
-                <h2 id="showroom-title" className="showroom-visit-title">{details.visitTitle}</h2>
+            <h2 id="showroom-title" className="showroom-visit-title">{details.visitTitle}</h2>
+            <div className="showroom-details">
+              <div className="showroom-detail">
+                <DetailIcon kind="location" />
                 <p className="showroom-location">{details.location}</p>
               </div>
-            </div>
-            <div className="showroom-details">
               <div className="showroom-detail">
                 <DetailIcon kind="calendar" />
                 <div>
                   <span className="showroom-detail-title">{details.appointment}</span>
-                  <span className="showroom-detail-subtitle">Schedule a time that works for you</span>
                 </div>
               </div>
               <div className="showroom-detail">
@@ -81,9 +78,6 @@ export function Showroom({
           </div>
           <a className="showroom-cta showroom-cta-desktop" href={href}>
             <span>{section.buttonLabel}</span>
-            <span className="showroom-cta-arrow" aria-hidden="true">
-              →
-            </span>
           </a>
         </div>
       </div>

@@ -155,6 +155,31 @@ test("keyboard rotates and reduced-motion disables automatic movement", () => {
   s.cleanup();
 });
 
+test("card buttons retain pointer and keyboard activation without rotating the carousel", () => {
+  const s = setup();
+  const target = { closest: (selector) => selector === "button" ? target : null };
+  s.viewport.emit("pointerdown", { target, clientX: 100 });
+  s.viewport.emit("pointermove", { target, clientX: 180 });
+  assert.equal(s.viewport.captured.size, 0);
+  assert.equal(s.angle(), 0);
+  const space = s.viewport.emit("keydown", { target, key: " " });
+  assert.equal(space.prevented, undefined);
+  s.tick(16);
+  assert.ok(s.angle() > 0);
+  s.cleanup();
+});
+
+test("focusing a card button pauses rotation until focus leaves", () => {
+  const s = setup();
+  s.viewport.emit("focusin");
+  s.tick(16);
+  assert.equal(s.angle(), 0);
+  s.viewport.emit("focusout");
+  s.tick(32);
+  assert.ok(s.angle() > 0);
+  s.cleanup();
+});
+
 test("layout preserves mobile and tablet dimensions and cleans up listeners", () => {
   for (const [config, expected] of [
     [{ width: 390 }, "160px"],
